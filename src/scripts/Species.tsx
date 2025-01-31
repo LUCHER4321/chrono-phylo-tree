@@ -59,6 +59,7 @@ export class Species {
       [sp]
     );
     anc.display = display;
+    sp.ancestor = anc;
     return copy ? sp : anc;
   }
 
@@ -94,5 +95,17 @@ export class Species {
       .slice(limit, desc.length)
       .flatMap((d) => d.allDescendants());
     return desc0.concat([this]).concat(desc1);
+  }
+
+  static fromJSON(json: any, ancestor?: Species): Species {
+    const afterAparision = json.afterAparision ?? 0;
+    const aparision = ancestor ? ancestor.aparision : json.aparision ?? 0;
+    const sp = new Species(json.name ?? "", aparision + afterAparision, json.duration ?? -1, ancestor);
+    if(json.descendants) {
+      for (const desc of json.descendants) {
+        sp.descendants.push(Species.fromJSON(desc, sp));
+      }
+    }
+    return sp
   }
 }
