@@ -72,8 +72,8 @@ export class Species {
       : this.extinction();
   }
 
-  firstAncestor(): Species {
-    return this.ancestor ? this.ancestor.firstAncestor() : this;
+  firstAncestor(includeNotDisplay = false): Species {
+    return this.ancestor ? ((this.ancestor.display || includeNotDisplay) ? this.ancestor.firstAncestor() : this) : this;
   }
 
   cousinsExtinction() {
