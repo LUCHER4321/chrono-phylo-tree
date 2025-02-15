@@ -64,7 +64,7 @@ export class Species {
   }
 
   extinction() {
-    return this.duration >= 0 ? this.aparision + this.duration : this.duration;
+    return this.duration >= 0 ? this.aparision + this.duration : this.aparision;
   }
 
   absoluteExtinction(): number {
