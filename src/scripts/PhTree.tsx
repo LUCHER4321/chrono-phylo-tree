@@ -10,10 +10,12 @@ interface PhtreeProps {
 export const PhTree = (
     { commonAncestor, width = 1000, height = 1000}: PhtreeProps
 ) => {
+    const duration = commonAncestor.absoluteExtinction() - commonAncestor.aparision;
+    console.log("Duration:", duration);
     return (
         <div>
             <svg width={width} height={height}>
-                {DrawTree(commonAncestor, -1, width / commonAncestor.absoluteExtinction(), height / (commonAncestor.allDescendants().length - 1))}
+                {DrawTree(commonAncestor, -1, width / duration, height / (commonAncestor.allDescendants().length - 1))}
             </svg>
         </div>
     );
@@ -26,8 +28,10 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number) =
         setShowDesc(!showDesc);
     };
 
-    const spIndex = species.firstAncestor().allDescendants().indexOf(species)
-    const startX = species.aparision * scaleX;
+    const fa = species.firstAncestor();
+    const all = fa.allDescendants();
+    const spIndex = all.indexOf(species)
+    const startX = (species.aparision - fa.aparision) * scaleX;
     const endX = startX + (showDesc ? species.duration : (species.absoluteExtinction() - species.aparision)) * scaleX;
     const endY = spIndex * scaleY;
     return (
@@ -51,8 +55,8 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number) =
                 showDesc={showDesc}
                 padding={10}
             />
-            {species.descendants.map((desc, _) => (
-                <g style={{ display: showDesc ? 'block' : 'none' }}>
+            {species.descendants.map((desc, index) => (
+                <g style={{ display: showDesc ? 'block' : 'none' }} key={all.length + index}>
                     {DrawTree(desc, endY, scaleX, scaleY)}
                 </g>
             ))}
@@ -96,9 +100,9 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
                     <div>
                         {species.aparision}
                     </div>
-                    <button>
+                    <div>
                         {species.name}
-                    </button>
+                    </div>
                     <button onClick={changeShowDesc}>
                         {(lastOne || !showDesc) ? extinction : ""}
                     </button>
