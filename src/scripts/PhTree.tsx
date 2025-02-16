@@ -48,6 +48,7 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number) =
                 x2={endX}
                 stroke="white"
                 changeShowDesc={changeShowDesc}
+                showDesc={showDesc}
                 padding={10}
             />
             {species.descendants.map((desc, _) => (
@@ -99,7 +100,7 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
                         {species.name}
                     </button>
                     <button onClick={changeShowDesc}>
-                        {lastOne ? extinction : ""}
+                        {(lastOne || !showDesc) ? extinction : ""}
                     </button>
                 </div>
             </foreignObject>
