@@ -73,6 +73,10 @@ export class Species {
       : this.extinction();
   }
 
+  absoluteDuration(): number {
+    return this.absoluteExtinction() - this.aparision;
+  }
+
   firstAncestor(includeNotDisplay = false): Species {
     return this.ancestor ? ((this.ancestor.display || includeNotDisplay) ? this.ancestor.firstAncestor() : this) : this;
   }
