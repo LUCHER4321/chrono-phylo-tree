@@ -5,21 +5,22 @@ interface PhtreeProps {
     commonAncestor: Species;
     width?: number;
     height?: number;
+    stroke?: string;
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 1000}: PhtreeProps
+    { commonAncestor, width = 1000, height = 1000, stroke = "white"}: PhtreeProps
 ) => {
     return (
         <div>
             <svg width={width} height={height}>
-                {DrawTree(commonAncestor, -1, width / commonAncestor.absoluteDuration(), height / (commonAncestor.allDescendants().length - 1))}
+                {DrawTree(commonAncestor, -1, width / commonAncestor.absoluteDuration(), height / (commonAncestor.allDescendants().length - 1), stroke)}
             </svg>
         </div>
     );
 };
 
-const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number) => {
+const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, stroke = "white") => {
     const [showDesc, setShowDesc] = useState(true);
 
     const changeShowDesc = () => {
@@ -40,7 +41,7 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number) =
                     y1={y}
                     x2={startX}
                     y2={endY}
-                    stroke="white"
+                    stroke={stroke}
                 />
             )}
             <HorizontalLine
@@ -48,14 +49,14 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number) =
                 x1={startX}
                 y={endY}
                 x2={endX}
-                stroke="white"
+                stroke={stroke}
                 changeShowDesc={changeShowDesc}
                 showDesc={showDesc}
                 padding={10}
             />
             {species.descendants.map((desc, index) => (
                 <g style={{ display: showDesc ? 'block' : 'none' }} key={all.length + index}>
-                    {DrawTree(desc, endY, scaleX, scaleY)}
+                    {DrawTree(desc, endY, scaleX, scaleY, stroke)}
                 </g>
             ))}
         </g>
@@ -98,9 +99,10 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
                     <div>
                         {species.aparision}
                     </div>
-                    <div>
+                    <button style={{padding: 2.5}}>
                         {species.name}
-                    </div>
+                    </button>
+                    {/*TODO: Menú de Especie*/}
                     {species.descendants.length > 0 ?
                         <button onClick={changeShowDesc} style={{padding: showDesc ? 10 : 5}}>
                             {(lastOne || !showDesc) ? extinction : " "}
