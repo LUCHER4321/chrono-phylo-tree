@@ -102,8 +102,8 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
                         {species.name}
                     </div>
                     {species.descendants.length > 0 ?
-                        <button onClick={changeShowDesc}>
-                            {(lastOne || !showDesc) ? extinction : ""}
+                        <button onClick={changeShowDesc} style={{padding: showDesc ? 10 : 5}}>
+                            {(lastOne || !showDesc) ? extinction : " "}
                         </button> :
                         <div>
                             {extinction}
