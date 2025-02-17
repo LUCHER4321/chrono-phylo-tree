@@ -31,7 +31,7 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, s
     const all = fa.allDescendants();
     const spIndex = all.indexOf(species)
     const startX = (species.aparision - fa.aparision) * scaleX;
-    const endX = startX + (showDesc ? species.duration : (species.absoluteExtinction() - species.aparision)) * scaleX;
+    const endX = startX + (showDesc ? species.duration : species.absoluteDuration()) * scaleX;
     const endY = spIndex * scaleY;
     return (
         <g key={spIndex}>
