@@ -10,12 +10,10 @@ interface PhtreeProps {
 export const PhTree = (
     { commonAncestor, width = 1000, height = 1000}: PhtreeProps
 ) => {
-    const duration = commonAncestor.absoluteExtinction() - commonAncestor.aparision;
-    console.log("Duration:", duration);
     return (
         <div>
             <svg width={width} height={height}>
-                {DrawTree(commonAncestor, -1, width / duration, height / (commonAncestor.allDescendants().length - 1))}
+                {DrawTree(commonAncestor, -1, width / commonAncestor.absoluteDuration(), height / (commonAncestor.allDescendants().length - 1))}
             </svg>
         </div>
     );
@@ -103,9 +101,14 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
                     <div>
                         {species.name}
                     </div>
-                    <button onClick={changeShowDesc}>
-                        {(lastOne || !showDesc) ? extinction : ""}
-                    </button>
+                    {species.descendants.length > 0 ?
+                        <button onClick={changeShowDesc}>
+                            {(lastOne || !showDesc) ? extinction : ""}
+                        </button> :
+                        <div>
+                            {extinction}
+                        </div>
+                    }
                 </div>
             </foreignObject>
         </g>
