@@ -86,19 +86,11 @@ export class Species {
   }
 
   allDescendants(): Species[] {
-    const desc = this.descendants;
+    const desc = this.descendants.sort((a, b) => (a.aparision === b.aparision) ? (a.absoluteExtinction() - b.absoluteExtinction()) : (b.aparision - a.aparision));
     if (desc.length === 0) {
       return [this];
     }
-    if (desc.length === 1) {
-      return desc[0].allDescendants().concat([this]);
-    }
-    const limit = desc.length / 2;
-    const desc0 = desc.slice(0, limit).flatMap((d) => d.allDescendants());
-    const desc1 = desc
-      .slice(limit, desc.length)
-      .flatMap((d) => d.allDescendants());
-    return desc0.concat([this]).concat(desc1);
+    return [this as Species].concat(desc.flatMap((d) => d.allDescendants()));
   }
 
   static fromJSON(json: any, ancestor?: Species): Species {
