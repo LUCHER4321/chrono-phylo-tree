@@ -74,40 +74,40 @@ function App() {
 
   return (
     <>
-      <div style={{display: "flex", flexDirection: "row"}}>
-      <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
-        <label>
-          Escala: <input
-            type="number"
-            value={scale}
-            onChange={(e) => setScale(Number(e.target.value))}
-          />
-        </label>
-        <div style={{height: 10}}/>
-        <label>
-          Color: <input
-            type="color"
-            value={lineColor}
-            onChange={(e) => setLineColor(e.target.value)}
-          />
-        </label>
-      </div>
-        <div style={{width: 10}}/>
+      <nav style={{display: "flex", flexDirection: "row"}}>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
-          <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
-            Repositorio: <a href="https://github.com/LUCHER4321/Phylo_Tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
-              <img height={25} src="https://logo.clearbit.com/github.com"/>
-            </a>
-          </label>
           <label>
-            Importar JSON: <input
-              type="file"
-              accept=".json"
-              onChange={async (e) => await setFromJson(e)}
+            Escala: <input
+              type="number"
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
+            />
+          </label>
+          <div style={{height: 10}}/>
+          <label>
+            Color: <input
+              type="color"
+              value={lineColor}
+              onChange={(e) => setLineColor(e.target.value)}
             />
           </label>
         </div>
-      </div>
+          <div style={{width: 10}}/>
+          <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+            <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
+              Repositorio: <a href="https://github.com/LUCHER4321/Phylo_Tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
+                <img height={25} src="https://logo.clearbit.com/github.com"/>
+              </a>
+            </label>
+            <label>
+              Importar JSON: <input
+                type="file"
+                accept=".json"
+                onChange={async (e) => await setFromJson(e)}
+              />
+            </label>
+          </div>
+        </nav>
       <div style={{height: 50}}/>
       {species ? <PhTree
         commonAncestor={species}
