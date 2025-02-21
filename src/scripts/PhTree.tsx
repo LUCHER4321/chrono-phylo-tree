@@ -119,7 +119,7 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
                     }
                 </div>
             </foreignObject>
-            {x0 && x0 !== x2 && (
+            {x0 && x0 > x2 && (
                 <foreignObject
                     x={x0 + padding}
                     y={y + (padding) * orientation}
