@@ -8,6 +8,7 @@ import { Species } from './scripts/Species'
 function App() {
   const [scale, setScale] = useState(10000000);
   const [lineColor, setLineColor] = useState("#7F7F7F");
+  const [presentTime, setPresentTime] = useState(1.2e9);
   //*
   const n0 = 15000000;
   const root = new Species("Hominoidea", -n0, n0 - 13000000);
@@ -74,13 +75,20 @@ function App() {
 
   return (
     <>
-      <nav style={{display: "flex", flexDirection: "row"}}>
+      <nav style={{display: "flex", flexDirection: "row", width: "100%", position: "fixed", backgroundColor: "rgba(127, 127, 127, 0.5)", padding: 10}}>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label>
             Escala: <input
               type="number"
               value={scale}
               onChange={(e) => setScale(Number(e.target.value))}
+            />
+          </label>
+          <label>
+            Presente: <input
+              type="number"
+              value={presentTime}
+              onChange={(e) => setPresentTime(Number(e.target.value))}
             />
           </label>
           <div style={{height: 10}}/>
@@ -108,13 +116,14 @@ function App() {
             </label>
           </div>
         </nav>
-      <div style={{height: 50}}/>
+      <div style={{height: 165}}/>
       {species ? <PhTree
         commonAncestor={species}
         width={window.screen.width * species.absoluteDuration() / scale}
         height={50 * species.allDescendants().length}
         stroke={lineColor}
         format={scientificNotation}
+        presentTime={presentTime}
       /> : <div/>}
     </>
   )
