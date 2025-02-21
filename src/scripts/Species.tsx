@@ -86,7 +86,7 @@ export class Species {
   }
 
   allDescendants(): Species[] {
-    const desc = this.descendants.sort((a, b) => (a.aparision === b.aparision) ? (a.absoluteExtinction() - b.absoluteExtinction()) : (b.aparision - a.aparision));
+    const desc = this.descendants.sort((a, b) => (a.aparision === b.aparision) ? (b.absoluteExtinction() - a.absoluteExtinction()) : (b.aparision - a.aparision));
     if (desc.length === 0) {
       return [this];
     }
