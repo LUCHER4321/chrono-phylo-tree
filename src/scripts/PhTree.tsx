@@ -7,21 +7,22 @@ interface PhtreeProps {
     height?: number;
     stroke?: string;
     format?: (n: number) => string;
+    presentTime?: number;
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 1000, stroke = "white", format = (n) => n.toString()}: PhtreeProps
+    { commonAncestor, width = 1000, height = 1000, stroke = "white", format = (n) => n.toString(), presentTime = undefined}: PhtreeProps
 ) => {
     return (
         <div>
-            <svg width={width} height={height}>
-                {DrawTree(commonAncestor, -1, width / commonAncestor.absoluteDuration(), height / (commonAncestor.allDescendants().length - 1), stroke, format)}
+            <svg width={width * (presentTime ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.aparision) / commonAncestor.absoluteDuration() : 1)} height={height * (presentTime ? commonAncestor.allDescendants().filter(desc => desc.aparision < presentTime).length / commonAncestor.allDescendants().length : 1)}>
+                {DrawTree(commonAncestor, -1, width / commonAncestor.absoluteDuration(), height / (commonAncestor.allDescendants().length - 1), stroke, format, presentTime)}
             </svg>
         </div>
     );
 };
 
-const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, stroke = "white", format = (n: number) => n.toString()) => {
+const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, stroke = "white", format = (n: number) => n.toString(), presentTime: number | undefined = undefined) => {
     const [showDesc, setShowDesc] = useState(true);
 
     const changeShowDesc = () => {
@@ -29,12 +30,13 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, s
     };
 
     const fa = species.firstAncestor();
-    const all = fa.allDescendants();
+    const all = fa.allDescendants().filter(desc => presentTime ? desc.aparision < presentTime : true);
     const spIndex = all.indexOf(species)
     const startX = (species.aparision - fa.aparision) * scaleX;
-    const endX = startX + (showDesc ? species.duration : species.absoluteDuration()) * scaleX;
+    const endX = startX + Math.min(showDesc ? species.duration : species.absoluteDuration(), presentTime ? presentTime - species.aparision : species.absoluteDuration()) * scaleX;
     const endY = spIndex * scaleY;
-    const branchX = species.descendants.length > 0 ? startX + (Math.min(...species.descendants.map(desc => desc.aparision)) - species.aparision) * scaleX : endX;
+    const descendants = species.descendants.filter(desc => presentTime ? desc.aparision < presentTime : true);
+    const branchX = descendants.length > 0 ? startX + (Math.min(...descendants.map(desc => desc.aparision)) - species.aparision) * scaleX : endX;
     return (
         <g key={spIndex}>
             {y >= 0 && (
@@ -57,10 +59,11 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, s
                 showDesc={showDesc}
                 padding={10}
                 format={format}
+                presentTime={presentTime}
             />
             {species.descendants.map((desc, index) => (
-                <g style={{ display: showDesc ? 'block' : 'none' }} key={all.length + index}>
-                    {DrawTree(desc, endY, scaleX, scaleY, stroke, format)}
+                <g style={{ display: (showDesc && descendants.includes(desc)) ? 'block' : 'none' }} key={all.length + index}>
+                    {DrawTree(desc, endY, scaleX, scaleY, stroke, format, presentTime)}
                 </g>
             ))}
         </g>
@@ -78,14 +81,16 @@ interface HorizontalLineProps {
     changeShowDesc?: () => void;
     padding?: number;
     format?: (n: number) => string;
+    presentTime?: number;
 }
 
-const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString()}: HorizontalLineProps) => {
-    const all = species.firstAncestor().allDescendants();
+const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString(), presentTime}: HorizontalLineProps) => {
+    const all = species.firstAncestor().allDescendants().filter(desc => presentTime ? desc.aparision < presentTime : true);
     const index = (s: Species) => all.indexOf(s);
     const orientation = species.ancestor ? (index(species) > index(species.ancestor) ? -3 : 1) : 1;
-    const lastOne = species.descendants.filter(desc => desc.aparision === species.extinction()).length === 0;
-    const extinction = format(showDesc ? species.extinction() : species.absoluteExtinction());
+    const descendants = species.descendants.filter(desc => presentTime ? desc.aparision < presentTime : true);
+    const lastOne = descendants.filter(desc => desc.aparision === species.extinction()).length === 0;
+    const extinction = format(Math.min(showDesc ? species.extinction() : species.absoluteExtinction(), presentTime ? presentTime : species.absoluteExtinction()));
     return (
         <g>
             <line
@@ -109,7 +114,7 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
                         {species.name}
                     </button>
                     {/*TODO: Menú de Especie*/}
-                    {species.descendants.length > 0 ?
+                    {descendants.length > 0 ?
                         <button onClick={changeShowDesc} style={{padding: showDesc ? 10 : 5}}>
                             {((lastOne || !showDesc) && (!x0 || x0 === x2)) ? extinction : " "}
                         </button> :
@@ -119,7 +124,7 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
                     }
                 </div>
             </foreignObject>
-            {x0 && x0 > x2 && (
+            {x0 && x0 < x2 && (
                 <foreignObject
                     x={x0 + padding}
                     y={y + (padding) * orientation}
