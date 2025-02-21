@@ -34,6 +34,7 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, s
     const startX = (species.aparision - fa.aparision) * scaleX;
     const endX = startX + (showDesc ? species.duration : species.absoluteDuration()) * scaleX;
     const endY = spIndex * scaleY;
+    const branchX = species.descendants.length > 0 ? startX + (Math.min(...species.descendants.map(desc => desc.aparision)) - species.aparision) * scaleX : endX;
     return (
         <g key={spIndex}>
             {y >= 0 && (
@@ -48,8 +49,9 @@ const DrawTree = (species: Species, y: number, scaleX: number, scaleY: number, s
             <HorizontalLine
                 species={species}
                 x1={startX}
-                y={endY}
                 x2={endX}
+                x0={branchX}
+                y={endY}
                 stroke={stroke}
                 changeShowDesc={changeShowDesc}
                 showDesc={showDesc}
@@ -69,6 +71,7 @@ interface HorizontalLineProps {
     species: Species;
     x1: number;
     x2: number;
+    x0?: number;
     y: number;
     stroke: string;
     showDesc?: boolean;
@@ -77,7 +80,7 @@ interface HorizontalLineProps {
     format?: (n: number) => string;
 }
 
-const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString()}: HorizontalLineProps) => {
+const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString()}: HorizontalLineProps) => {
     const all = species.firstAncestor().allDescendants();
     const index = (s: Species) => all.indexOf(s);
     const orientation = species.ancestor ? (index(species) > index(species.ancestor) ? -3 : 1) : 1;
@@ -94,21 +97,21 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
             />
             <foreignObject
                 x={x1 + padding}
-                y={y + (padding + 5) * orientation}
-                width={x2 - x1 - 2 * padding}
+                y={y + (padding) * orientation}
+                width={(x0 ?? x2) - x1 - 2 * padding}
                 height={50}
             >
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                     <div>
                         {format(species.aparision)}
                     </div>
-                    <button style={{padding: 2.5}}>
+                    <button style={{padding: 2.5}} onClick={() => console.log(species.allDescendants().map(s => s.name))}>
                         {species.name}
                     </button>
                     {/*TODO: Menú de Especie*/}
                     {species.descendants.length > 0 ?
                         <button onClick={changeShowDesc} style={{padding: showDesc ? 10 : 5}}>
-                            {(lastOne || !showDesc) ? extinction : " "}
+                            {((lastOne || !showDesc) && (!x0 || x0 === x2)) ? extinction : " "}
                         </button> :
                         <div>
                             {extinction}
@@ -116,6 +119,17 @@ const HorizontalLine = ({species, x1, x2, y, stroke, showDesc = true, changeShow
                     }
                 </div>
             </foreignObject>
+            {x0 && x0 !== x2 && (
+                <foreignObject
+                    x={x0 + padding}
+                    y={y + (padding) * orientation}
+                    width={x2 - x0 - 2 * padding}
+                    height={50}
+                >
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end", width: '100%' }}>
+                        {lastOne || !showDesc ? extinction : ""}
+                    </div>
+                </foreignObject>)}
         </g>
     );
 }
