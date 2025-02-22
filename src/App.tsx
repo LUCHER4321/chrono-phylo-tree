@@ -6,11 +6,11 @@ import { PhTree } from './scripts/PhTree'
 import { Species } from './scripts/Species'
 
 function App() {
-  const [scale, setScale] = useState(10000000);
-  const [lineColor, setLineColor] = useState("#7F7F7F");
-  const [presentTime, setPresentTime] = useState(1.2e9);
-  //*
   const n0 = 15000000;
+  const [scale, setScale] = useState(n0);
+  const [lineColor, setLineColor] = useState("#7F7F7F");
+  const [presentTime, setPresentTime] = useState(0);
+  //*
   const root = new Species("Hominoidea", -n0, n0 - 13000000);
   root.addDescendant("Orangután", n0 - 13000000, 13000000);
   const child1 = root.addDescendant("Homininae", n0 - 13000000, 5000000);
@@ -50,6 +50,7 @@ function App() {
     setSpecies(null);
     const json = await handleFileChange(e);
     setSpecies(Species.fromJSON(json));
+    setScale(species?.absoluteDuration() ?? 1);
   };
 
   const scientificNotation = (n: number, decimals: number = 2) => {
@@ -75,10 +76,16 @@ function App() {
 
   return (
     <>
-      <nav style={{display: "flex", flexDirection: "row", width: "100%", position: "fixed", backgroundColor: "rgba(127, 127, 127, 0.5)", padding: 10}}>
+      <nav style={{display: "flex", flexDirection: "row", width: "auto", position: "fixed", backgroundColor: "rgba(127, 127, 127, 0.5)", padding: 10}}>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label>
             Escala: <input
+              type="range"
+              min={1}
+              max={species ? Math.min(species.absoluteDuration(), presentTime ? presentTime - species.aparision : species.absoluteDuration()) : 1}
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
+            /> <input
               type="number"
               value={scale}
               onChange={(e) => setScale(Number(e.target.value))}
@@ -86,6 +93,12 @@ function App() {
           </label>
           <label>
             Presente: <input
+              type="range"
+              min={species ? species.aparision : 0}
+              max={species ? species.absoluteExtinction() : 1}
+              value={presentTime}
+              onChange={(e) => setPresentTime(Number(e.target.value))}
+            /> <input
               type="number"
               value={presentTime}
               onChange={(e) => setPresentTime(Number(e.target.value))}
