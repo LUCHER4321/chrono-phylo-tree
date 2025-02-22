@@ -126,15 +126,19 @@ export class Species {
       } : json;
   }
 
-  saveJSON(filename: string | undefined = undefined) {
-    const jsonString = JSON.stringify(this.toJSON(), null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename ?? `${this.name}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  async saveJSON(filename: string | undefined = undefined) {
+    try{
+      const jsonString = JSON.stringify(this.toJSON(), null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename ?? `${this.name}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch(errror) {
+      console.error("Error saving file:", errror);
+    }
   }
 
   static fromJSON(json: any, ancestor?: Species): Species {
