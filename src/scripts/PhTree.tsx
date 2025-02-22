@@ -11,7 +11,7 @@ interface PhtreeProps {
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 1000, stroke = "white", format = (n) => n.toString(), presentTime = undefined}: PhtreeProps
+    { commonAncestor, width = 1000, height = 1000, stroke = "white", format = (n) => n.toString(), presentTime}: PhtreeProps
 ) => {
     return (
         <div>
@@ -110,7 +110,7 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
                     <div>
                         {format(species.aparision)}
                     </div>
-                    <button style={{padding: 2.5}} onClick={() => console.log(species.allDescendants().map(s => s.name))}>
+                    <button style={{padding: 2.5}} onClick={() => {console.log(species.toJSON()); species.saveJSON()}}>
                         {species.name}
                     </button>
                     {/*TODO: Menú de Especie*/}
