@@ -1,8 +1,9 @@
 export class Species {
-  name = '';
+  name = "";
   aparision = 0;
   duration = -1;
   ancestor?: Species = undefined;
+  description?: string = undefined;
   descendants: Species[] = [];
   display = true;
 
@@ -11,33 +12,45 @@ export class Species {
     aparision = 0,
     duration = -1,
     ancestor?: Species,
-    descendants: Species[] = []
+    descendants: Species[] = [],
+    description: string | undefined = undefined
   ) {
     this.name = name;
     this.aparision = aparision;
+    this.duration = duration;
     this.ancestor = ancestor;
     this.descendants = descendants;
-    this.duration = duration;
+    this.description = description;
   }
 
   copy() {
-    return new Species(
+    const sp = new Species(
       this.name,
       this.aparision,
       this.duration,
       this.ancestor,
-      this.descendants
+      this.descendants,
+      this.description
     );
+    sp.display = this.display;
+    return sp;
   }
 
-  addDescendant(name = '', afterAparision = 0, duration = -1, copy = false) {
+  addDescendant(
+    name = '',
+    afterAparision = 0,
+    duration = -1,
+    description: string | undefined = undefined,
+    copy = false
+  ) {
     const sp = copy ? this.copy() : this;
     const desc = new Species(
       name,
       this.aparision + Math.max(afterAparision, 0),
       duration,
       this,
-      []
+      [],
+      description
     );
     sp.descendants.push(desc);
     return copy ? sp : desc;
@@ -91,6 +104,37 @@ export class Species {
       return [this];
     }
     return [this as Species].concat(desc.flatMap((d) => d.allDescendants()));
+  }
+
+  toJSON(): any {
+    const aparisionJSON = this.ancestor ?
+      {
+        afterAparision: this.aparision - this.ancestor.aparision
+      } :
+      {
+        aparision: this.aparision
+      };
+    const json = {
+      name: this.name,
+      ...aparisionJSON,
+      duration: this.duration,
+    }
+    return this.descendants.length > 0 ?
+      {
+        ...json,
+        descendants: this.descendants.map((desc) => desc.toJSON()),
+      } : json;
+  }
+
+  saveJSON(filename: string | undefined = undefined) {
+    const jsonString = JSON.stringify(this.toJSON(), null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename ?? `${this.name}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   static fromJSON(json: any, ancestor?: Species): Species {
