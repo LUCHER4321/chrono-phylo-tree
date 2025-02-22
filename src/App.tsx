@@ -6,20 +6,23 @@ import { PhTree } from './scripts/PhTree'
 import { Species } from './scripts/Species'
 
 function App() {
-  const n0 = 15000000;
+  const n0 = 25e6;
   const [scale, setScale] = useState(n0);
   const [lineColor, setLineColor] = useState("#7F7F7F");
-  const [presentTime, setPresentTime] = useState(0);
+  const [presentTime, setPresentTime] = useState<number>(0);
+  const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
   //*
-  const root = new Species("Hominoidea", -n0, n0 - 13000000);
-  root.addDescendant("Orangután", n0 - 13000000, 13000000);
-  const child1 = root.addDescendant("Homininae", n0 - 13000000, 5000000);
-  child1.addDescendant("Gorila", 5000000, 8000000);
-  const child2 = child1.addDescendant("Homo & Pan", 5000000, 2000000);
-  const child3 = child2.addDescendant("Pan", 2000000, 3000000);
-  child3.addDescendant("Chimpancé", 3000000, 3000000);
-  child3.addDescendant("Bonobo", 3000000, 3000000);
-  child2.addDescendant("Humano", 2000000, 6000000);
+  const root = new Species("Hominoidea", -n0, n0 - 19e6);
+  root.addDescendant("Gibón", n0 - 19e6, 19e6);
+  const child0 = root.addDescendant("Homininae & Pongo", n0 - 19e6, 6e6);
+  child0.addDescendant("Orangután", 6e6, 13e6);
+  const child1 = child0.addDescendant("Homininae", 6e6, 5e6);
+  child1.addDescendant("Gorila", 5e6, 8e6);
+  const child2 = child1.addDescendant("Homo & Pan", 5e6, 2e6);
+  const child3 = child2.addDescendant("Pan", 2e6, 3e6);
+  child3.addDescendant("Chimpancé", 3e6, 3e6);
+  child3.addDescendant("Bonobo", 3e6, 3e6);
+  child2.addDescendant("Humano", 2e6, 6e6);
   //*/
   const [species, setSpecies] = useState<Species | null>(root);
 
@@ -49,8 +52,12 @@ function App() {
   const setFromJson = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSpecies(null);
     const json = await handleFileChange(e);
-    setSpecies(Species.fromJSON(json));
-    setScale(species?.absoluteDuration() ?? 1);
+    const newSpecies = Species.fromJSON(json);
+    setSpecies(newSpecies);
+    if(presentTimeBoolean){
+      setPresentTime(newSpecies?.absoluteExtinction() ?? 1);
+    }
+    setScale(newSpecies?.absoluteDuration() ?? 1);
   };
 
   const scientificNotation = (n: number, decimals: number = 2) => {
@@ -82,7 +89,7 @@ function App() {
             Escala: <input
               type="range"
               min={1}
-              max={species ? Math.min(species.absoluteDuration(), presentTime ? presentTime - species.aparision : species.absoluteDuration()) : 1}
+              max={species ? Math.min(species.absoluteDuration(), presentTimeBoolean ? presentTime - species.aparision : species.absoluteDuration()) : 1}
               value={scale}
               onChange={(e) => setScale(Number(e.target.value))}
             /> <input
@@ -98,10 +105,16 @@ function App() {
               max={species ? species.absoluteExtinction() : 1}
               value={presentTime}
               onChange={(e) => setPresentTime(Number(e.target.value))}
+              disabled={!presentTimeBoolean}
             /> <input
               type="number"
               value={presentTime}
               onChange={(e) => setPresentTime(Number(e.target.value))}
+              disabled={!presentTimeBoolean}
+            /> <input
+              type="checkbox"
+              checked={presentTimeBoolean}
+              onChange={(e) => setPresentTimeBoolean(e.target.checked)}
             />
           </label>
           <div style={{height: 10}}/>
@@ -136,7 +149,8 @@ function App() {
         height={50 * species.allDescendants().length}
         stroke={lineColor}
         format={scientificNotation}
-        presentTime={presentTime}
+        presentTime={presentTimeBoolean ? presentTime : undefined}
+        padding={7.5}
       /> : <div/>}
     </>
   )
