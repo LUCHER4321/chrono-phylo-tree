@@ -24,11 +24,12 @@ interface PhtreeProps {
         duration: number,
         description: string
     ) => void;
+    deleteAncestor?: (s: Species) => void;
     deleteSpecies?: (s: Species) => void;
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 1000, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, createDescendant, createAncestor, deleteSpecies}: PhtreeProps
+    { commonAncestor, width = 1000, height = 1000, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: PhtreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
@@ -75,6 +76,7 @@ export const PhTree = (
                     onClose={() => toggleShowMenu(species)}
                     createDescendant={createDescendant}
                     createAncestor={createAncestor}
+                    deleteAncestor={() => deleteAncestor?.(species)}
                     deleteSpecies={() => deleteSpecies?.(species)}
                 />}
         </>
