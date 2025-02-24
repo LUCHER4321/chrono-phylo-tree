@@ -106,6 +106,17 @@ function App() {
     //*/
   };
 
+  const deleteAncestor = (sp: Species) => {
+    if(!confirm(`¿Estás seguro de que deseas quitar ${sp.ancestor?.ancestor ? "a los ancestros" : "al ancestro"} de ${sp.name}?`)) {
+      return;
+    }
+    setSpecies(undefined);
+    const removingAncestor = sp?.copy();
+    removingAncestor.ancestor = undefined;
+    setScale(removingAncestor.absoluteDuration());
+    setSpecies(removingAncestor);
+  };
+
   const deleteSpecies = (sp: Species) => {
     if(!confirm(`¿Estás seguro de que deseas eliminar la especie ${sp.name}${sp.descendants.length > 0 ? " junto a sus descendientes" : ""}?`)) {
       return;
@@ -221,6 +232,7 @@ function App() {
         padding={7.5}
         createDescendant={createDescendant}
         createAncestor={createAncestor}
+        deleteAncestor={deleteAncestor}
         deleteSpecies={deleteSpecies}
       />}
     </>
