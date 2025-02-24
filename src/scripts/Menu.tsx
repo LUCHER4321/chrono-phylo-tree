@@ -20,10 +20,11 @@ interface MenuProps {
         duration: number,
         description: string
     ) => void;
+    deleteAncestor?: () => void;
     deleteSpecies?: () => void;
 }
 
-export const Menu = ({species, open, onClose, createDescendant, createAncestor, deleteSpecies}: MenuProps) => {
+export const Menu = ({species, open, onClose, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
     const [name, setName] = useState(species.name);
     const [aparision, setAparision] = useState(species.aparision);
     const [duration, setDuration] = useState(species.duration);
@@ -38,6 +39,10 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
     const toggleAddAncestor = () => {
         setAddAncestor(!addAncestor);
     };
+
+    const uniqueDescendant = (s: Species): boolean => {
+        return s.ancestor ? s.ancestor.descendants.length === 1 && uniqueDescendant(s.ancestor) : true;
+    }
 
     return(
         <Modal open={open} onClose={onClose}>
@@ -96,7 +101,14 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
                         onClose={onClose}
                         createDescendant={createDescendant}
                     />}
-                {!species.ancestor &&
+                {species.ancestor ?
+                    uniqueDescendant(species) &&
+                    <button type="button" onClick={() => {
+                        deleteAncestor?.();
+                        onClose?.();
+                    }}>
+                        Quitar Ancestro{species.ancestor.ancestor ? "s" : ""}
+                    </button> :
                     <button type="button" onClick={toggleAddAncestor}>
                         Crear ancestro
                     </button>}
