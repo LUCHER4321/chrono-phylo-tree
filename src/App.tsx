@@ -5,6 +5,7 @@ import './App.css'
 import { PhTree } from './scripts/PhTree'
 import { Species } from './scripts/Species'
 import { between } from './scripts/between';
+import { codeText, codeTextAlt, getLanguageOptions } from './scripts/translate';
 
 function App() {
   const [scale, setScale] = useState(1);
@@ -12,6 +13,8 @@ function App() {
   const [lineColor, setLineColor] = useState("#7F7F7F");
   const [presentTime, setPresentTime] = useState<number>(1);
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
+  const [language, setLanguage] = useState("spanish");
+  const languages = getLanguageOptions();
   //*
   const root = new Species("Hominoidea", -25e6, 6e6);
   root.addDescendant("Gibón", 6e6, 19e6);
@@ -106,8 +109,8 @@ function App() {
     //*/
   };
 
-  const deleteAncestor = (sp: Species) => {
-    if(!confirm(`¿Estás seguro de que deseas quitar ${sp.ancestor?.ancestor ? "a los ancestros" : "al ancestro"} de ${sp.name}?`)) {
+  const deleteAncestor = async (sp: Species) => {
+    if(!confirm(await codeTextAlt("cnfrm00" + (sp.ancestor?.ancestor ? "_0" : ""), language, sp.name))) {
       return;
     }
     setSpecies(undefined);
@@ -117,8 +120,8 @@ function App() {
     setSpecies(removingAncestor);
   };
 
-  const deleteSpecies = (sp: Species) => {
-    if(!confirm(`¿Estás seguro de que deseas eliminar la especie ${sp.name}${sp.descendants.length > 0 ? " junto a sus descendientes" : ""}?`)) {
+  const deleteSpecies = async (sp: Species) => {
+    if(!confirm(await codeTextAlt("cnfrm01" + (sp.descendants.length > 0 ? "_0" : ""), language, sp.name))) {
       return;
     }
     setSpecies(undefined);
@@ -152,7 +155,7 @@ function App() {
       <nav style={{display: "flex", flexDirection: "row", width: "auto", position: species ? "fixed" : "static", backgroundColor: "rgba(127, 127, 127, 0.5)", padding: 10}}>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label>
-            Escala: <input
+            {codeText("nvlbl00", language)}: <input
               type="range"
               min={1}
               max={maxScale(presentTime)}
@@ -167,7 +170,7 @@ function App() {
             />}
           </label>
           <label>
-            Presente: <input
+          {codeText("nvlbl01", language)}: <input
               type="range"
               min={species ? species.aparision : 0}
               max={species ? species.absoluteExtinction() : 1}
@@ -189,41 +192,53 @@ function App() {
           </label>
           <div style={{height: 10}}/>
           <label>
-            Color: <input
+          {codeText("nvlbl02", language)}: <input
               type="color"
               value={lineColor}
               onChange={(e) => setLineColor(e.target.value)}
             />
           </label>
         </div>
-          <div style={{width: 10}}/>
-          <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
-            <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
-              Repositorio: <a href="https://github.com/LUCHER4321/Phylo_Tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
-                <img height={25} src="https://logo.clearbit.com/github.com"/>
-              </a>
-            </label>
-            <label>
-              Importar JSON: <input
-                type="file"
-                accept=".json"
-                onChange={async (e) => await setFromJson(e.target.files?.[0])}
-              />
-            </label>
-            <div style={{display: "flex", flexDirection: "row"}}>
-              <button type="button" onClick={showExample}>
-                Ejemplo
-              </button>
-              <div style={{width: 10}}/>
-              <button onClick={async () => await species?.saveJSON()}>
-                Descargar JSON
-              </button>
-            </div>
+        <div style={{width: 10}}/>
+        <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+          <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
+          {codeText("nvlbl03", language)}: <a href="https://github.com/LUCHER4321/Phylo_Tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
+              <img height={25} src="https://logo.clearbit.com/github.com"/>
+            </a>
+          </label>
+          <label>
+          {codeText("nvlbl04", language)}: <input
+              type="file"
+              accept=".json"
+              onChange={async (e) => await setFromJson(e.target.files?.[0])}
+            />
+          </label>
+          <div style={{display: "flex", flexDirection: "row"}}>
+            <button type="button" onClick={showExample}>
+              {codeText("nvbtn00", language)}
+            </button>
+            <div style={{width: 10}}/>
+            <button onClick={async () => await species?.saveJSON()}>
+              {codeText("nvbtn01", language)}
+            </button>
           </div>
-        </nav>
+        </div>
+        <div style={{width: 10}}/>
+        <label>
+          {codeText("nvlbl05", language)}: <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            {Array.from(languages).map(([key, value]) => (
+              <option value={key}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </label>
+        {/*TODO: Traducir al inglés*/}
+      </nav>
       {species && <div style={{height: 165}}/>}
       {species && <PhTree
         commonAncestor={species}
+        language={language}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale}
         height={50 * (species?.allDescendants().length ?? 0)}
         stroke={lineColor}
