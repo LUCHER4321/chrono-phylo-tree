@@ -4,6 +4,7 @@ import { Menu } from "./Menu";
 
 interface PhtreeProps {
     commonAncestor: Species;
+    language?: string;
     width?: number;
     height?: number;
     padding?: number;
@@ -29,7 +30,7 @@ interface PhtreeProps {
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 1000, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: PhtreeProps
+    { commonAncestor, language, width = 1000, height = 1000, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: PhtreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
@@ -72,6 +73,7 @@ export const PhTree = (
             {showMenu && species &&
                 <Menu
                     species={species}
+                    language={language}
                     open={showMenu}
                     onClose={() => toggleShowMenu(species)}
                     createDescendant={createDescendant}
