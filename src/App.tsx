@@ -233,7 +233,6 @@ function App() {
             ))}
           </select>
         </label>
-        {/*TODO: Traducir al inglés*/}
       </nav>
       {species && <div style={{height: 165}}/>}
       {species && <PhTree
