@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Species } from "./Species";
 import { between } from "./between";
+import { codeText } from "./translate";
 
 interface MenuProps {
     species: Species;
+    language?: string;
     open?: boolean;
     onClose?: () => void;
     createDescendant?: (
@@ -24,7 +26,7 @@ interface MenuProps {
     deleteSpecies?: () => void;
 }
 
-export const Menu = ({species, open, onClose, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
+export const Menu = ({species, language, open, onClose, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
     const [name, setName] = useState(species.name);
     const [aparision, setAparision] = useState(species.aparision);
     const [duration, setDuration] = useState(species.duration);
@@ -48,14 +50,14 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
         <Modal open={open} onClose={onClose}>
             <form style={{display: "flex", flexDirection: "column", textAlign: "start", width: "auto", position: "fixed", backgroundColor: "grey", padding: 10}}>
                 <label>
-                    Nombre: <input
+                    {codeText("splbl00", language ?? "")}: <input
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                 </label>
                 <label>
-                    Aparición: <input
+                    {codeText("splbl01", language ?? "")}: <input
                         type="number"
                         min={species.ancestor ? species.ancestor.aparision : undefined}
                         max={species.ancestor ? species.ancestor.extinction() : undefined}
@@ -67,7 +69,7 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
                     />
                 </label>
                 <label>
-                    Duración: <input
+                    {codeText("splbl02", language ?? "")}: <input
                         type="number"
                         min={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.aparision)) - aparision : undefined}
                         value={duration}
@@ -75,7 +77,7 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
                     />
                 </label>
                 <label>
-                    Descripción: <textarea
+                    {codeText("splbl03", language ?? "")}: <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value === "" ? undefined : e.target.value)}
                     />
@@ -87,17 +89,18 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
                     species.description = description;
                     onClose?.();
                 }}>
-                    Guardar
+                    {codeText("spbtn00", language ?? "")}
                 </button>
                 <button type="button" onClick={deleteSpecies}>
-                    Eliminar
+                    {codeText("spbtn01", language ?? "")}
                 </button>
                 <button type="button" onClick={toggleAddDescendant}>
-                    Crear descendiente
+                    {codeText("spbtn02", language ?? "")}
                 </button>
                 {addDescendant &&
                     <AddDescendant
                         species={species}
+                        language={language}
                         onClose={onClose}
                         createDescendant={createDescendant}
                     />}
@@ -107,26 +110,27 @@ export const Menu = ({species, open, onClose, createDescendant, createAncestor, 
                         deleteAncestor?.();
                         onClose?.();
                     }}>
-                        Quitar Ancestro{species.ancestor.ancestor ? "s" : ""}
+                        {codeText("spbtn04" + (species.ancestor.ancestor ? "_0" : ""), language ?? "")}
                     </button> :
                     <button type="button" onClick={toggleAddAncestor}>
-                        Crear ancestro
+                        {codeText("spbtn03", language ?? "")}
                     </button>}
                 {addAncestor &&
                     <AddAncestor
                         species={species}
+                        language={language}
                         onClose={onClose}
                         createAncestor={createAncestor}
                     />}
                 <button type="button" onClick={onClose}>
-                    Cancelar
+                    {codeText("spbtn05", language ?? "")}
                 </button>
             </form>
         </Modal>
     );
 };
 
-const AddDescendant = ({species, onClose, createDescendant}: MenuProps) => {
+const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps) => {
     const [name, setName] = useState('');
     const [afterAparision, setAfterAparision] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -135,14 +139,14 @@ const AddDescendant = ({species, onClose, createDescendant}: MenuProps) => {
     return(
         <>
             <label>
-                Nombre: <input
+                {codeText("splbl00", language ?? "")}: <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
             </label>
             <label>
-                Después de: <input
+                {codeText("cdlbl00", language ?? "")}: <input
                     type="number"
                     min={0}
                     max={species.duration}
@@ -151,7 +155,7 @@ const AddDescendant = ({species, onClose, createDescendant}: MenuProps) => {
                 />
             </label>
             <label>
-                Duración: <input
+                {codeText("splbl02", language ?? "")}: <input
                     type="number"
                     min={0}
                     value={duration}
@@ -159,7 +163,7 @@ const AddDescendant = ({species, onClose, createDescendant}: MenuProps) => {
                 />
             </label>
             <label>
-                Descripción: <textarea
+                {codeText("splbl02", language ?? "")}: <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -168,13 +172,13 @@ const AddDescendant = ({species, onClose, createDescendant}: MenuProps) => {
                 createDescendant?.(species, name, afterAparision, duration, description);
                 onClose?.();
             }}>
-                Crear
+                {codeText("cdbtn00", language ?? "")}
             </button>
         </>
     );
 };
 
-const AddAncestor = ({species, onClose, createAncestor}: MenuProps) => {
+const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) => {
     const [name, setName] = useState('');
     const [previousAparision, setPreviousAparision] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -183,14 +187,14 @@ const AddAncestor = ({species, onClose, createAncestor}: MenuProps) => {
     return(
         <>
             <label>
-                Nombre: <input
+                {codeText("splbl00", language ?? "")}: <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
             </label>
             <label>
-                Antes de: <input
+                {codeText("calbl00", language ?? "")}: <input
                     type="number"
                     min={0}
                     value={previousAparision}
@@ -201,7 +205,7 @@ const AddAncestor = ({species, onClose, createAncestor}: MenuProps) => {
                 />
             </label>
             <label>
-                Duración: <input
+                {codeText("splbl02", language ?? "")}: <input
                     type="number"
                     min={previousAparision}
                     value={duration}
@@ -209,7 +213,7 @@ const AddAncestor = ({species, onClose, createAncestor}: MenuProps) => {
                 />
             </label>
             <label>
-                Descripción: <textarea
+                {codeText("splbl02", language ?? "")}: <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -218,7 +222,7 @@ const AddAncestor = ({species, onClose, createAncestor}: MenuProps) => {
                 createAncestor?.(species, name, previousAparision, duration, description);
                 onClose?.();
             }}>
-                Crear
+                {codeText("cdbtn00", language ?? "")}
             </button>
         </>
     );
