@@ -49,94 +49,107 @@ export const Menu = ({species, language, open, onClose, createDescendant, create
     return(
         <Modal open={open} onClose={onClose}>
             <form style={{display: "flex", flexDirection: "column", textAlign: "start", width: "auto", position: "fixed", backgroundColor: "grey", padding: 10}}>
-                <label>
-                    {codeText("splbl00", language ?? "")}: <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </label>
-                <label>
-                    {codeText("splbl01", language ?? "")}: <input
-                        type="number"
-                        min={species.ancestor ? species.ancestor.aparision : undefined}
-                        max={species.ancestor ? species.ancestor.extinction() : undefined}
-                        value={aparision}
-                        onChange={(e) => {
-                            setAparision(species.ancestor ? between(Number(e.target.value), species.ancestor.aparision, species.ancestor.extinction()) : Number(e.target.value));
-                            setDuration(species.descendants.length > 0 ? Math.max(Math.max(...species.descendants.map(desc => desc.aparision)) - aparision, duration) : duration);
-                        }}
-                    />
-                </label>
-                <label>
-                    {codeText("splbl02", language ?? "")}: <input
-                        type="number"
-                        min={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.aparision)) - aparision : undefined}
-                        value={duration}
-                        onChange={(e) => setDuration(species.descendants.length > 0 ? Math.max(Math.max(...species.descendants.map(desc => desc.aparision)) - aparision, Number(e.target.value)) : Number(e.target.value))}
-                    />
-                </label>
-                <label>
-                    {codeText("splbl03", language ?? "")}: <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value === "" ? undefined : e.target.value)}
-                    />
-                </label>
-                <button onClick={() => {
-                    species.name = name;
-                    species.aparision = aparision;
-                    species.duration = duration;
-                    species.description = description;
-                    onClose?.();
-                }}>
-                    {codeText("spbtn00", language ?? "")}
-                </button>
-                <button type="button" onClick={deleteSpecies}>
-                    {codeText("spbtn01", language ?? "")}
-                </button>
-                <button type="button" onClick={toggleAddDescendant}>
-                    {codeText("spbtn02", language ?? "")}
-                </button>
-                {addDescendant &&
-                    <AddDescendant
-                        species={species}
-                        language={language}
-                        onClose={onClose}
-                        createDescendant={createDescendant}
-                    />}
-                {species.ancestor ?
-                    uniqueDescendant(species) &&
-                    <button type="button" onClick={() => {
-                        deleteAncestor?.();
+                <Data
+                    name={name}
+                    setName={setName}
+                    aparision={aparision}
+                    setAparision={(n) => {
+                        setAparision(species.ancestor ? between(n, species.ancestor.aparision, species.ancestor.extinction()) : n);
+                        setDuration(species.descendants.length > 0 ? Math.max(Math.max(...species.descendants.map(desc => desc.aparision)) - aparision, duration) : duration);
+                    }}
+                    minAparision={species.ancestor ? species.ancestor.aparision : undefined}
+                    maxAparision={species.ancestor ? species.ancestor.extinction() : undefined}
+                    duration={duration}
+                    setDuration={setDuration}
+                    minDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.aparision)) - aparision : undefined}
+                    maxDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.aparision)) - aparision : undefined}
+                    description={description}
+                    setDescription={setDescription}
+                    language={language}
+                >
+                    <button onClick={() => {
+                        species.name = name;
+                        species.aparision = aparision;
+                        species.duration = duration;
+                        species.description = description;
                         onClose?.();
                     }}>
-                        {codeText("spbtn04" + (species.ancestor.ancestor ? "_0" : ""), language ?? "")}
-                    </button> :
-                    <button type="button" onClick={toggleAddAncestor}>
-                        {codeText("spbtn03", language ?? "")}
-                    </button>}
-                {addAncestor &&
-                    <AddAncestor
-                        species={species}
-                        language={language}
-                        onClose={onClose}
-                        createAncestor={createAncestor}
-                    />}
-                <button type="button" onClick={onClose}>
-                    {codeText("spbtn05", language ?? "")}
-                </button>
+                        {codeText("spbtn00", language ?? "")}
+                    </button>
+                    <button type="button" onClick={deleteSpecies}>
+                        {codeText("spbtn01", language ?? "")}
+                    </button>
+                    <button type="button" onClick={toggleAddDescendant}>
+                        {codeText("spbtn02", language ?? "")}
+                    </button>
+                    {addDescendant &&
+                        <AddDescendant
+                            species={species}
+                            language={language}
+                            onClose={onClose}
+                            createDescendant={createDescendant}
+                        />}
+                    {species.ancestor ?
+                        uniqueDescendant(species) &&
+                        <button type="button" onClick={() => {
+                            deleteAncestor?.();
+                            onClose?.();
+                        }}>
+                            {codeText("spbtn04" + (species.ancestor.ancestor ? "_0" : ""), language ?? "")}
+                        </button> :
+                        <button type="button" onClick={toggleAddAncestor}>
+                            {codeText("spbtn03", language ?? "")}
+                        </button>}
+                    {addAncestor &&
+                        <AddAncestor
+                            species={species}
+                            language={language}
+                            onClose={onClose}
+                            createAncestor={createAncestor}
+                        />}
+                    <button type="button" onClick={onClose}>
+                        {codeText("spbtn05", language ?? "")}
+                    </button>
+                </Data>
             </form>
         </Modal>
     );
 };
 
-const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps) => {
-    const [name, setName] = useState('');
-    const [afterAparision, setAfterAparision] = useState(0);
-    const [duration, setDuration] = useState(0);
-    const [description, setDescription] = useState('');
+interface DataProps {
+    name: string;
+    setName: (name: string) => void;
+    aparision: number;
+    setAparision: (aparision: number) => void;
+    minAparision?: number;
+    maxAparision?: number;
+    duration: number;
+    setDuration: (duration: number) => void;
+    minDuration?: number;
+    maxDuration?: number;
+    description?: string;
+    setDescription: (description: string) => void;
+    language?: string;
+    children?: React.ReactNode;
+}
 
-    return(
+const Data = ({
+    name,
+    setName,
+    aparision,
+    setAparision,
+    minAparision,
+    maxAparision,
+    duration,
+    setDuration,
+    minDuration,
+    maxDuration,
+    description,
+    setDescription,
+    language,
+    children
+}: DataProps) => {
+    return (
         <>
             <label>
                 {codeText("splbl00", language ?? "")}: <input
@@ -146,34 +159,62 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
                 />
             </label>
             <label>
-                {codeText("cdlbl00", language ?? "")}: <input
+                {codeText("splbl01", language ?? "")}: <input
                     type="number"
-                    min={0}
-                    max={species.duration}
-                    value={afterAparision}
-                    onChange={(e) => setAfterAparision(Number(e.target.value))}
+                    min={minAparision}
+                    max={maxAparision}
+                    value={aparision}
+                    onChange={(e) => setAparision(Number(e.target.value))}
                 />
             </label>
             <label>
                 {codeText("splbl02", language ?? "")}: <input
                     type="number"
-                    min={0}
+                    min={minDuration}
+                    max={maxDuration}
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}
                 />
             </label>
             <label>
-                {codeText("splbl02", language ?? "")}: <textarea
+                {codeText("splbl03", language ?? "")}: <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
             </label>
-            <button type="button" onClick={() => {
-                createDescendant?.(species, name, afterAparision, duration, description);
-                onClose?.();
-            }}>
-                {codeText("cdbtn00", language ?? "")}
-            </button>
+            {children}
+        </>
+    );
+};
+
+const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps) => {
+    const [name, setName] = useState('');
+    const [afterAparision, setAfterAparision] = useState(species.duration);
+    const [duration, setDuration] = useState(0);
+    const [description, setDescription] = useState('');
+
+    return(
+        <>
+            <Data
+                name={name}
+                setName={setName}
+                aparision={species.aparision + afterAparision}
+                setAparision={(n) => setAfterAparision(n - species.aparision)}
+                minAparision={species.aparision}
+                maxAparision={species.extinction()}
+                duration={duration}
+                setDuration={setDuration}
+                description={description}
+                setDescription={setDescription}
+                language={language}
+            >
+                <button type="button" onClick={() => {
+                    createDescendant?.(species, name, afterAparision, duration, description);
+                    onClose?.();
+                }}>
+                    {codeText("cdbtn00", language ?? "")}
+                </button>
+            </Data>
         </>
     );
 };
@@ -186,44 +227,29 @@ const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) =>
 
     return(
         <>
-            <label>
-                {codeText("splbl00", language ?? "")}: <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-            </label>
-            <label>
-                {codeText("calbl00", language ?? "")}: <input
-                    type="number"
-                    min={0}
-                    value={previousAparision}
-                    onChange={(e) => {
-                        setPreviousAparision(Number(e.target.value));
-                        setDuration(Math.max(Number(e.target.value), duration));
-                    }}
-                />
-            </label>
-            <label>
-                {codeText("splbl02", language ?? "")}: <input
-                    type="number"
-                    min={previousAparision}
-                    value={duration}
-                    onChange={(e) => setDuration(Number(e.target.value))}
-                />
-            </label>
-            <label>
-                {codeText("splbl02", language ?? "")}: <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-            </label>
-            <button type="button" onClick={() => {
-                createAncestor?.(species, name, previousAparision, duration, description);
-                onClose?.();
-            }}>
-                {codeText("cdbtn00", language ?? "")}
-            </button>
+            <Data
+                name={name}
+                setName={setName}
+                aparision={species.aparision - previousAparision}
+                setAparision={(n) => {
+                    setPreviousAparision(species.aparision - n);
+                    setDuration(Math.max(species.aparision - n, duration));
+                }}
+                maxAparision={species.aparision}
+                duration={duration}
+                setDuration={setDuration}
+                minDuration={previousAparision}
+                description={description}
+                setDescription={setDescription}
+                language={language}
+            >
+                <button type="button" onClick={() => {
+                    createAncestor?.(species, name, previousAparision, duration, description);
+                    onClose?.();
+                }}>
+                    {codeText("cdbtn00", language ?? "")}
+                </button>
+            </Data>
         </>
     );
 };
