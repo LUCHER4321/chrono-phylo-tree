@@ -5,8 +5,10 @@ nvlbl01;Presente;Present
 nvlbl02;Color;Color
 nvlbl03;Repositorio;Repository
 nvlbl04;Importar JSON;Import JSON
-nvbtn00;Ejemplo;Example
-nvbtn01;Descargar JSON;Download JSON
+nvbtn00;Crear especie vacía;Create empty species
+nvbtn00_0;Eliminar todas las especies;Delete all species
+nvbtn01;Ejemplo;Example
+nvbtn02;Descargar JSON;Download JSON
 nvlbl05;Idioma;Language
 splbl00;Nombre;Name
 splbl01;Aparición;Aparision
@@ -19,9 +21,7 @@ spbtn03;Crear ancestro;Create ancestor
 spbtn04;Quitar Ancestro;Remove Ancestor
 spbtn04_0;Quitar Ancestros;Remove Ancestors
 spbtn05;Cancelar;Cancel
-cdlbl00;Aparición posterior;After aparision
 cdbtn00;Crear;Create
-calbl00;Aparición anterior;Before aparision
 cnfrm00;¿Estás seguro de que deseas quitar al ancestro de {0}?;Are you sure you want to remove the {0}'s ancestor?
 cnfrm00_0;¿Estás seguro de que deseas quitar a los ancestros de {0}?;Are you sure you want to remove the {0}'s ancestors?
 cnfrm01;¿Estás seguro de que deseas eliminar la especie {0}?;Are you sure you want to remove the {0} species?
