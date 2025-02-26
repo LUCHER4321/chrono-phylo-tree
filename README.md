@@ -1,50 +1,499 @@
-# React + TypeScript + Vite
+# Phylo Tree Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+The **Phylo Tree** is a React-based application designed to visualize and manage phylogenetic trees. Phylogenetic trees are diagrams that represent evolutionary relationships among species, where each node represents a species, and branches represent the evolutionary lineage.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This documentation provides a detailed explanation of the core components and classes used in the application, including the `Species` class, which represents individual species in the tree, and the `PhTree` and `Menu` components, which handle the visualization and user interaction with the tree.
 
-## Expanding the ESLint configuration
+### Key Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Species Management**: The `Species` class allows you to define species, manage their ancestors and descendants, and calculate properties such as extinction time and duration.
 
-- Configure the top-level `parserOptions` property like this:
+- **Interactive Tree Visualization**: The `PhTree` component renders the phylogenetic tree as an SVG, allowing users to interact with the tree by toggling the visibility of species and accessing detailed information.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **User-Friendly Interface**: The `Menu` component provides a modal interface for editing species attributes, adding new descendants or ancestors, and deleting species.
+
+- **Localization Support**: The application supports multiple languages, making it accessible to a global audience.
+
+### How It Works
+
+1. **Species Representation**: Each species is represented by an instance of the `Species` class, which stores its name, appearance time, duration, ancestor, descendants, and other attributes.
+
+2. **Tree Rendering**: The `PhTree` component takes a common ancestor species as input and recursively renders the tree structure using SVG elements. It supports dynamic resizing, padding, and customizable stroke colors.
+
+3. **User Interaction**: Users can interact with the tree by clicking on species nodes to open the `Menu` component, where they can edit species data, add new species, or delete existing ones.
+
+4. **Data Persistence**: The application allows users to save the phylogenetic tree as a JSON file, ensuring that the data can be easily stored and reloaded.
+
+This documentation will guide you through the properties, methods, and usage of each component, helping you understand how to build, modify, and interact with phylogenetic trees using this application.
+
+## Species Class
+
+The `Species` class represents a species in a phylogenetic tree, with properties and methods to manage its ancestors, descendants, and other attributes.
+
+### Properties
+
+- **name**: `string`The name of the species.
+- **aparision**: `number`The time at which the species appears in the timeline.
+- **duration**: `number`The duration for which the species exists.
+- **ancestor**: `Species | undefined`The ancestor species from which this species descends. It is `undefined` if this species has no ancestor.
+- **descendants**: `Species[]`An array of species that descend from this species.
+- **description**: `string | undefined`An optional description of the species.
+- **display**: `boolean`
+  A flag indicating whether the species should be displayed. Default is `true`
+
+### Methods
+
+#### Constructor
+
+```typescript
+constructor(
+  name = '',
+  aparision = 0,
+  duration = 0,
+  ancestor?: Species,
+  descendants: Species[] = [],
+  description: string | undefined = undefined
+)
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Initializes a new instance of the `Species` class.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- **name**: The name of the species.
+- **aparision**: The time at which the species appears.
+- **duration**: The duration for which the species exists.
+- **ancestor**: The ancestor of the species.
+- **descendants**: An array of descendant species.
+- **description**: An optional description of the species.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+#### copy
+
+```typescript
+copy(): Species
 ```
+
+Creates a deep copy of the current species and its descendants.
+
+#### addDescendant
+
+```typescript
+addDescendant(
+  name = '',
+  afterAparision = 0,
+  duration = 0,
+  description: string | undefined = undefined,
+  copy = false
+): Species
+```
+
+Adds a descendant to the current species.
+
+- **name**: The name of the descendant.
+
+- **afterAparision**: The time after the ancestor's appearance when the descendant appears.
+
+- **duration**: The duration for which the descendant exists.
+
+- **description**: An optional description of the descendant.
+
+- **copy**: If `true`, the current species is copied before adding the descendant.
+
+#### removeDescendant
+
+```typescript
+removeDescendant(desc: Species): void
+```
+
+Removes a descendant from the current species.
+
+- **desc**: The descendant species to remove.
+
+#### addAncestor
+
+```typescript
+addAncestor(
+  name = '',
+  previousAparision = 0,
+  duration = 0,
+  description: string | undefined = undefined,
+  display = true,
+  copy = false
+): Species
+```
+
+Adds an ancestor to the current species.
+
+- **name**: The name of the ancestor.
+
+- **previousAparision**: The time before the current species' appearance when the ancestor appears.
+
+- **duration**: The duration for which the ancestor exists.
+
+- **description**: An optional description of the ancestor.
+
+- **display**: A flag indicating whether the ancestor should be displayed.
+
+- **copy**: If `true`, the current species is copied before adding the ancestor.
+
+#### extinction
+
+```typescript
+extinction(): number
+```
+
+Returns the time at which the species goes extinct.
+
+#### absoluteExtinction
+
+```typescript
+absoluteExtinction(): number
+```
+
+Returns the time at which the species goes extinct, considering its descendants.
+
+#### absoluteDuration
+
+```typescript
+absoluteDuration(): number
+```
+
+Returns the duration of the species, considering its descendants.
+
+#### firstAncestor
+
+```typescript
+firstAncestor(includeNotDisplay = false): Species
+```
+
+Returns the first ancestor of the species.
+
+- **includeNotDisplay**: If `true`, includes ancestors that are not displayed.
+
+#### cousinsExtinction
+
+```typescript
+cousinsExtinction(): number
+```
+
+Returns the extinction time of the species' cousins.
+
+#### allDescendants
+
+```typescript
+allDescendants(): Species[]
+```
+
+Returns an array of all descendants of the species, sorted by appearance time.
+
+#### toJSON
+
+```typescript
+toJSON(): any
+```
+
+Converts the species and its descendants to a JSON object.
+
+#### saveJSON
+
+```typescript
+saveJSON(filename: string | undefined = undefined): Promise<void>
+```
+
+Saves the species and its descendants as a JSON file.
+
+- **filename**: The name of the file to save. If not provided, the species name is used.
+
+#### fromJSON
+
+```typescript
+static fromJSON(json: any, ancestor?: Species): Species
+```
+
+Creates a species instance from a JSON object.
+
+- **json**: The JSON object representing the species.
+
+- **ancestor**: The ancestor species, if any.
+
+## PhTree Component
+
+The `PhTree` component is responsible for rendering a phylogenetic tree based on a given common ancestor species. It provides interactive features to manage and visualize the species tree.
+
+### Properties
+
+- **commonAncestor**: `Species`  
+  The root species of the phylogenetic tree.
+
+- **language**: `string` (optional)  
+  The language code for localization.
+
+- **width**: `number` (optional, default: `1000`)  
+  The width of the SVG canvas.
+
+- **height**: `number` (optional, default: `50`)  
+  The height of the SVG canvas.
+
+- **padding**: `number` (optional, default: `0`)  
+  The padding around the tree.
+
+- **stroke**: `string` (optional, default: `"grey"`)  
+  The stroke color for the tree lines.
+
+- **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)  
+  A function to format the display of time values.
+
+- **presentTime**: `number` (optional)  
+  The current time to highlight in the tree.
+
+- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)  
+  A callback function to save species data.
+
+- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)  
+  A callback function to create a new descendant species.
+
+- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)  
+  A callback function to create a new ancestor species.
+
+- **deleteAncestor**: `(s: Species) => void` (optional)  
+  A callback function to delete an ancestor species.
+
+- **deleteSpecies**: `(s: Species) => void` (optional)  
+  A callback function to delete a species.
+
+### State
+
+- **showMenu**: `boolean`  
+  Controls the visibility of the `Menu` component.
+
+- **species**: `Species | undefined`  
+  The currently selected species for which the menu is displayed.
+
+- **showDesc**: `Map<Species, boolean>`  
+  A map to track the visibility of descendants for each species.
+
+## Methods
+
+- **toggleShowMenu**: `(species: Species) => void`  
+  Toggles the visibility of the menu for a given species.
+
+- **toggleShowDesc**: `(species: Species) => void`  
+  Toggles the visibility of descendants for a given species, if `false`, its `descendants` won't be displayed and the `line` will extend until its `absoluteExtinction()`.
+
+### Rendering
+
+The component renders an SVG element that contains the phylogenetic tree. It uses the `DrawTree` component to recursively draw the tree structure. The `Menu` component is conditionally rendered based on the `showMenu` state.
+
+## Menu Component
+
+The `Menu` component provides a user interface to edit and manage species data. It allows users to modify species attributes, add descendants or ancestors, and delete species.
+
+### Properties
+
+- **species**: `Species`  
+  The species for which the menu is displayed.
+
+- **language**: `string` (optional)  
+  The language code for localization.
+
+- **open**: `boolean` (optional)  
+  Controls the visibility of the menu.
+
+- **onClose**: `() => void` (optional)  
+  A callback function to close the menu.
+
+- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)  
+  A callback function to save species data.
+
+- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)  
+  A callback function to create a new descendant species.
+
+- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)  
+  A callback function to create a new ancestor species.
+
+- **deleteAncestor**: `() => void` (optional)  
+  A callback function to delete an ancestor species.
+
+- **deleteSpecies**: `() => void` (optional)  
+  A callback function to delete a species.
+
+### State
+
+- **name**: `string`  
+  The name of the species.
+
+- **aparision**: `number`  
+  The appearance time of the species.
+
+- **duration**: `number`  
+  The duration of the species.
+
+- **description**: `string | undefined`  
+  The description of the species.
+
+- **addDescendant**: `boolean`  
+  Controls the visibility of the descendant addition form.
+
+- **addAncestor**: `boolean`  
+  Controls the visibility of the ancestor addition form.
+
+### Methods
+
+- **toggleAddDescendant**: `() => void`  
+  Toggles the visibility of the descendant addition form.
+
+- **toggleAddAncestor**: `() => void`  
+  Toggles the visibility of the ancestor addition form.
+
+- **uniqueDescendant**: `(s: Species) => boolean`  
+  Checks if the species is the only descendant of its ancestor.
+
+### Rendering
+
+The component renders a modal form with fields to edit species attributes. It conditionally renders forms to add descendants or ancestors based on the state. The form includes buttons to save changes, delete species, and close the menu.
+
+## Translation Functions
+
+The application supports localization through a CSV file (`translate.csv`) that contains translation strings for different languages. The `translate.tsx` file provides functions to fetch and use these translations dynamically.
+
+### CSV File Structure (`translate.csv`)
+
+The `translate.csv` file is structured as follows:
+
+- **Columns**:
+
+  - `code`: A unique identifier for each translation string.
+
+  - `spanish`: The translation in Spanish.
+
+  - `english`: The translation in English.
+
+- **Rows**:
+
+  - Each row represents a translation string, identified by its `code`.
+
+  - The first row with the `code` value `"lan"` contains the language names (e.g., `"Español"` for Spanish, `"English"` for English).
+
+#### Example CSV Content
+
+```csv
+code;spanish;english
+lan;Español;English
+nvlbl00;Escala;Scale
+nvlbl01;Presente;Present
+nvlbl02;Color;Color
+nvlbl03;Repositorio;Repository
+nvlbl04;Importar JSON;Import JSON
+nvbtn00;Crear especie vacía;Create empty species
+nvbtn00_0;Eliminar todas las especies;Delete all species
+nvbtn01;Ejemplo;Example
+nvbtn02;Descargar JSON;Download JSON
+nvlbl05;Idioma;Language
+splbl00;Nombre;Name
+splbl01;Aparición;Aparision
+splbl02;Duración;Duration
+splbl03;Descripción;Description
+spbtn00;Guardar;Save
+spbtn01;Eliminar;Delete
+spbtn02;Crear descendiente;Create descendant
+spbtn03;Crear ancestro;Create ancestor
+spbtn04;Quitar Ancestro;Remove Ancestor
+spbtn04_0;Quitar Ancestros;Remove Ancestors
+spbtn05;Cancelar;Cancel
+cdbtn00;Crear;Create
+cnfrm00;¿Estás seguro de que deseas quitar al ancestro de {0}?;Are you sure you want to remove the {0}'s ancestor?
+cnfrm00_0;¿Estás seguro de que deseas quitar a los ancestros de {0}?;Are you sure you want to remove the {0}'s ancestors?
+cnfrm01;¿Estás seguro de que deseas eliminar la especie {0}?;Are you sure you want to remove the {0} species?
+cnfrm01_0;¿Estás seguro de que deseas eliminar la especie {0} junto a sus descendientes?;Are you sure you want to remove the {0} species along with its descendants?
+```
+
+### How It Works
+
+1. **Translation Lookup**:
+
+- The `codeText` and `codeTextAlt` functions in `translate.tsx` fetch the translation data from the CSV file.
+
+- They search for the row with the matching `code` and retrieve the translation for the specified language.
+
+- If the translation contains placeholders (e.g., `{0}`), they are replaced with the provided arguments.
+
+2. **Language Options**:
+
+- The `getLanguageOptions` function retrieves the available languages from the CSV file by looking for the row with the `code` value `"lan"`.
+
+- It returns a map of language codes (e.g., `"spanish"`, `"english"`) to their corresponding language names (e.g., `"Español"`, `"English"`).
+
+3. **Dynamic Translation**:
+
+- The application uses the `codeText` function to dynamically translate UI elements based on the selected language.
+
+- For example, buttons, labels, and confirmation messages are translated using the `code` values defined in the CSV file.
+
+### Example Usage
+
+#### Fetching a Translated String
+
+```typescript
+const greeting = codeText("greeting", "spanish", "Juan"); //Example row: greeting; Hola, {0}; Hello, {0}
+console.log(greeting); // Output: "Hola, Juan"
+```
+
+#### Fetching Language Options
+
+```typescript
+const languageOptions = getLanguageOptions();
+console.log(languageOptions.get("spanish")); // Output: "Español"
+```
+
+### Adding New Languages
+
+To add support for a new language (e.g., French):
+
+1. Add a new column to the CSV file (e.g., `french`).
+
+2. Populate the new column with translations for each `code`.
+
+3. Update the `getLanguageOptions` function to include the new language in the language options map.
+
+#### Example CSV Update for French
+
+```csv
+code;spanish;english;french
+lan;Español;English;Français
+nvlbl00;Escala;Scale;Échelle
+nvlbl01;Presente;Present;Présent
+...
+```
+
+### Supported Translation Codes
+
+Below is a list of some of the translation codes used in the application:
+
+| Code        | Spanish                                                                        | English                                                                     |
+| ----------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `nvlbl00`   | Escala                                                                         | Scale                                                                       |
+| `nvlbl01`   | Presente                                                                       | Present                                                                     |
+| `nvlbl02`   | Color                                                                          | Color                                                                       |
+| `nvlbl03`   | Repositorio                                                                    | Repository                                                                  |
+| `nvlbl04`   | Importar JSON                                                                  | Import JSON                                                                 |
+| `nvbtn00`   | Crear especie vacía                                                            | Create empty species                                                        |
+| `nvbtn00_0` | Eliminar todas las especies                                                    | Delete all species                                                          |
+| `nvbtn01`   | Ejemplo                                                                        | Example                                                                     |
+| `nvbtn02`   | Descargar JSON                                                                 | Download JSON                                                               |
+| `nvlbl05`   | Idioma                                                                         | Language                                                                    |
+| `splbl00`   | Nombre                                                                         | Name                                                                        |
+| `splbl01`   | Aparición                                                                      | Aparision                                                                   |
+| `splbl02`   | Duración                                                                       | Duration                                                                    |
+| `splbl03`   | Descripción                                                                    | Description                                                                 |
+| `spbtn00`   | Guardar                                                                        | Save                                                                        |
+| `spbtn01`   | Eliminar                                                                       | Delete                                                                      |
+| `spbtn02`   | Crear descendiente                                                             | Create descendant                                                           |
+| `spbtn03`   | Crear ancestro                                                                 | Create ancestor                                                             |
+| `spbtn04`   | Quitar Ancestro                                                                | Remove Ancestor                                                             |
+| `spbtn04_0` | Quitar Ancestros                                                               | Remove Ancestors                                                            |
+| `spbtn05`   | Cancelar                                                                       | Cancel                                                                      |
+| `cdbtn00`   | Crear                                                                          | Create                                                                      |
+| `cnfrm00`   | ¿Estás seguro de que deseas quitar al ancestro de {0}?                         | Are you sure you want to remove the {0}'s ancestor?                         |
+| `cnfrm00_0` | ¿Estás seguro de que deseas quitar a los ancestros de {0}?                     | Are you sure you want to remove the {0}'s ancestors?                        |
+| `cnfrm01`   | ¿Estás seguro de que deseas eliminar la especie {0}?                           | Are you sure you want to remove the {0} species?                            |
+| `cnfrm01_0` | ¿Estás seguro de que deseas eliminar la especie {0} junto a sus descendientes? | Are you sure you want to remove the {0} species along with its descendants? |
