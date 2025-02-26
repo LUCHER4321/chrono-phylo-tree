@@ -37,7 +37,7 @@ interface PhtreeProps {
 }
 
 export const PhTree = (
-    { commonAncestor, language, width = 1000, height = 1000, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, saveSpecies, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: PhtreeProps
+    { commonAncestor, language, width = 1000, height = 50, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, saveSpecies, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: PhtreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
