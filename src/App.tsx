@@ -15,7 +15,7 @@ function App() {
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
   const [language, setLanguage] = useState("spanish");
   const languages = getLanguageOptions();
-  const minScale = Number.MIN_VALUE;
+  const minScale = 0.000000000001;
   //*
   const root = new Species("Hominoidea", -25e6, 6e6);
   root.addDescendant("Gibón", 6e6, 19e6);
@@ -30,6 +30,23 @@ function App() {
   child2.addDescendant("Humano", 2e6, 6e6);
   //*/
   const showScaleNumber = false;
+
+  const hexToRGB = (hex: string) => {
+    // Eliminar el '#' si está presente
+    hex = hex.replace(/^#/, '');
+  
+    // Convertir cada par de caracteres a un número decimal
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+  
+    return { r, g, b };
+  };
+
+  const hexToRGBA = (hex: string, a: number) => {
+    const {r, g, b} = hexToRGB(hex);
+    return `rgba(${r}, ${g}, ${b}, ${a})`
+  };
 
   const handleFileChange = (file: File | undefined): Promise<any> => {
     return new Promise((resolve, reject) => {
@@ -175,7 +192,7 @@ function App() {
 
   return (
     <>
-      <nav style={{display: "flex", flexDirection: "row", width: "auto", position: species ? "fixed" : "static", backgroundColor: "rgba(127, 127, 127, 0.5)", padding: 10}}>
+      <nav style={{display: "flex", flexDirection: "row", width: "auto", position: species ? "fixed" : "static", backgroundColor: hexToRGBA(lineColor, 0.5), padding: 10}}>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label>
             {codeText("nvlbl00", language)}: <input
@@ -269,7 +286,7 @@ function App() {
         commonAncestor={species}
         language={language}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale}
-        height={50 * (species?.allDescendants().length ?? 0)}
+        height={50}
         stroke={lineColor}
         format={scientificNotation}
         presentTime={presentTimeBoolean ? presentTime : undefined}
