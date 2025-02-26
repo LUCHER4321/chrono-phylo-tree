@@ -8,6 +8,13 @@ interface MenuProps {
     language?: string;
     open?: boolean;
     onClose?: () => void;
+    saveSpecies?: (
+        s: Species,
+        name: string,
+        aparision: number,
+        duration: number,
+        description?: string
+    ) => void;
     createDescendant?: (
         s: Species,
         name: string,
@@ -26,7 +33,7 @@ interface MenuProps {
     deleteSpecies?: () => void;
 }
 
-export const Menu = ({species, language, open, onClose, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
+export const Menu = ({species, language, open, onClose, saveSpecies, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
     const [name, setName] = useState(species.name);
     const [aparision, setAparision] = useState(species.aparision);
     const [duration, setDuration] = useState(species.duration);
@@ -68,10 +75,7 @@ export const Menu = ({species, language, open, onClose, createDescendant, create
                     language={language}
                 >
                     <button onClick={() => {
-                        species.name = name;
-                        species.aparision = aparision;
-                        species.duration = duration;
-                        species.description = description;
+                        saveSpecies?.(species, name, aparision, duration, description);
                         onClose?.();
                     }}>
                         {codeText("spbtn00", language ?? "")}
