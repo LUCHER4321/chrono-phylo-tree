@@ -6,6 +6,7 @@ export class Species {
   descendants: Species[] = [];
   description?: string = undefined;
   display = true;
+  private onPosition = true;
 
   constructor(
     name = '',
@@ -27,6 +28,15 @@ export class Species {
     const fa = this.firstAncestor();
     const n = fa.allDescendants().indexOf(this)
     const sp = Species.fromJSON(fa.toJSON());
+    sp.onPosition = fa.onPosition;
+    
+    const invertPositon = (s: Species) => {
+      for(const d of s.descendants){
+        d.onPosition = !s.onPosition
+        invertPositon(d);
+      }
+    };
+
     return sp.allDescendants()[n];
   }
 
@@ -37,6 +47,9 @@ export class Species {
     description: string | undefined = undefined,
     copy = false
   ) {
+    if(afterAparision < 0 || afterAparision > this.duration) {
+      throw new Error(`The aparision of the descendant must be between the aparision (${this.aparision}) and the extinction (${this.extinction()}) of the ancestor`);
+    }
     const sp = copy ? this.copy() : this;
     const desc = new Species(
       name,
@@ -46,6 +59,7 @@ export class Species {
       [],
       description
     );
+    desc.onPosition = !this.onPosition;
     sp.descendants.push(desc);
     return copy ? sp : desc;
   }
@@ -62,6 +76,12 @@ export class Species {
     display = true,
     copy = false
   ) {
+    if(previousAparision < 0) {
+      throw new Error(`The aparision of the ancestor must be before or equal the aparision (${this.aparision}) of the descendant`);
+    }
+    if(duration < previousAparision){
+      throw new Error(`The extiction of the ancestor must be after or equal the aparision (${this.aparision}) of the descendant`);
+    }
     const sp = copy ? this.copy() : this;
     const anc = new Species(
       name,
@@ -72,6 +92,7 @@ export class Species {
       description
     );
     anc.display = display;
+    anc.onPosition = !this.onPosition;
     sp.ancestor = anc;
     return copy ? sp : anc;
   }
@@ -103,7 +124,13 @@ export class Species {
     if (desc.length === 0) {
       return [this];
     }
-    return [this as Species].concat(desc.flatMap((d) => d.allDescendants()));
+    const limitDesc = desc.filter(desc => desc.aparision >= this.extinction());
+    const prevDesc = desc.filter(desc => limitDesc.indexOf(desc) === -1);
+    const halfFunc = this.onPosition ? Math.ceil : Math.floor;
+    const half = halfFunc(limitDesc.length / 2);
+    const lim0 = limitDesc.slice(0, half);
+    const lim1 = limitDesc.slice(half);
+    return lim0.flatMap((d) => d.allDescendants()).concat([this]).concat(lim1.flatMap((d) => d.allDescendants())).concat(prevDesc.flatMap((d) => d.allDescendants()));
   }
 
   toJSON(): any {
