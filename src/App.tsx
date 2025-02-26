@@ -15,6 +15,7 @@ function App() {
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
   const [language, setLanguage] = useState("spanish");
   const languages = getLanguageOptions();
+  const minScale = Number.MIN_VALUE;
   //*
   const root = new Species("Hominoidea", -25e6, 6e6);
   root.addDescendant("Gibón", 6e6, 19e6);
@@ -82,7 +83,7 @@ function App() {
         break;
       }
     }
-    return mantText + "e" + exp;
+    return mantText + ((abs >= 1 && abs < 10) ? "" : ("e" + exp));
   };
 
   const createDescendant = (s: Species, name: string, afterAparision: number, duration: number, description: string) => {
@@ -150,6 +151,18 @@ function App() {
     return species ? Math.min(species.absoluteDuration(), presentTimeBoolean ? n - species.aparision : species.absoluteDuration()) : 1
   }
 
+  const createEmptySpecies = async () => {
+    setSpecies(new Species(await codeTextAlt("nvbtn01", language), 0, 1));
+    setScale(1);
+    setPresentTime(1);
+  };
+
+  const deleteAllSpecies = async () => {
+    if(!species) return;
+    if(!confirm(await codeTextAlt("cnfrm01" + (species.descendants.length > 0 ? "_0" : ""), language, species.name))) return;
+    setSpecies(undefined);
+  };
+
   return (
     <>
       <nav style={{display: "flex", flexDirection: "row", width: "auto", position: species ? "fixed" : "static", backgroundColor: "rgba(127, 127, 127, 0.5)", padding: 10}}>
@@ -157,10 +170,11 @@ function App() {
           <label>
             {codeText("nvlbl00", language)}: <input
               type="range"
-              min={1}
+              min={minScale}
               max={maxScale(presentTime)}
-              value={maxScale(presentTime) - scale + 1}
-              onChange={(e) => setScale(maxScale(presentTime) - Number(e.target.value) + 1)}
+              step={minScale}
+              value={maxScale(presentTime) - scale + minScale}
+              onChange={(e) => setScale(maxScale(presentTime) - Number(e.target.value) + minScale)}
             /> {showScaleNumber && <input
               type="number"
               min={1}
@@ -214,12 +228,18 @@ function App() {
             />
           </label>
           <div style={{display: "flex", flexDirection: "row"}}>
+            <button type="button" onClick={async () => species ? deleteAllSpecies() : await createEmptySpecies()}>
+              {codeText("nvbtn00" + (species ? "_0" : ""), language)}
+            </button>
+            <div style={{display: species ? "none" : "block"}}>
+            </div>
+            <div style={{width: 10}}/>
             <button type="button" onClick={showExample}>
-              {codeText("nvbtn00", language)}
+              {codeText("nvbtn01", language)}
             </button>
             <div style={{width: 10}}/>
             <button onClick={async () => await species?.saveJSON()}>
-              {codeText("nvbtn01", language)}
+              {codeText("nvbtn02", language)}
             </button>
           </div>
         </div>
