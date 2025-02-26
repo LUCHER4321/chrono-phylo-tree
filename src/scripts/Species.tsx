@@ -21,7 +21,7 @@ export class Species {
     this.duration = duration;
     this.ancestor = ancestor;
     this.descendants = descendants;
-    this.description = description;
+    this.description = description === "" ? undefined : description;
   }
 
   copy() : Species {
