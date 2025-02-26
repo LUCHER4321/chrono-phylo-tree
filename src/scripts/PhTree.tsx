@@ -62,12 +62,12 @@ export const PhTree = (
 
     return (
         <>
-            <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.aparision) / commonAncestor.absoluteDuration() : 1)} height={height * (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.aparision < presentTime).length / commonAncestor.allDescendants().length : 1)}>
+            <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.aparision) / commonAncestor.absoluteDuration() : 1)} height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.aparision < presentTime).length : commonAncestor.allDescendants().length))}>
                 <DrawTree
                     species={commonAncestor}
                     y={-1}
                     scaleX={width / (commonAncestor.absoluteDuration())}
-                    scaleY={height / (commonAncestor.allDescendants().length - 1)}
+                    scaleY={height}
                     padding={padding}
                     stroke={stroke}
                     format={format}
