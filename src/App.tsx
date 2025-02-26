@@ -86,6 +86,16 @@ function App() {
     return mantText + ((abs >= 1 && abs < 10) ? "" : ("e" + exp));
   };
 
+  const saveSpecies = (s: Species, name: string, aparision: number, duration: number, description?: string) => {
+    const newSpecies = s.copy();
+    setSpecies(undefined);
+    newSpecies.name = name;
+    newSpecies.aparision = aparision;
+    newSpecies.duration = duration;
+    newSpecies.description = description === "" ? undefined : description;
+    setSpecies(newSpecies.firstAncestor());
+  };
+
   const createDescendant = (s: Species, name: string, afterAparision: number, duration: number, description: string) => {
     const newSpecies = s.addDescendant(name, afterAparision, duration, description, true).firstAncestor();
     //*
@@ -264,6 +274,7 @@ function App() {
         format={scientificNotation}
         presentTime={presentTimeBoolean ? presentTime : undefined}
         padding={7.5}
+        saveSpecies={saveSpecies}
         createDescendant={createDescendant}
         createAncestor={createAncestor}
         deleteAncestor={deleteAncestor}
