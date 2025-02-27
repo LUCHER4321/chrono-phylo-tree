@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
 import './App.css'
@@ -15,7 +15,14 @@ function App() {
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
   const [language, setLanguage] = useState("spanish");
   const languages = getLanguageOptions();
-  const minScale = 0.000000000001;
+  const minScale = 1e-12;
+
+  useEffect(() => {
+    const title = document.getElementById("title");
+    if(title) {
+      codeTextAlt("ttl", language).then((ttl) => title.textContent = ttl);
+    }
+  }, [language]);
   //*
   const root = new Species("Hominoidea", -25e6, 6e6);
   root.addDescendant("Hilobates", 6e6, 19e6);
