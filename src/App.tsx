@@ -6,6 +6,7 @@ import { PhTree } from './scripts/PhTree'
 import { Species } from './scripts/Species'
 import { between } from './scripts/between';
 import { codeText, codeTextAlt, getLanguageOptions } from './scripts/translate';
+import { isLargeScreen } from './scripts/isLargeScreen';
 
 function App() {
   const [scale, setScale] = useState(1);
@@ -14,6 +15,7 @@ function App() {
   const [presentTime, setPresentTime] = useState<number>(1);
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
   const [language, setLanguage] = useState("spanish");
+  const largeScreen = isLargeScreen();
   const languages = getLanguageOptions();
   const minScale = 1e-12;
 
@@ -197,9 +199,37 @@ function App() {
     setSpecies(undefined);
   };
 
+  const LanguajeSelector = ({}) => {
+    return (
+      <label style={{textAlign: "start"}}>
+      {codeText("nvlbl05", language)}: <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        {Array.from(languages).map(([key, value]) => (
+          <option value={key}>
+            {value}
+          </option>
+        ))}
+      </select>
+    </label>
+    );
+  };
+
+  console.log("Width:", window.screen.width);
+  console.log("Max Width:", window.screen.width - 64);
+
   return (
     <>
-      <nav style={{display: "flex", flexDirection: "row", width: "auto", position: species ? "fixed" : "static", backgroundColor: hexToRGBA(lineColor, 0.5), padding: 10}}>
+      <nav style={{
+        display: "flex",
+        flexDirection: largeScreen ? "row" : "column",
+        width: "auto",
+        position: species ? "fixed" : "static",
+        backgroundColor: hexToRGBA(lineColor, 0.5),
+        padding: 10,
+        maxWidth: window.screen.width - 64,
+        boxSizing: "border-box",
+        transform: species ? "translateZ(0)" : "none"
+        }}>
+        {!largeScreen && <LanguajeSelector/>}
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label>
             {codeText("nvlbl00", language)}: <input
@@ -238,7 +268,7 @@ function App() {
               onChange={(e) => setPresentTimeBoolean(e.target.checked)}
             />
           </label>
-          <div style={{height: 10}}/>
+          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
           <label>
           {codeText("nvlbl02", language)}: <input
               type="color"
@@ -247,7 +277,7 @@ function App() {
             />
           </label>
         </div>
-        <div style={{width: 10}}/>
+        <div style={largeScreen ? {width: 10} : {height: 10}}/>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
           {codeText("nvlbl03", language)}: <a href="https://github.com/LUCHER4321/Phylo_Tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
@@ -261,38 +291,30 @@ function App() {
               onChange={async (e) => await setFromJson(e.target.files?.[0])}
             />
           </label>
-          <div style={{display: "flex", flexDirection: "row"}}>
+          <div style={{display: "flex", flexDirection: largeScreen ? "row" : "column"}}>
             <button type="button" onClick={async () => species ? deleteAllSpecies() : await createEmptySpecies()}>
               {codeText("nvbtn00" + (species ? "_0" : ""), language)}
             </button>
             <div style={{display: species ? "none" : "block"}}>
             </div>
-            <div style={{width: 10}}/>
+            <div style={largeScreen ? {width: 10} : {height: 10}}/>
             <button type="button" onClick={showExample}>
               {codeText("nvbtn01", language)}
             </button>
-            <div style={{width: 10}}/>
+            <div style={largeScreen ? {width: 10} : {height: 10}}/>
             <button onClick={async () => await species?.saveJSON()} disabled={!species}>
               {codeText("nvbtn02", language)}
             </button>
           </div>
         </div>
-        <div style={{width: 10}}/>
-        <label>
-          {codeText("nvlbl05", language)}: <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            {Array.from(languages).map(([key, value]) => (
-              <option value={key}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div style={largeScreen ? {width: 10} : {height: 10}}/>
+        {largeScreen && <LanguajeSelector/>}
       </nav>
-      {species && <div style={{height: 165}}/>}
+      {species && <div style={{height: largeScreen ? 165 : 400}}/>}
       {species && <PhTree
         commonAncestor={species}
         language={language}
-        width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale}
+        width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
         height={50}
         stroke={lineColor}
         format={scientificNotation}
