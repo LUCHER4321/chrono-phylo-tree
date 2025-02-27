@@ -1,8 +1,8 @@
-# PhyloTree Documentation
+# ChronoPhyloTree Documentation
 
 ## Overview
 
-The **Phylo Tree** is a React-based application designed to visualize and manage phylogenetic trees. Phylogenetic trees are diagrams that represent evolutionary relationships among species, where each node represents a species, and branches represent the evolutionary lineage.
+The **ChronoPhyloTree** is a JavaScript/TypeScript library designed to visualize and manage phylogenetic trees. Phylogenetic trees are diagrams that represent evolutionary relationships among species, where each node represents a species, and branches represent the evolutionary lineage, it can also be used in speculative evolution projects.
 
 This documentation provides a detailed explanation of the core components and classes used in the application, including the `Species` class, which represents individual species in the tree, and the `PhTree` and `Menu` components, which handle the visualization and user interaction with the tree.
 
@@ -24,16 +24,16 @@ This documentation will guide you through the properties, methods, and usage of 
 
 ## Installation
 
-You can install PhyloTree via npm:
+You can install ChronoPhyloTree via npm:
 
 ```bash
-npm install PhyloTree
+npm install ChronoPhyloTree
 ```
 
 or using yarn:
 
 ```bash
-npm install PhyloTree
+npm install ChronoPhyloTree
 ```
 
 ## Usage
@@ -43,7 +43,7 @@ npm install PhyloTree
 In a JavaScript or TypeScript project, import the necessary modules:
 
 ```typescript
-import { Species, PhTree } from "PhyloTree";
+import { Species, PhTree } from "ChronoPhyloTree";
 ```
 
 ## Creating a Phylogenetic Tree
@@ -66,11 +66,11 @@ child2.addDescendant("Homo", 2e6, 6e6);
 
 ## Rendering the Tree in a React Component
 
-If using PhyloTree in a React project, you can render the tree as follows:
+If using ChronoPhyloTree in a React project, you can render the tree as follows:
 
 ```typescript
 import React from "react";
-import { Species, PhTree } from "PhyloTree";
+import { Species, PhTree } from "ChronoPhyloTree";
 
 const root = new Species("Hominoidea", -25e6, 6e6);
 root.addDescendant("Hilobates", 6e6, 19e6);
