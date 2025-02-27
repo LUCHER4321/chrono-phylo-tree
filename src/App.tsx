@@ -18,16 +18,16 @@ function App() {
   const minScale = 0.000000000001;
   //*
   const root = new Species("Hominoidea", -25e6, 6e6);
-  root.addDescendant("Gibón", 6e6, 19e6);
+  root.addDescendant("Hilobates", 6e6, 19e6);
   const child0 = root.addDescendant("Hominidae", 6e6, 6e6);
-  child0.addDescendant("Orangután", 6e6, 13e6);
+  child0.addDescendant("Pongo", 6e6, 13e6);
   const child1 = child0.addDescendant("Homininae", 6e6, 5e6);
-  child1.addDescendant("Gorila", 5e6, 8e6);
+  child1.addDescendant("Gorilla", 5e6, 8e6);
   const child2 = child1.addDescendant("Hominini", 5e6, 2e6);
   const child3 = child2.addDescendant("Pan", 2e6, 3e6);
-  child3.addDescendant("Chimpancé", 3e6, 3e6);
-  child3.addDescendant("Bonobo", 3e6, 3e6);
-  child2.addDescendant("Humano", 2e6, 6e6);
+  child3.addDescendant("Pan Troglodytes", 3e6, 3e6);
+  child3.addDescendant("Pan Paniscus", 3e6, 3e6);
+  child2.addDescendant("Homo", 2e6, 6e6);
   //*/
   const showScaleNumber = false;
 
