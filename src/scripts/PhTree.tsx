@@ -14,21 +14,21 @@ interface PhtreeProps {
     saveSpecies?: (
         s: Species,
         name: string,
-        aparision: number,
+        apparition: number,
         duration: number,
         description?: string
     ) => void;
     createDescendant?: (
         s: Species,
         name: string,
-        afterAparision: number,
+        afterApparition: number,
         duration: number,
         description: string
     ) => void;
     createAncestor?: (
         s: Species,
         name: string,
-        previousAparision: number,
+        previousApparition: number,
         duration: number,
         description: string
     ) => void;
@@ -62,7 +62,7 @@ export const PhTree = (
 
     return (
         <>
-            <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.aparision) / commonAncestor.absoluteDuration() : 1)} height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.aparision < presentTime).length : commonAncestor.allDescendants().length))}>
+            <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.apparition) / commonAncestor.absoluteDuration() : 1)} height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime).length : commonAncestor.allDescendants().length))}>
                 <DrawTree
                     species={commonAncestor}
                     y={-1}
@@ -110,13 +110,13 @@ interface DrawTreeProps {
 const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", format = (n: number) => n.toString(), presentTime = undefined, toggleShowMenu, showDesc, changeShowDesc}: DrawTreeProps) => {
     const isPresentTimeDefined = presentTime !== undefined;
     const fa = species.firstAncestor();
-    const all = fa.allDescendants().filter(desc => isPresentTimeDefined ? desc.aparision < presentTime : true);
+    const all = fa.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const spIndex = all.indexOf(species);
-    const startX = (species.aparision - fa.aparision) * scaleX;
-    const endX = startX + Math.min(showDesc.get(species) ? species.duration : species.absoluteDuration(), isPresentTimeDefined ? presentTime - species.aparision : species.absoluteDuration()) * scaleX;
+    const startX = (species.apparition - fa.apparition) * scaleX;
+    const endX = startX + Math.min(showDesc.get(species) ? species.duration : species.absoluteDuration(), isPresentTimeDefined ? presentTime - species.apparition : species.absoluteDuration()) * scaleX;
     const endY = spIndex * scaleY;
-    const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.aparision < presentTime : true);
-    const branchX = descendants.length > 0 ? startX + (Math.min(...descendants.map(desc => desc.aparision)) - species.aparision) * scaleX : endX;
+    const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
+    const branchX = descendants.length > 0 ? startX + (Math.min(...descendants.map(desc => desc.apparition)) - species.apparition) * scaleX : endX;
     
     return (
         <g key={spIndex}>
@@ -181,11 +181,11 @@ interface HorizontalLineProps {
 
 const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString(), presentTime, toggleShowMenu}: HorizontalLineProps) => {
     const isPresentTimeDefined = presentTime !== undefined;
-    const all = species.firstAncestor().allDescendants().filter(desc => isPresentTimeDefined ? desc.aparision < presentTime : true);
+    const all = species.firstAncestor().allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const index = (s: Species) => all.indexOf(s);
     const orientation = species.ancestor ? (index(species) > index(species.ancestor) ? -3 : 1) : 1;
-    const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.aparision < presentTime : true);
-    const lastOne = descendants.filter(desc => desc.aparision === species.extinction()).length === 0;
+    const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
+    const lastOne = descendants.filter(desc => desc.apparition === species.extinction()).length === 0;
     const extinction = format(Math.min(showDesc ? species.extinction() : species.absoluteExtinction(), isPresentTimeDefined ? presentTime : species.absoluteExtinction()));
     return (
         <g>
@@ -204,7 +204,7 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
             >
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                     <div>
-                        {format(species.aparision)}
+                        {format(species.apparition)}
                     </div>
                     <button style={{padding: 2.5}} onClick={() => toggleShowMenu(species)}>
                         {species.name}

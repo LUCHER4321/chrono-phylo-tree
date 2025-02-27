@@ -103,18 +103,18 @@ function App() {
     return mantText + ((abs >= 1 && abs < 10) ? "" : ("e" + exp));
   };
 
-  const saveSpecies = (s: Species, name: string, aparision: number, duration: number, description?: string) => {
+  const saveSpecies = (s: Species, name: string, apparition: number, duration: number, description?: string) => {
     const newSpecies = s.copy();
     setSpecies(undefined);
     newSpecies.name = name;
-    newSpecies.aparision = aparision;
+    newSpecies.apparition = apparition;
     newSpecies.duration = duration;
     newSpecies.description = description === "" ? undefined : description;
     setSpecies(newSpecies.firstAncestor());
   };
 
-  const createDescendant = (s: Species, name: string, afterAparision: number, duration: number, description: string) => {
-    const newSpecies = s.addDescendant(name, afterAparision, duration, description, true).firstAncestor();
+  const createDescendant = (s: Species, name: string, afterApparition: number, duration: number, description: string) => {
+    const newSpecies = s.addDescendant(name, afterApparition, duration, description, true).firstAncestor();
     //*
     setSpecies(undefined);
     if(presentTimeBoolean){
@@ -125,8 +125,8 @@ function App() {
     //*/
   };
 
-  const createAncestor = (s: Species, name: string, previousAparision: number, duration: number, description: string) => {
-    const newSpecies = s.addAncestor(name, previousAparision, duration, description, true, true).firstAncestor();
+  const createAncestor = (s: Species, name: string, previousApparition: number, duration: number, description: string) => {
+    const newSpecies = s.addAncestor(name, previousApparition, duration, description, true, true).firstAncestor();
     //*
     setSpecies(undefined);
     if(presentTimeBoolean){
@@ -175,7 +175,7 @@ function App() {
   };
 
   const maxScale = (n: number) => {
-    return species ? Math.min(species.absoluteDuration(), presentTimeBoolean ? n - species.aparision : species.absoluteDuration()) : 1
+    return species ? Math.min(species.absoluteDuration(), presentTimeBoolean ? n - species.apparition : species.absoluteDuration()) : 1
   }
 
   const createEmptySpecies = async () => {
@@ -213,14 +213,14 @@ function App() {
           <label>
           {codeText("nvlbl01", language)}: <input
               type="range"
-              min={species ? species.aparision : 0}
+              min={species ? species.apparition : 0}
               max={species ? species.absoluteExtinction() : 1}
               value={presentTime}
               onChange={(e) => changePresentTime(Number(e.target.value))}
               disabled={!presentTimeBoolean}
             /> <input
               type="number"
-              min={species ? species.aparision : 0}
+              min={species ? species.apparition : 0}
               max={species ? species.absoluteExtinction() : 1}
               value={presentTime}
               onChange={(e) => changePresentTime(Number(e.target.value))}

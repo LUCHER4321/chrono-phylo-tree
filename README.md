@@ -29,7 +29,7 @@ The `Species` class represents a species in a phylogenetic tree, with properties
 ### Properties
 
 - **name**: `string`The name of the species.
-- **aparision**: `number`The time at which the species appears in the timeline.
+- **apparition**: `number`The time at which the species appears in the timeline.
 - **duration**: `number`The duration for which the species exists.
 - **ancestor**: `Species | undefined`The ancestor species from which this species descends. It is `undefined` if this species has no ancestor.
 - **descendants**: `Species[]`An array of species that descend from this species.
@@ -44,7 +44,7 @@ The `Species` class represents a species in a phylogenetic tree, with properties
 ```typescript
 constructor(
   name = '',
-  aparision = 0,
+  apparition = 0,
   duration = 0,
   ancestor?: Species,
   descendants: Species[] = [],
@@ -55,7 +55,7 @@ constructor(
 Initializes a new instance of the `Species` class.
 
 - **name**: The name of the species.
-- **aparision**: The time at which the species appears.
+- **apparition**: The time at which the species appears.
 - **duration**: The duration for which the species exists.
 - **ancestor**: The ancestor of the species.
 - **descendants**: An array of descendant species.
@@ -74,7 +74,7 @@ Creates a deep copy of the current species and its descendants.
 ```typescript
 addDescendant(
   name = '',
-  afterAparision = 0,
+  afterApparition = 0,
   duration = 0,
   description: string | undefined = undefined,
   copy = false
@@ -84,7 +84,7 @@ addDescendant(
 Adds a descendant to the current species.
 
 - **name**: The name of the descendant.
-- **afterAparision**: The time after the ancestor's appearance when the descendant appears.
+- **afterApparition**: The time after the ancestor's appearance when the descendant appears.
 - **duration**: The duration for which the descendant exists.
 - **description**: An optional description of the descendant.
 - **copy**: If `true`, the current species is copied before adding the descendant.
@@ -104,7 +104,7 @@ Removes a descendant from the current species.
 ```typescript
 addAncestor(
   name = '',
-  previousAparision = 0,
+  previousApparition = 0,
   duration = 0,
   description: string | undefined = undefined,
   display = true,
@@ -115,7 +115,7 @@ addAncestor(
 Adds an ancestor to the current species.
 
 - **name**: The name of the ancestor.
-- **previousAparision**: The time before the current species' appearance when the ancestor appears.
+- **previousApparition**: The time before the current species' appearance when the ancestor appears.
 - **duration**: The duration for which the ancestor exists.
 - **description**: An optional description of the ancestor.
 - **display**: A flag indicating whether the ancestor should be displayed.
@@ -214,9 +214,9 @@ The `PhTree` component is responsible for rendering a phylogenetic tree based on
 - **stroke**: `string` (optional, default: `"grey"`)The stroke color for the tree lines.
 - **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)A function to format the display of time values.
 - **presentTime**: `number` (optional)The current time to highlight in the tree.
-- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
-- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
-- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
+- **saveSpecies**: `(s: Species, name: string, apparition: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
+- **createDescendant**: `(s: Species, name: string, afterApparition: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
+- **createAncestor**: `(s: Species, name: string, previousApparition: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
 - **deleteAncestor**: `(s: Species) => void` (optional)A callback function to delete an ancestor species.
 - **deleteSpecies**: `(s: Species) => void` (optional)
   A callback function to delete a species.
@@ -248,9 +248,9 @@ The `Menu` component provides a user interface to edit and manage species data. 
 - **language**: `string` (optional)The language code for localization.
 - **open**: `boolean` (optional)Controls the visibility of the menu.
 - **onClose**: `() => void` (optional)A callback function to close the menu.
-- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
-- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
-- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
+- **saveSpecies**: `(s: Species, name: string, apparition: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
+- **createDescendant**: `(s: Species, name: string, afterApparition: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
+- **createAncestor**: `(s: Species, name: string, previousApparition: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
 - **deleteAncestor**: `() => void` (optional)A callback function to delete an ancestor species.
 - **deleteSpecies**: `() => void` (optional)
   A callback function to delete a species.
@@ -258,7 +258,7 @@ The `Menu` component provides a user interface to edit and manage species data. 
 ### State
 
 - **name**: `string`The name of the species.
-- **aparision**: `number`The appearance time of the species.
+- **apparition**: `number`The appearance time of the species.
 - **duration**: `number`The duration of the species.
 - **description**: `string | undefined`The description of the species.
 - **addDescendant**: `boolean`Controls the visibility of the descendant addition form.
@@ -311,7 +311,7 @@ nvbtn01;Ejemplo;Example
 nvbtn02;Descargar JSON;Download JSON
 nvlbl05;Idioma;Language
 splbl00;Nombre;Name
-splbl01;Aparición;Aparision
+splbl01;Aparición;Apparition
 splbl02;Duración;Duration
 splbl03;Descripción;Description
 spbtn00;Guardar;Save
@@ -469,7 +469,7 @@ Below is a list of some of the translation codes used in the application:
 | `nvbtn02`   | Descargar JSON                                                                 | Download JSON                                                               |
 | `nvlbl05`   | Idioma                                                                         | Language                                                                    |
 | `splbl00`   | Nombre                                                                         | Name                                                                        |
-| `splbl01`   | Aparición                                                                      | Aparision                                                                   |
+| `splbl01`   | Aparición                                                                      | Apparition                                                                  |
 | `splbl02`   | Duración                                                                       | Duration                                                                    |
 | `splbl03`   | Descripción                                                                    | Description                                                                 |
 | `spbtn00`   | Guardar                                                                        | Save                                                                        |

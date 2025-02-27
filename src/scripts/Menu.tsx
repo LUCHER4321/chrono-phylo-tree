@@ -11,21 +11,21 @@ interface MenuProps {
     saveSpecies?: (
         s: Species,
         name: string,
-        aparision: number,
+        apparition: number,
         duration: number,
         description?: string
     ) => void;
     createDescendant?: (
         s: Species,
         name: string,
-        afterAparision: number,
+        afterApparition: number,
         duration: number,
         description: string
     ) => void;
     createAncestor?: (
         s: Species,
         name: string,
-        previousAparision: number,
+        previousApparition: number,
         duration: number,
         description: string
     ) => void;
@@ -35,7 +35,7 @@ interface MenuProps {
 
 export const Menu = ({species, language, open, onClose, saveSpecies, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
     const [name, setName] = useState(species.name);
-    const [aparision, setAparision] = useState(species.aparision);
+    const [apparition, setApparition] = useState(species.apparition);
     const [duration, setDuration] = useState(species.duration);
     const [description, setDescription] = useState(species.description);
     const [addDescendant, setAddDescendant] = useState(false);
@@ -59,23 +59,23 @@ export const Menu = ({species, language, open, onClose, saveSpecies, createDesce
                 <Data
                     name={name}
                     setName={setName}
-                    aparision={aparision}
-                    setAparision={(n) => {
-                        setAparision(species.ancestor ? between(n, species.ancestor.aparision, species.ancestor.extinction()) : n);
-                        setDuration(species.descendants.length > 0 ? Math.max(Math.max(...species.descendants.map(desc => desc.aparision)) - aparision, duration) : duration);
+                    apparition={apparition}
+                    setApparition={(n) => {
+                        setApparition(species.ancestor ? between(n, species.ancestor.apparition, species.ancestor.extinction()) : n);
+                        setDuration(species.descendants.length > 0 ? Math.max(Math.max(...species.descendants.map(desc => desc.apparition)) - apparition, duration) : duration);
                     }}
-                    minAparision={species.ancestor ? species.ancestor.aparision : undefined}
-                    maxAparision={species.ancestor ? species.ancestor.extinction() : undefined}
+                    minApparition={species.ancestor ? species.ancestor.apparition : undefined}
+                    maxApparition={species.ancestor ? species.ancestor.extinction() : undefined}
                     duration={duration}
                     setDuration={setDuration}
-                    minDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.aparision)) - aparision : undefined}
-                    maxDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.aparision)) - aparision : undefined}
+                    minDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.apparition)) - apparition : undefined}
+                    maxDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.apparition)) - apparition : undefined}
                     description={description}
                     setDescription={setDescription}
                     language={language}
                 >
                     <button onClick={() => {
-                        saveSpecies?.(species, name, aparision, duration, description);
+                        saveSpecies?.(species, name, apparition, duration, description);
                         onClose?.();
                     }}>
                         {codeText("spbtn00", language ?? "")}
@@ -123,10 +123,10 @@ export const Menu = ({species, language, open, onClose, saveSpecies, createDesce
 interface DataProps {
     name: string;
     setName: (name: string) => void;
-    aparision: number;
-    setAparision: (aparision: number) => void;
-    minAparision?: number;
-    maxAparision?: number;
+    apparition: number;
+    setApparition: (apparition: number) => void;
+    minApparition?: number;
+    maxApparition?: number;
     duration: number;
     setDuration: (duration: number) => void;
     minDuration?: number;
@@ -140,10 +140,10 @@ interface DataProps {
 const Data = ({
     name,
     setName,
-    aparision,
-    setAparision,
-    minAparision,
-    maxAparision,
+    apparition,
+    setApparition,
+    minApparition,
+    maxApparition,
     duration,
     setDuration,
     minDuration,
@@ -165,10 +165,10 @@ const Data = ({
             <label>
                 {codeText("splbl01", language ?? "")}: <input
                     type="number"
-                    min={minAparision}
-                    max={maxAparision}
-                    value={aparision}
-                    onChange={(e) => setAparision(Number(e.target.value))}
+                    min={minApparition}
+                    max={maxApparition}
+                    value={apparition}
+                    onChange={(e) => setApparition(Number(e.target.value))}
                 />
             </label>
             <label>
@@ -193,7 +193,7 @@ const Data = ({
 
 const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps) => {
     const [name, setName] = useState('');
-    const [afterAparision, setAfterAparision] = useState(species.duration);
+    const [afterApparition, setAfterApparition] = useState(species.duration);
     const [duration, setDuration] = useState(0);
     const [description, setDescription] = useState('');
 
@@ -202,10 +202,10 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
             <Data
                 name={name}
                 setName={setName}
-                aparision={species.aparision + afterAparision}
-                setAparision={(n) => setAfterAparision(n - species.aparision)}
-                minAparision={species.aparision}
-                maxAparision={species.extinction()}
+                apparition={species.apparition + afterApparition}
+                setApparition={(n) => setAfterApparition(n - species.apparition)}
+                minApparition={species.apparition}
+                maxApparition={species.extinction()}
                 duration={duration}
                 setDuration={setDuration}
                 description={description}
@@ -213,7 +213,7 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
                 language={language}
             >
                 <button type="button" onClick={() => {
-                    createDescendant?.(species, name, afterAparision, duration, description);
+                    createDescendant?.(species, name, afterApparition, duration, description);
                     onClose?.();
                 }}>
                     {codeText("cdbtn00", language ?? "")}
@@ -225,7 +225,7 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
 
 const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) => {
     const [name, setName] = useState('');
-    const [previousAparision, setPreviousAparision] = useState(0);
+    const [previousApparition, setPreviousApparition] = useState(0);
     const [duration, setDuration] = useState(0);
     const [description, setDescription] = useState('');
 
@@ -234,21 +234,21 @@ const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) =>
             <Data
                 name={name}
                 setName={setName}
-                aparision={species.aparision - previousAparision}
-                setAparision={(n) => {
-                    setPreviousAparision(species.aparision - n);
-                    setDuration(Math.max(species.aparision - n, duration));
+                apparition={species.apparition - previousApparition}
+                setApparition={(n) => {
+                    setPreviousApparition(species.apparition - n);
+                    setDuration(Math.max(species.apparition - n, duration));
                 }}
-                maxAparision={species.aparision}
+                maxApparition={species.apparition}
                 duration={duration}
                 setDuration={setDuration}
-                minDuration={previousAparision}
+                minDuration={previousApparition}
                 description={description}
                 setDescription={setDescription}
                 language={language}
             >
                 <button type="button" onClick={() => {
-                    createAncestor?.(species, name, previousAparision, duration, description);
+                    createAncestor?.(species, name, previousApparition, duration, description);
                     onClose?.();
                 }}>
                     {codeText("cdbtn00", language ?? "")}

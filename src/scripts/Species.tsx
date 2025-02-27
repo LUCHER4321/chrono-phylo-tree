@@ -1,6 +1,6 @@
 export class Species {
   name = "";
-  aparision = 0;
+  apparition = 0;
   duration = 0;
   ancestor?: Species = undefined;
   descendants: Species[] = [];
@@ -10,14 +10,14 @@ export class Species {
 
   constructor(
     name = '',
-    aparision = 0,
+    apparition = 0,
     duration = 0,
     ancestor?: Species,
     descendants: Species[] = [],
     description: string | undefined = undefined
   ) {
     this.name = name;
-    this.aparision = aparision;
+    this.apparition = apparition;
     this.duration = duration;
     this.ancestor = ancestor;
     this.descendants = descendants;
@@ -42,18 +42,18 @@ export class Species {
 
   addDescendant(
     name = '',
-    afterAparision = 0,
+    afterApparition = 0,
     duration = 0,
     description: string | undefined = undefined,
     copy = false
   ) {
-    if(afterAparision < 0 || afterAparision > this.duration) {
-      throw new Error(`The aparision of the descendant must be between the aparision (${this.aparision}) and the extinction (${this.extinction()}) of the ancestor`);
+    if(afterApparition < 0 || afterApparition > this.duration) {
+      throw new Error(`The apparition of the descendant must be between the apparition (${this.apparition}) and the extinction (${this.extinction()}) of the ancestor`);
     }
     const sp = copy ? this.copy() : this;
     const desc = new Species(
       name,
-      sp.aparision + Math.max(afterAparision, 0),
+      sp.apparition + Math.max(afterApparition, 0),
       Math.max(duration, 0),
       sp,
       [],
@@ -70,22 +70,22 @@ export class Species {
 
   addAncestor(
     name = '',
-    previousAparision = 0,
+    previousApparition = 0,
     duration = 0,
     description: string | undefined = undefined,
     display = true,
     copy = false
   ) {
-    if(previousAparision < 0) {
-      throw new Error(`The aparision of the ancestor must be before or equal the aparision (${this.aparision}) of the descendant`);
+    if(previousApparition < 0) {
+      throw new Error(`The apparition of the ancestor must be before or equal the apparition (${this.apparition}) of the descendant`);
     }
-    if(duration < previousAparision){
-      throw new Error(`The extiction of the ancestor must be after or equal the aparision (${this.aparision}) of the descendant`);
+    if(duration < previousApparition){
+      throw new Error(`The extiction of the ancestor must be after or equal the apparition (${this.apparition}) of the descendant`);
     }
     const sp = copy ? this.copy() : this;
     const anc = new Species(
       name,
-      sp.aparision - Math.max(previousAparision, 0),
+      sp.apparition - Math.max(previousApparition, 0),
       duration,
       undefined,
       [sp],
@@ -98,7 +98,7 @@ export class Species {
   }
 
   extinction() {
-    return this.aparision + this.duration;
+    return this.apparition + this.duration;
   }
 
   absoluteExtinction(): number {
@@ -108,7 +108,7 @@ export class Species {
   }
 
   absoluteDuration(): number {
-    return this.absoluteExtinction() - this.aparision;
+    return this.absoluteExtinction() - this.apparition;
   }
 
   firstAncestor(includeNotDisplay = false): Species {
@@ -120,11 +120,11 @@ export class Species {
   }
 
   allDescendants(): Species[] {
-    const desc = this.descendants.sort((a, b) => (a.aparision === b.aparision) ? (b.absoluteExtinction() - a.absoluteExtinction()) : (b.aparision - a.aparision));
+    const desc = this.descendants.sort((a, b) => (a.apparition === b.apparition) ? (b.absoluteExtinction() - a.absoluteExtinction()) : (b.apparition - a.apparition));
     if (desc.length === 0) {
       return [this];
     }
-    const limitDesc = desc.filter(desc => desc.aparision >= this.extinction());
+    const limitDesc = desc.filter(desc => desc.apparition >= this.extinction());
     const prevDesc = desc.filter(desc => limitDesc.indexOf(desc) === -1);
     const halfFunc = this.onPosition ? Math.ceil : Math.floor;
     const half = halfFunc(limitDesc.length / 2);
@@ -134,16 +134,16 @@ export class Species {
   }
 
   toJSON(): any {
-    const aparisionJSON = this.ancestor ?
+    const apparitionJSON = this.ancestor ?
       {
-        afterAparision: this.aparision - this.ancestor.aparision
+        afterApparition: this.apparition - this.ancestor.apparition
       } :
       {
-        aparision: this.aparision
+        apparition: this.apparition
       };
     const json = {
       name: this.name,
-      ...aparisionJSON,
+      ...apparitionJSON,
       duration: this.duration,
     }
     const description = this.description ? {description: this.description} : {};
@@ -171,9 +171,9 @@ export class Species {
   }
 
   static fromJSON(json: any, ancestor?: Species): Species {
-    const afterAparision = json.afterAparision ?? 0;
-    const aparision = ancestor ? ancestor.aparision : json.aparision ?? 0;
-    const sp = new Species(json.name ?? "", aparision + afterAparision, json.duration ?? 0, ancestor, [], json.description ?? undefined);
+    const afterApparition = json.afterApparition ?? 0;
+    const apparition = ancestor ? ancestor.apparition : json.apparition ?? 0;
+    const sp = new Species(json.name ?? "", apparition + afterApparition, json.duration ?? 0, ancestor, [], json.description ?? undefined);
     if(json.descendants) {
       for (const desc of json.descendants) {
         sp.descendants.push(Species.fromJSON(desc, sp));
