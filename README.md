@@ -273,8 +273,96 @@ static fromJSON(json: any, ancestor?: Species): Species
 
 Creates a species instance from a JSON object.
 
-- **json**: The JSON object representing the species.
-- **ancestor**: The ancestor species, if any.
+- **json**: The JSON object representing the species. The structure of the JSON object should follow the format below:
+  - **name**: (string) The name of the species.
+  - **apparition**: (number, optional) The time when the species first appeared. This is only required if the species has no ancestor.
+  - **afterApparition**: (number, optional) The time after the ancestor's apparition when this species appeared. This is required if the species has an ancestor.
+  - **duration**: (number) The duration for which the species existed.
+  - **description**: (string, optional) A description of the species.
+  - **descendants**: (array, optional) An array of JSON objects representing the descendant species. Each descendant follows the same structure as described here.
+- **ancestor**: (Species, optional) The ancestor species, if any. This is used to calculate the apparition time of the current species based on the ancestor's apparition time.
+
+### Example JSON Structure
+
+Here is an example of a JSON object representing a species and its descendants:
+
+```json
+{
+  "name": "Hominoidea",
+  "apparition": -25000000,
+  "duration": 6000000,
+  "descendants": [
+    {
+      "name": "Hilobates",
+      "afterApparition": 6000000,
+      "duration": 19000000
+    },
+    {
+      "name": "Hominidae",
+      "afterApparition": 6000000,
+      "duration": 6000000,
+      "descendants": [
+        {
+          "name": "Pongo",
+          "afterApparition": 6000000,
+          "duration": 13000000
+        },
+        {
+          "name": "Homininae",
+          "afterApparition": 6000000,
+          "duration": 5000000,
+          "descendants": [
+            {
+              "name": "Gorilla",
+              "afterApparition": 5000000,
+              "duration": 8000000
+            },
+            {
+              "name": "Hominini",
+              "afterApparition": 5000000,
+              "duration": 2000000,
+              "descendants": [
+                {
+                  "name": "Pan",
+                  "afterApparition": 2000000,
+                  "duration": 3000000,
+                  "descendants": [
+                    {
+                      "name": "Pan Troglodytes",
+                      "afterApparition": 3000000,
+                      "duration": 3000000
+                    },
+                    {
+                      "name": "Pan Paniscus",
+                      "afterApparition": 3000000,
+                      "duration": 3000000
+                    }
+                  ]
+                },
+                {
+                  "name": "Homo",
+                  "afterApparition": 2000000,
+                  "duration": 6000000
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+In this example:
+
+- The root species is "Hominoidea", which appeared 25 million years ago and existed for 6 million years.
+
+- It has two descendants: "Hilobates" and "Hominidae".
+
+- "Hominidae" further has descendants like "Pongo" and "Homininae", and so on.
+
+This structure allows for a hierarchical representation of species and their evolutionary relationships.
 
 ## PhTree Component
 
@@ -376,6 +464,7 @@ The `translate.csv` file is structured as follows:
 ```csv
 code;spanish;english
 lan;Español;English
+ttl;Árbol Cronofilogenético;Chronophylogenetic Tree
 nvlbl00;Escala;Scale
 nvlbl01;Presente;Present
 nvlbl02;Color;Color
@@ -534,6 +623,7 @@ Below is a list of some of the translation codes used in the application:
 
 | Code        | Spanish                                                                        | English                                                                     |
 | ----------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `ttl`       | Árbol Cronofilogenético                                                        | Chronophylogenetic Tree                                                     |
 | `nvlbl00`   | Escala                                                                         | Scale                                                                       |
 | `nvlbl01`   | Presente                                                                       | Present                                                                     |
 | `nvlbl02`   | Color                                                                          | Color                                                                       |
