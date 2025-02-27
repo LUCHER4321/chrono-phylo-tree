@@ -1,9 +1,9 @@
 import Papa from 'papaparse';
 import { useEffect, useState } from 'react';
-export const codeText = (code: string, language: string, ...arg: string[]) => {
+export const codeText = (code: string, language: string, arg: string[] = [], filePath: string = "/translate.csv") => {
     const [data, setData] = useState<any[]>([]);
     useEffect(() => {
-        fetchCSVData("translate.csv").then(setData);
+        fetchCSVData(filePath).then(setData);
     }, [language]);
     const row = data.find((row: any) => row.code === code);
     try{
@@ -14,8 +14,8 @@ export const codeText = (code: string, language: string, ...arg: string[]) => {
     }
 };
 
-export const codeTextAlt = async (code: string, language: string, ...arg: string[]) => {
-    const data = await fetchCSVData("/translate.csv");
+export const codeTextAlt = async (code: string, language: string, arg: string[] = [], filePath: string = "/translate.csv") => {
+    const data = await fetchCSVData(filePath);
     const row = data.find((row: any) => row.code === code);
     try {
         const str = row[language];
@@ -25,12 +25,12 @@ export const codeTextAlt = async (code: string, language: string, ...arg: string
     }
 };
 
-export const getLanguageOptions = () => {
+export const getLanguageOptions = (filePath: string = "/translate.csv") => {
     const [languageOptions, setLanguageOptions] = useState<Map<string, string>>(new Map());
 
     useEffect(() => {
         const loadLanguage = async () => {
-            const data = await fetchCSVData("translate.csv");
+            const data = await fetchCSVData(filePath);
             const lan = data.find((row: any) => row.code === "lan");
             if (lan) {
                 delete lan.code;
