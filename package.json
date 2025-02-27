@@ -1,5 +1,5 @@
 {
-  "name": "PhyloTree",
+  "name": "ChronoPhyloTree",
   "version": "1.0.0",
   "description": "A React-based phylogenetic tree visualization library",
   "type": "module",
