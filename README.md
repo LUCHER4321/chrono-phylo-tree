@@ -9,21 +9,15 @@ This documentation provides a detailed explanation of the core components and cl
 ### Key Features
 
 - **Species Management**: The `Species` class allows you to define species, manage their ancestors and descendants, and calculate properties such as extinction time and duration.
-
 - **Interactive Tree Visualization**: The `PhTree` component renders the phylogenetic tree as an SVG, allowing users to interact with the tree by toggling the visibility of species and accessing detailed information.
-
 - **User-Friendly Interface**: The `Menu` component provides a modal interface for editing species attributes, adding new descendants or ancestors, and deleting species.
-
 - **Localization Support**: The application supports multiple languages, making it accessible to a global audience.
 
 ### How It Works
 
 1. **Species Representation**: Each species is represented by an instance of the `Species` class, which stores its name, appearance time, duration, ancestor, descendants, and other attributes.
-
 2. **Tree Rendering**: The `PhTree` component takes a common ancestor species as input and recursively renders the tree structure using SVG elements. It supports dynamic resizing, padding, and customizable stroke colors.
-
 3. **User Interaction**: Users can interact with the tree by clicking on species nodes to open the `Menu` component, where they can edit species data, add new species, or delete existing ones.
-
 4. **Data Persistence**: The application allows users to save the phylogenetic tree as a JSON file, ensuring that the data can be easily stored and reloaded.
 
 This documentation will guide you through the properties, methods, and usage of each component, helping you understand how to build, modify, and interact with phylogenetic trees using this application.
@@ -90,13 +84,9 @@ addDescendant(
 Adds a descendant to the current species.
 
 - **name**: The name of the descendant.
-
 - **afterAparision**: The time after the ancestor's appearance when the descendant appears.
-
 - **duration**: The duration for which the descendant exists.
-
 - **description**: An optional description of the descendant.
-
 - **copy**: If `true`, the current species is copied before adding the descendant.
 
 #### removeDescendant
@@ -125,15 +115,10 @@ addAncestor(
 Adds an ancestor to the current species.
 
 - **name**: The name of the ancestor.
-
 - **previousAparision**: The time before the current species' appearance when the ancestor appears.
-
 - **duration**: The duration for which the ancestor exists.
-
 - **description**: An optional description of the ancestor.
-
 - **display**: A flag indicating whether the ancestor should be displayed.
-
 - **copy**: If `true`, the current species is copied before adding the ancestor.
 
 #### extinction
@@ -213,7 +198,6 @@ static fromJSON(json: any, ancestor?: Species): Species
 Creates a species instance from a JSON object.
 
 - **json**: The JSON object representing the species.
-
 - **ancestor**: The ancestor species, if any.
 
 ## PhTree Component
@@ -222,62 +206,32 @@ The `PhTree` component is responsible for rendering a phylogenetic tree based on
 
 ### Properties
 
-- **commonAncestor**: `Species`  
-  The root species of the phylogenetic tree.
-
-- **language**: `string` (optional)  
-  The language code for localization.
-
-- **width**: `number` (optional, default: `1000`)  
-  The width of the SVG canvas.
-
-- **height**: `number` (optional, default: `50`)  
-  The height of the SVG canvas.
-
-- **padding**: `number` (optional, default: `0`)  
-  The padding around the tree.
-
-- **stroke**: `string` (optional, default: `"grey"`)  
-  The stroke color for the tree lines.
-
-- **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)  
-  A function to format the display of time values.
-
-- **presentTime**: `number` (optional)  
-  The current time to highlight in the tree.
-
-- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)  
-  A callback function to save species data.
-
-- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)  
-  A callback function to create a new descendant species.
-
-- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)  
-  A callback function to create a new ancestor species.
-
-- **deleteAncestor**: `(s: Species) => void` (optional)  
-  A callback function to delete an ancestor species.
-
-- **deleteSpecies**: `(s: Species) => void` (optional)  
+- **commonAncestor**: `Species`The root species of the phylogenetic tree.
+- **language**: `string` (optional)The language code for localization.
+- **width**: `number` (optional, default: `1000`)The width of the SVG canvas.
+- **height**: `number` (optional, default: `50`)The height of the SVG canvas.
+- **padding**: `number` (optional, default: `0`)The padding around the tree.
+- **stroke**: `string` (optional, default: `"grey"`)The stroke color for the tree lines.
+- **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)A function to format the display of time values.
+- **presentTime**: `number` (optional)The current time to highlight in the tree.
+- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
+- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
+- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
+- **deleteAncestor**: `(s: Species) => void` (optional)A callback function to delete an ancestor species.
+- **deleteSpecies**: `(s: Species) => void` (optional)
   A callback function to delete a species.
 
 ### State
 
-- **showMenu**: `boolean`  
-  Controls the visibility of the `Menu` component.
-
-- **species**: `Species | undefined`  
-  The currently selected species for which the menu is displayed.
-
-- **showDesc**: `Map<Species, boolean>`  
+- **showMenu**: `boolean`Controls the visibility of the `Menu` component.
+- **species**: `Species | undefined`The currently selected species for which the menu is displayed.
+- **showDesc**: `Map<Species, boolean>`
   A map to track the visibility of descendants for each species.
 
 ## Methods
 
-- **toggleShowMenu**: `(species: Species) => void`  
-  Toggles the visibility of the menu for a given species.
-
-- **toggleShowDesc**: `(species: Species) => void`  
+- **toggleShowMenu**: `(species: Species) => void`Toggles the visibility of the menu for a given species.
+- **toggleShowDesc**: `(species: Species) => void`
   Toggles the visibility of descendants for a given species, if `false`, its `descendants` won't be displayed and the `line` will extend until its `absoluteExtinction()`.
 
 ### Rendering
@@ -290,62 +244,32 @@ The `Menu` component provides a user interface to edit and manage species data. 
 
 ### Properties
 
-- **species**: `Species`  
-  The species for which the menu is displayed.
-
-- **language**: `string` (optional)  
-  The language code for localization.
-
-- **open**: `boolean` (optional)  
-  Controls the visibility of the menu.
-
-- **onClose**: `() => void` (optional)  
-  A callback function to close the menu.
-
-- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)  
-  A callback function to save species data.
-
-- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)  
-  A callback function to create a new descendant species.
-
-- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)  
-  A callback function to create a new ancestor species.
-
-- **deleteAncestor**: `() => void` (optional)  
-  A callback function to delete an ancestor species.
-
-- **deleteSpecies**: `() => void` (optional)  
+- **species**: `Species`The species for which the menu is displayed.
+- **language**: `string` (optional)The language code for localization.
+- **open**: `boolean` (optional)Controls the visibility of the menu.
+- **onClose**: `() => void` (optional)A callback function to close the menu.
+- **saveSpecies**: `(s: Species, name: string, aparision: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
+- **createDescendant**: `(s: Species, name: string, afterAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
+- **createAncestor**: `(s: Species, name: string, previousAparision: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
+- **deleteAncestor**: `() => void` (optional)A callback function to delete an ancestor species.
+- **deleteSpecies**: `() => void` (optional)
   A callback function to delete a species.
 
 ### State
 
-- **name**: `string`  
-  The name of the species.
-
-- **aparision**: `number`  
-  The appearance time of the species.
-
-- **duration**: `number`  
-  The duration of the species.
-
-- **description**: `string | undefined`  
-  The description of the species.
-
-- **addDescendant**: `boolean`  
-  Controls the visibility of the descendant addition form.
-
-- **addAncestor**: `boolean`  
+- **name**: `string`The name of the species.
+- **aparision**: `number`The appearance time of the species.
+- **duration**: `number`The duration of the species.
+- **description**: `string | undefined`The description of the species.
+- **addDescendant**: `boolean`Controls the visibility of the descendant addition form.
+- **addAncestor**: `boolean`
   Controls the visibility of the ancestor addition form.
 
 ### Methods
 
-- **toggleAddDescendant**: `() => void`  
-  Toggles the visibility of the descendant addition form.
-
-- **toggleAddAncestor**: `() => void`  
-  Toggles the visibility of the ancestor addition form.
-
-- **uniqueDescendant**: `(s: Species) => boolean`  
+- **toggleAddDescendant**: `() => void`Toggles the visibility of the descendant addition form.
+- **toggleAddAncestor**: `() => void`Toggles the visibility of the ancestor addition form.
+- **uniqueDescendant**: `(s: Species) => boolean`
   Checks if the species is the only descendant of its ancestor.
 
 ### Rendering
@@ -363,15 +287,12 @@ The `translate.csv` file is structured as follows:
 - **Columns**:
 
   - `code`: A unique identifier for each translation string.
-
   - `spanish`: The translation in Spanish.
-
   - `english`: The translation in English.
 
 - **Rows**:
 
   - Each row represents a translation string, identified by its `code`.
-
   - The first row with the `code` value `"lan"` contains the language names (e.g., `"Español"` for Spanish, `"English"` for English).
 
 #### Example CSV Content
@@ -412,29 +333,97 @@ cnfrm01_0;¿Estás seguro de que deseas eliminar la especie {0} junto a sus desc
 1. **Translation Lookup**:
 
 - The `codeText` and `codeTextAlt` functions in `translate.tsx` fetch the translation data from the CSV file.
-
 - They search for the row with the matching `code` and retrieve the translation for the specified language.
-
 - If the translation contains placeholders (e.g., `{0}`), they are replaced with the provided arguments.
 
 2. **Language Options**:
 
 - The `getLanguageOptions` function retrieves the available languages from the CSV file by looking for the row with the `code` value `"lan"`.
-
 - It returns a map of language codes (e.g., `"spanish"`, `"english"`) to their corresponding language names (e.g., `"Español"`, `"English"`).
 
 3. **Dynamic Translation**:
 
 - The application uses the `codeText` function to dynamically translate UI elements based on the selected language.
-
 - For example, buttons, labels, and confirmation messages are translated using the `code` values defined in the CSV file.
+
+#### `codeText`
+
+```typescript
+export const codeText = (code: string, language: string, arg: string[] = [], filePath: string = "/translate.csv"): string
+```
+
+Retrieves a translated string based on a given code and language. It also supports string interpolation using placeholders (`{0}`, `{1}`, etc.).
+
+**Parameters**
+
+- **code**: `string`
+  The code that identifies the translation string in the CSV file.
+- **language**: `string`
+  The language code (e.g., `"spanish"`, `"english"`) for which the translation is requested.
+- **arg**: `string[]` (optional, default: `[]`)
+  An array of arguments to replace placeholders in the translated string.
+- **filePath**: `string` (optional, default: `"/translate.csv"`)
+  The path to the CSV file containing the translation data.
+
+**Returns**
+
+- **`string`**: The translated string with placeholders replaced by the provided arguments. If the translation is not found, the function returns the original `code`.
+
+#### `codeTextAlt`
+
+```typescript
+export const codeTextAlt = async (code: string, language: string, arg: string[] = [], filePath: string = "/translate.csv"): Promise<string>
+```
+
+An asynchronous version of codeText. It fetches the translation data from the CSV file and retrieves the translated string.
+
+**Parameters**
+
+- **code**: `string`
+  The code that identifies the translation string in the CSV file.
+- **language**: `string`
+  The language code (e.g., `"spanish"`, `"english"`) for which the translation is requested.
+- **arg**: `string[]` (optional, default: `[]`)
+  An array of arguments to replace placeholders in the translated string.
+- **filePath**: `string` (optional, default: `"/translate.csv"`)
+  The path to the CSV file containing the translation data.
+
+**Returns**
+
+- **`Promise<string>`**: A promise that resolves to the translated string with placeholders replaced by the provided arguments. If the translation is not found, the function returns the original `code`.
+
+#### `getLanguageOptions`
+
+```typescript
+export const getLanguageOptions = (filePath: string = "/translate.csv"): Map<string, string>
+```
+
+Retrieves a map of available language options from the CSV file. The language options are stored in a row with the code `"lan"`.
+
+**Parameters**
+
+- **filePath**: string (optional, default: "/translate.csv")
+  The path to the CSV file containing the translation data.
+
+**Returns**
+
+- **`Map<string, string>`**: A map where the keys are language codes (e.g., "spanish", "english") and the values are the corresponding language names (e.g., "Español", "English").
 
 ### Example Usage
 
 #### Fetching a Translated String
 
+**`codeText`**
+
 ```typescript
-const greeting = codeText("greeting", "spanish", "Juan"); //Example row: greeting; Hola, {0}; Hello, {0}
+const greeting = codeText("greeting", "spanish", ["Juan"]); //Example row: greeting; Hola, {0}; Hello, {0}
+console.log(greeting); // Output: "Hola, Juan"
+```
+
+**`codeTextAlt`**
+
+```typescript
+const greeting = await codeTextAlt("greeting", "spanish", ["Juan"]); //Example row: greeting; Hola, {0}; Hello, {0}
 console.log(greeting); // Output: "Hola, Juan"
 ```
 
@@ -450,9 +439,7 @@ console.log(languageOptions.get("spanish")); // Output: "Español"
 To add support for a new language (e.g., French):
 
 1. Add a new column to the CSV file (e.g., `french`).
-
 2. Populate the new column with translations for each `code`.
-
 3. Update the `getLanguageOptions` function to include the new language in the language options map.
 
 #### Example CSV Update for French
