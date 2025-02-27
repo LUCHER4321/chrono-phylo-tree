@@ -1,8 +1,14 @@
 {
-  "name": "vite-react-typescript-starter",
-  "private": true,
-  "version": "0.0.0",
+  "name": "PhyloTree",
+  "version": "1.0.0",
+  "description": "A React-based phylogenetic tree visualization library",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -27,5 +33,12 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.21.0",
     "vite": "^6.0.11"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LUCHER4321/Phylo_Tree"
+  },
+  "keywords": ["phylogenetic", "tree", "visualization", "react"],
+  "author": "LUCHER4321",
+  "license": "MIT"
 }
