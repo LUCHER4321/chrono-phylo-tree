@@ -138,7 +138,7 @@ function App() {
   };
 
   const deleteAncestor = async (sp: Species) => {
-    if(!confirm(await codeTextAlt("cnfrm00" + (sp.ancestor?.ancestor ? "_0" : ""), language, sp.name))) {
+    if(!confirm(await codeTextAlt("cnfrm00" + (sp.ancestor?.ancestor ? "_0" : ""), language, [sp.name]))) {
       return;
     }
     setSpecies(undefined);
@@ -149,7 +149,7 @@ function App() {
   };
 
   const deleteSpecies = async (sp: Species) => {
-    if(!confirm(await codeTextAlt("cnfrm01" + (sp.descendants.length > 0 ? "_0" : ""), language, sp.name))) {
+    if(!confirm(await codeTextAlt("cnfrm01" + (sp.descendants.length > 0 ? "_0" : ""), language, [sp.name]))) {
       return;
     }
     setSpecies(undefined);
@@ -186,7 +186,7 @@ function App() {
 
   const deleteAllSpecies = async () => {
     if(!species) return;
-    if(!confirm(await codeTextAlt("cnfrm01" + (species.descendants.length > 0 ? "_0" : ""), language, species.name))) return;
+    if(!confirm(await codeTextAlt("cnfrm01" + (species.descendants.length > 0 ? "_0" : ""), language, [species.name]))) return;
     setSpecies(undefined);
   };
 
@@ -265,7 +265,7 @@ function App() {
               {codeText("nvbtn01", language)}
             </button>
             <div style={{width: 10}}/>
-            <button onClick={async () => await species?.saveJSON()}>
+            <button onClick={async () => await species?.saveJSON()} disabled={!species}>
               {codeText("nvbtn02", language)}
             </button>
           </div>
