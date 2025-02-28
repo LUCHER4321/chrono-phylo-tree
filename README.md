@@ -6,6 +6,10 @@ The **chrono-phylo-tree** is a JavaScript/TypeScript library designed to visuali
 
 This documentation provides a detailed explanation of the core components and classes used in the application, including the `Species` class, which represents individual species in the tree, and the `PhTree` and `Menu` components, which handle the visualization and user interaction with the tree.
 
+### Try It Out
+
+You can test and explore the functionality of the chrono-phylo-tree library by visiting the following [page](https://phylotree.netlify.app/). This interactive demo allows you to experiment with the library's features, visualize phylogenetic trees, and see how the components work in real-time.
+
 ### Key Features
 
 - **Species Management**: The `Species` class allows you to define species, manage their ancestors and descendants, and calculate properties such as extinction time and duration.
