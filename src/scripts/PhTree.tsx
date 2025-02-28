@@ -1,43 +1,24 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Species } from "./Species";
 import { Menu } from "./Menu";
 
 interface PhtreeProps {
     commonAncestor: Species;
-    language?: string;
     width?: number;
     height?: number;
     padding?: number;
     stroke?: string;
     format?: (n: number) => string;
     presentTime?: number;
-    saveSpecies?: (
-        s: Species,
-        name: string,
-        apparition: number,
-        duration: number,
-        description?: string
-    ) => void;
-    createDescendant?: (
-        s: Species,
-        name: string,
-        afterApparition: number,
-        duration: number,
-        description: string
-    ) => void;
-    createAncestor?: (
-        s: Species,
-        name: string,
-        previousApparition: number,
-        duration: number,
-        description: string
-    ) => void;
-    deleteAncestor?: (s: Species) => void;
-    deleteSpecies?: (s: Species) => void;
+    children?: (
+        species: Species,
+        showMenu: boolean,
+        toggleShowMenu: (species: Species) => void
+    ) => React.ReactNode;
 }
 
 export const PhTree = (
-    { commonAncestor, language, width = 1000, height = 50, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, saveSpecies, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: PhtreeProps
+    { commonAncestor, width = 1000, height = 50, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, children}: PhtreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
@@ -77,18 +58,7 @@ export const PhTree = (
                     changeShowDesc={toggleShowDesc}
                 />
             </svg>
-            {showMenu && species &&
-                <Menu
-                    species={species}
-                    language={language}
-                    open={showMenu}
-                    onClose={() => toggleShowMenu(species)}
-                    saveSpecies={saveSpecies}
-                    createDescendant={createDescendant}
-                    createAncestor={createAncestor}
-                    deleteAncestor={() => deleteAncestor?.(species)}
-                    deleteSpecies={() => deleteSpecies?.(species)}
-                />}
+            {showMenu && species && children?.(species, showMenu, toggleShowMenu)}
         </>
     );
 };
@@ -129,7 +99,7 @@ const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", fo
                     stroke={stroke}
                 />
             )}
-            <HorizontalLine
+            {species.display && <HorizontalLine
                 species={species}
                 x1={startX}
                 x2={endX}
@@ -142,12 +112,12 @@ const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", fo
                 format={format}
                 presentTime={presentTime}
                 toggleShowMenu={toggleShowMenu}
-            />
+            />}
             {species.descendants.map((desc, index) => (
                 <g style={{ display: (showDesc.get(species) && descendants.includes(desc)) ? 'block' : 'none' }} key={all.length + index}>
                     <DrawTree
                         species={desc}
-                        y={endY}
+                        y={desc.display ? endY : -1}
                         scaleX={scaleX}
                         scaleY={scaleY}
                         padding={padding}
