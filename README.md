@@ -366,31 +366,34 @@ This structure allows for a hierarchical representation of species and their evo
 
 ## PhTree Component
 
-The `PhTree` component is responsible for rendering a phylogenetic tree based on a given common ancestor species. It provides interactive features to manage and visualize the species tree.
+The `PhTree` component is a React-based visualization tool designed to display phylogenetic trees. It allows users to interact with the tree, toggle the visibility of descendants, and access detailed information about each species through a menu.
+
+### Features
+
+- **Interactive Tree Visualization**: Displays a phylogenetic tree with interactive nodes representing species.
+- **Toggle Descendants**: Users can show or hide the descendants of any species in the tree.
+- **Species Information**: Clicking on a species node opens a menu with detailed information and options to modify the species.
+- **Customizable Appearance**: Supports customization of tree dimensions, padding, stroke color, and number formatting.
+- **Time-Based Filtering**: Optionally filters the displayed species based on a specified present time.
 
 ### Properties
 
+The `PhTree` component accepts the following props:
+
 - **commonAncestor**: `Species`The root species of the phylogenetic tree.
-- **language**: `string` (optional)The language code for localization.
 - **width**: `number` (optional, default: `1000`)The width of the SVG canvas.
-- **height**: `number` (optional, default: `50`)The height of the SVG canvas.
+- **height**: `number` (optional, default: `50`)The height per descendant of the SVG canvas.
 - **padding**: `number` (optional, default: `0`)The padding around the tree.
 - **stroke**: `string` (optional, default: `"grey"`)The stroke color for the tree lines.
 - **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)A function to format the display of time values.
 - **presentTime**: `number` (optional)The current time to highlight in the tree.
-- **saveSpecies**: `(s: Species, name: string, apparition: number, duration: number, description?: string) => void` (optional)A callback function to save species data.
-- **createDescendant**: `(s: Species, name: string, afterApparition: number, duration: number, description: string) => void` (optional)A callback function to create a new descendant species.
-- **createAncestor**: `(s: Species, name: string, previousApparition: number, duration: number, description: string) => void` (optional)A callback function to create a new ancestor species.
-- **deleteAncestor**: `(s: Species) => void` (optional)A callback function to delete an ancestor species.
-- **deleteSpecies**: `(s: Species) => void` (optional)
-  A callback function to delete a species.
+- **children**:`(species: Species, showMenu: boolean,toggleShowMenu: (species: Species) => void) => React.ReactNode` (optional) Render prop to customize the menu content.
 
 ### State
 
 - **showMenu**: `boolean`Controls the visibility of the `Menu` component.
 - **species**: `Species | undefined`The currently selected species for which the menu is displayed.
-- **showDesc**: `Map<Species, boolean>`
-  A map to track the visibility of descendants for each species.
+- **showDesc**: `Map<Species, boolean>`A map to track the visibility of descendants for each species.
 
 ## Methods
 
@@ -400,7 +403,11 @@ The `PhTree` component is responsible for rendering a phylogenetic tree based on
 
 ### Rendering
 
-The component renders an SVG element that contains the phylogenetic tree. It uses the `DrawTree` component to recursively draw the tree structure. The `Menu` component is conditionally rendered based on the `showMenu` state.
+The component renders an SVG element that contains the phylogenetic tree. It uses the `DrawTree` component to recursively draw the tree structure. The `children` render prop is conditionally rendered based on the `showMenu` state.
+
+### Customization
+
+The `PhTree` component can be customized using the various props it accepts. Additionally, the `children` render prop allows for further customization of the menu content displayed when a species node is clicked.
 
 ## Menu Component
 
