@@ -7,6 +7,7 @@ import { Species } from './scripts/Species'
 import { between } from './scripts/between';
 import { codeText, codeTextAlt, getLanguageOptions } from './scripts/translate';
 import { isLargeScreen } from './scripts/isLargeScreen';
+import { Menu } from './scripts/Menu';
 
 function App() {
   const [scale, setScale] = useState(1);
@@ -288,6 +289,7 @@ function App() {
           {codeText("nvlbl04", language)}: <input
               type="file"
               accept=".json"
+              value={undefined}
               onChange={async (e) => await setFromJson(e.target.files?.[0])}
             />
           </label>
@@ -313,19 +315,25 @@ function App() {
       {species && <div style={{height: largeScreen ? 165 : 400}}/>}
       {species && <PhTree
         commonAncestor={species}
-        language={language}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
         height={50}
         stroke={lineColor}
         format={scientificNotation}
         presentTime={presentTimeBoolean ? presentTime : undefined}
-        padding={7.5}
-        saveSpecies={saveSpecies}
-        createDescendant={createDescendant}
-        createAncestor={createAncestor}
-        deleteAncestor={deleteAncestor}
-        deleteSpecies={deleteSpecies}
-      />}
+        padding={1}
+      >
+        {(sp, showMenu, toggleShowMenu) => <Menu
+          species={sp}
+          language={language}
+          open={showMenu}
+          onClose={() => toggleShowMenu(sp)}
+          saveSpecies={saveSpecies}
+          createDescendant={createDescendant}
+          createAncestor={createAncestor}
+          deleteAncestor={() => deleteAncestor?.(sp)}
+          deleteSpecies={() => deleteSpecies?.(sp)}
+        />}
+      </PhTree>}
     </>
   )
 }
