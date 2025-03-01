@@ -74,9 +74,13 @@ export const Menu = ({species, language, open, onClose, saveSpecies, createDesce
                     setDescription={setDescription}
                     language={language}
                 >
-                    <button onClick={() => {
-                        saveSpecies?.(species, name, apparition, duration, description);
-                        onClose?.();
+                    <button onClick={async () => {
+                        try{
+                            await saveSpecies?.(species, name, apparition, duration, description);
+                            onClose?.();
+                        } catch(e) {
+                            console.error(e);
+                        }
                     }}>
                         {codeText("spbtn00", language ?? "")}
                     </button>
@@ -95,9 +99,13 @@ export const Menu = ({species, language, open, onClose, saveSpecies, createDesce
                         />}
                     {species.ancestor ?
                         uniqueDescendant(species) &&
-                        <button type="button" onClick={() => {
-                            deleteAncestor?.();
-                            onClose?.();
+                        <button type="button" onClick={async () => {
+                            try {
+                                await deleteAncestor?.();
+                                onClose?.();
+                            } catch(e){
+                                console.error(e);
+                            }
                         }}>
                             {codeText("spbtn04" + (species.ancestor.ancestor ? "_0" : ""), language ?? "")}
                         </button> :
@@ -212,9 +220,13 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
                 setDescription={setDescription}
                 language={language}
             >
-                <button type="button" onClick={() => {
-                    createDescendant?.(species, name, afterApparition, duration, description);
-                    onClose?.();
+                <button type="button" onClick={async () => {
+                    try{
+                        await createDescendant?.(species, name, afterApparition, duration, description);
+                        onClose?.();
+                    } catch(e) {
+                        console.error(e);
+                    }
                 }}>
                     {codeText("cdbtn00", language ?? "")}
                 </button>
@@ -247,9 +259,13 @@ const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) =>
                 setDescription={setDescription}
                 language={language}
             >
-                <button type="button" onClick={() => {
-                    createAncestor?.(species, name, previousApparition, duration, description);
-                    onClose?.();
+                <button type="button" onClick={async () => {
+                    try {
+                        await createAncestor?.(species, name, previousApparition, duration, description);
+                        onClose?.();
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }}>
                     {codeText("cdbtn00", language ?? "")}
                 </button>

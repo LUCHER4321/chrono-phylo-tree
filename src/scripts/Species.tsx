@@ -16,6 +16,9 @@ export class Species {
     descendants: Species[] = [],
     description: string | undefined = undefined
   ) {
+    if(duration <= 0){
+      throw new Error("The duration of the species must be greater than 0");
+    }
     this.name = name;
     this.apparition = apparition;
     this.duration = duration;

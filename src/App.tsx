@@ -113,7 +113,12 @@ function App() {
     return mantText + ((abs >= 1 && abs < 10) ? "" : ("e" + exp));
   };
 
-  const saveSpecies = (s: Species, name: string, apparition: number, duration: number, description?: string) => {
+  const saveSpecies = async (s: Species, name: string, apparition: number, duration: number, description?: string) => {
+    if(duration <= 0){
+      const alertText = await codeTextAlt("alert01", language, [name])
+      alert(alert);
+      throw new Error(alertText);
+    }
     const newSpecies = s.copy();
     setSpecies(undefined);
     newSpecies.name = name;
@@ -123,7 +128,17 @@ function App() {
     setSpecies(newSpecies.firstAncestor());
   };
 
-  const createDescendant = (s: Species, name: string, afterApparition: number, duration: number, description: string) => {
+  const createDescendant = async (s: Species, name: string, afterApparition: number, duration: number, description: string) => {
+    if(duration <= 0){
+      const alertText = await codeTextAlt("alert01", language, [name]);
+      alert(alertText);
+      throw new Error(alertText);
+    }
+    if(afterApparition < 0 || afterApparition > s.duration) {
+      const alertText = await codeTextAlt("alert02", language, [name, s.apparition.toString(), s.extinction().toString(), s.name]);
+      alert(alertText);
+      throw new Error(alertText);
+    }
     const newSpecies = s.addDescendant(name, afterApparition, duration, description, true).firstAncestor();
     //*
     setSpecies(undefined);
@@ -135,7 +150,17 @@ function App() {
     //*/
   };
 
-  const createAncestor = (s: Species, name: string, previousApparition: number, duration: number, description: string) => {
+  const createAncestor = async (s: Species, name: string, previousApparition: number, duration: number, description: string) => {
+    if(duration <= 0){
+      const alertText = await codeTextAlt("alert01", language, [name])
+      alert(alert);
+      throw new Error(alertText);
+    }
+    if(previousApparition < 0 || duration < previousApparition) {
+      const alertText = await codeTextAlt("alert02" + (duration < previousApparition) ? "_0" : "", language, [name, s.apparition.toString(), s.name]);
+      alert(alertText);
+      throw new Error(alertText);
+    }
     const newSpecies = s.addAncestor(name, previousApparition, duration, description, true, true).firstAncestor();
     //*
     setSpecies(undefined);
@@ -213,9 +238,6 @@ function App() {
     </label>
     );
   };
-
-  console.log("Width:", window.screen.width);
-  console.log("Max Width:", window.screen.width - 64);
 
   return (
     <>

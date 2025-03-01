@@ -14,7 +14,7 @@ export const codeText = (code: string, language: string, arg: string[] = [], fil
     }
 };
 
-export const codeTextAlt = async (code: string, language: string, arg: string[] = [], filePath: string = "/translate.csv") => {
+export const codeTextAlt = async (code: string, language: string, arg: string[] = [], filePath: string = "/translate.csv"): Promise<string> => {
     const data = await fetchCSVData(filePath);
     const row = data.find((row: any) => row.code === code);
     try {

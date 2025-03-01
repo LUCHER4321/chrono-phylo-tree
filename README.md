@@ -10,6 +10,11 @@ This documentation provides a detailed explanation of the core components and cl
 
 You can test and explore the functionality of the chrono-phylo-tree library by visiting the following [page](https://phylotree.netlify.app/). This interactive demo allows you to experiment with the library's features, visualize phylogenetic trees, and see how the components work in real-time.
 
+### Updates
+
+- The duration of the species must be greater than 0
+- Menu doesn't close when a function throws error
+
 ### Key Features
 
 - **Species Management**: The `Species` class allows you to define species, manage their ancestors and descendants, and calculate properties such as extinction time and duration.

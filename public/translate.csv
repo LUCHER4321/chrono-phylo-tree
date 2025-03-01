@@ -27,3 +27,7 @@ cnfrm00;¿Estás seguro de que deseas quitar al ancestro de {0}?;Are you sure yo
 cnfrm00_0;¿Estás seguro de que deseas quitar a los ancestros de {0}?;Are you sure you want to remove the {0}'s ancestors?
 cnfrm01;¿Estás seguro de que deseas eliminar la especie {0}?;Are you sure you want to remove the {0} species?
 cnfrm01_0;¿Estás seguro de que deseas eliminar la especie {0} junto a sus descendientes?;Are you sure you want to remove the {0} species along with its descendants?
+alert01;La duración de {0} debe ser mayor a 0;The duration of {0} must be greater than 0
+alert02;La aparición de {0} debe ser entre la aparición ({1}) y la extinción ({2}) de {3};The apparition of {0} must be between the apparition ({1}) and the extinction ({2}) of {3}
+alert03;La aparición de {0} debe ser anterior o igual a la aparición ({1}) de {2};The apparition of {0} must be before or equal the apparition ({1}) of {2}
+alert03_0;La extinción de {0} debe ser posterior o igual a la aparición ({1}) de {2};The extiction of {0} must be after or equal the apparition ({1}) of {2}
