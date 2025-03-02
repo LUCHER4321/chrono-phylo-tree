@@ -42,7 +42,7 @@ npm install chrono-phylo-tree
 or using yarn:
 
 ```bash
-npm install chrono-phylo-tree
+yarn add chrono-phylo-tree
 ```
 
 ## Usage
