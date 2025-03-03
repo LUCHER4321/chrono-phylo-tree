@@ -278,18 +278,19 @@ function App() {
               max={species ? species.absoluteExtinction() : 1}
               value={presentTime}
               onChange={(e) => changePresentTime(Number(e.target.value))}
-              disabled={!presentTimeBoolean}
+              disabled={!presentTimeBoolean || !chronoScale}
             /> <input
               type="number"
               min={species ? species.apparition : 0}
               max={species ? species.absoluteExtinction() : 1}
               value={presentTime}
               onChange={(e) => changePresentTime(Number(e.target.value))}
-              disabled={!presentTimeBoolean}
+              disabled={!presentTimeBoolean || !chronoScale}
             /> <input
               type="checkbox"
               checked={presentTimeBoolean}
               onChange={(e) => setPresentTimeBoolean(e.target.checked)}
+              disabled={!chronoScale}
             />
           </label>
           <div style={!largeScreen ? {width: 10} : {height: 10}}/>
@@ -346,7 +347,7 @@ function App() {
       {species && <div style={{height: largeScreen ? 165 : 400}}/>}
       {species && <PhTree
         commonAncestor={species}
-        width={window.screen.width * (chronoScale ? (species?.absoluteDuration() ?? 0) / scale : 1) - 64}
+        width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
         height={50}
         stroke={lineColor}
         format={scientificNotation}
