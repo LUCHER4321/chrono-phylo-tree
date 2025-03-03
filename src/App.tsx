@@ -294,7 +294,7 @@ function App() {
           </label>
           <div style={!largeScreen ? {width: 10} : {height: 10}}/>
           <label>
-            Escala Cronológica: <input
+            {codeText("nvlbl06", language)}: <input
               type="checkbox"
               checked={chronoScale}
               onChange={(e) => setChronoScale(e.target.checked)}
