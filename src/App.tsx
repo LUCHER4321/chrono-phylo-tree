@@ -15,6 +15,7 @@ function App() {
   const [lineColor, setLineColor] = useState("#7F7F7F");
   const [presentTime, setPresentTime] = useState<number>(1);
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
+  const [chronoScale, setChronoScale] = useState(true);
   const [language, setLanguage] = useState("spanish");
   const largeScreen = isLargeScreen();
   const languages = getLanguageOptions();
@@ -293,6 +294,14 @@ function App() {
           </label>
           <div style={!largeScreen ? {width: 10} : {height: 10}}/>
           <label>
+            Escala Cronológica: <input
+              type="checkbox"
+              checked={chronoScale}
+              onChange={(e) => setChronoScale(e.target.checked)}
+            />
+          </label>
+          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
+          <label>
           {codeText("nvlbl02", language)}: <input
               type="color"
               value={lineColor}
@@ -337,10 +346,11 @@ function App() {
       {species && <div style={{height: largeScreen ? 165 : 400}}/>}
       {species && <PhTree
         commonAncestor={species}
-        width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
+        width={window.screen.width * (chronoScale ? (species?.absoluteDuration() ?? 0) / scale : 1) - 64}
         height={50}
         stroke={lineColor}
         format={scientificNotation}
+        chronoScale={chronoScale}
         presentTime={presentTimeBoolean ? presentTime : undefined}
         padding={1}
       >
