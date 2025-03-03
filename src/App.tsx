@@ -344,7 +344,7 @@ function App() {
         <div style={largeScreen ? {width: 10} : {height: 10}}/>
         {largeScreen && <LanguajeSelector/>}
       </nav>
-      {species && <div style={{height: largeScreen ? 165 : 400}}/>}
+      {species && <div style={{height: largeScreen ? 185 : 420}}/>}
       {species && <PhTree
         commonAncestor={species}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
