@@ -528,6 +528,7 @@ nvbtn00_0;Eliminar todas las especies;Delete all species
 nvbtn01;Ejemplo;Example
 nvbtn02;Descargar JSON;Download JSON
 nvlbl05;Idioma;Language
+nvlbl06;Escala Cronológica;Chronological Scale
 splbl00;Nombre;Name
 splbl01;Aparición;Apparition
 splbl02;Duración;Duration
@@ -687,6 +688,7 @@ Below is a list of some of the translation codes used in the application:
 | `nvbtn01`   | Ejemplo                                                                        | Example                                                                     |
 | `nvbtn02`   | Descargar JSON                                                                 | Download JSON                                                               |
 | `nvlbl05`   | Idioma                                                                         | Language                                                                    |
+| `nvlbl06`   | Escala Cronológica                                                             | Chronological Scale                                                         |
 | `splbl00`   | Nombre                                                                         | Name                                                                        |
 | `splbl01`   | Aparición                                                                      | Apparition                                                                  |
 | `splbl02`   | Duración                                                                       | Duration                                                                    |
