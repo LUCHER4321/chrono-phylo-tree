@@ -12,6 +12,14 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
+**1.0.5**
+
+- PhTree's lines' width can depend or not on the species' duration
+- It's possible to know the steps until a species
+- It's possible to count the maximum steps until the last descendant of a species
+
+**1.0.2**
+
 - The duration of the species must be greater than 0
 - Menu doesn't close when a function throws error
 
@@ -256,6 +264,34 @@ allDescendants(): Species[]
 
 Returns an array of all descendants of the species, sorted by appearance time.
 
+#### stepsChain
+
+```typescript
+stepsChain(desc: Species): Species[]
+```
+
+Returns an array of `Species` objects representing the chain of species from the current species (`this`) to the specified descendant (`desc`). The chain includes all intermediate species in the lineage. If the specified descendant is not a descendant of the current species, the method returns an empty array.
+
+- **desc**: The descendant species to which the chain is traced.
+
+#### stepsUntil
+
+```typescript
+stepsUntil(desc: Species): number
+```
+
+Returns the number of steps (generations) from the current species (`this`) to the specified descendant (`desc`). If the specified descendant is not a descendant of the current species, the method returns `undefined`.
+
+- **desc**: The descendant species to which the number of steps is calculated.
+
+#### stepsUntilLastDescendant
+
+```typescript
+stepsUntilLastDescendant(): number
+```
+
+Returns the maximum number of steps (generations) from the current species (`this`) to its most distant descendant. If the current species has no descendants, the method returns `0`.
+
 #### toJSON
 
 ```typescript
@@ -395,6 +431,7 @@ The `PhTree` component accepts the following props:
 - **padding**: `number` (optional, default: `0`)The padding around the tree.
 - **stroke**: `string` (optional, default: `"grey"`)The stroke color for the tree lines.
 - **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)A function to format the display of time values.
+- **chronoScale**: `boolean` (optional, default: `true`)If `true`, the width of the lines depend on the durection of the species.
 - **presentTime**: `number` (optional)The current time to highlight in the tree.
 - **children**:`(species: Species, showMenu: boolean,toggleShowMenu: (species: Species) => void) => React.ReactNode` (optional) Render prop to customize the menu content.
 
