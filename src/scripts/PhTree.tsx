@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Species } from "./Species";
-import { Menu } from "./Menu";
 
 interface PhtreeProps {
     commonAncestor: Species;
@@ -9,6 +8,7 @@ interface PhtreeProps {
     padding?: number;
     stroke?: string;
     format?: (n: number) => string;
+    chronoScale?: boolean;
     presentTime?: number;
     children?: (
         species: Species,
@@ -18,7 +18,7 @@ interface PhtreeProps {
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 50, padding = 0, stroke = "grey", format = (n) => n.toString(), presentTime, children}: PhtreeProps
+    { commonAncestor, width = 1000, height = 50, padding = 0, stroke = "grey", format = (n) => n.toString(), chronoScale = true, presentTime, children}: PhtreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
@@ -39,19 +39,23 @@ export const PhTree = (
         setShowDesc(newShowDesc);
     }
 
-    const isPresentTimeDefined = presentTime !== undefined;
+    const isPresentTimeDefined = presentTime !== undefined && chronoScale;
+
+    console.log("stepsUntilLastDescendant:", width / (chronoScale ? commonAncestor.absoluteDuration() : (commonAncestor.stepsUntilLastDescendant() + 1)));
 
     return (
         <>
             <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.apparition) / commonAncestor.absoluteDuration() : 1)} height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime).length : commonAncestor.allDescendants().length))}>
                 <DrawTree
+                    commonAncestor={commonAncestor}
                     species={commonAncestor}
                     y={-1}
-                    scaleX={width / (commonAncestor.absoluteDuration())}
+                    scaleX={width / (chronoScale ? commonAncestor.absoluteDuration() : (commonAncestor.stepsUntilLastDescendant() + 1))}
                     scaleY={height}
                     padding={padding}
                     stroke={stroke}
                     format={format}
+                    chronoScale={chronoScale}
                     presentTime={presentTime}
                     toggleShowMenu={toggleShowMenu}
                     showDesc={showDesc}
@@ -64,6 +68,7 @@ export const PhTree = (
 };
 
 interface DrawTreeProps {
+    commonAncestor: Species;
     species: Species;
     y: number;
     scaleX: number;
@@ -71,19 +76,19 @@ interface DrawTreeProps {
     padding?: number;
     stroke?: string;
     format?: (n: number) => string;
+    chronoScale?: boolean;
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
     showDesc: Map<Species, boolean>;
     changeShowDesc: (s: Species) => void;
 }
 
-const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", format = (n: number) => n.toString(), presentTime = undefined, toggleShowMenu, showDesc, changeShowDesc}: DrawTreeProps) => {
-    const isPresentTimeDefined = presentTime !== undefined;
-    const fa = species.firstAncestor();
-    const all = fa.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
+const DrawTree = ({commonAncestor, species, y, scaleX, scaleY, padding = 0, stroke = "grey", format = (n: number) => n.toString(), chronoScale = true, presentTime = undefined, toggleShowMenu, showDesc, changeShowDesc}: DrawTreeProps) => {
+    const isPresentTimeDefined = presentTime !== undefined && chronoScale;
+    const all = commonAncestor.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const spIndex = all.indexOf(species);
-    const startX = (species.apparition - fa.apparition) * scaleX;
-    const endX = startX + Math.min(showDesc.get(species) ? species.duration : species.absoluteDuration(), isPresentTimeDefined ? presentTime - species.apparition : species.absoluteDuration()) * scaleX;
+    const startX = (chronoScale ? species.apparition - commonAncestor.apparition : (commonAncestor.stepsUntil(species) ?? 0)) * scaleX;
+    const endX = startX + (chronoScale ? Math.min(showDesc.get(species) ? species.duration : species.absoluteDuration(), isPresentTimeDefined ? presentTime - species.apparition : species.absoluteDuration()) : 1) * scaleX;
     const endY = spIndex * scaleY;
     const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const branchX = descendants.length > 0 ? startX + (Math.min(...descendants.map(desc => desc.apparition)) - species.apparition) * scaleX : endX;
@@ -100,6 +105,7 @@ const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", fo
                 />
             )}
             {species.display && <HorizontalLine
+                commonAncestor={commonAncestor}
                 species={species}
                 x1={startX}
                 x2={endX}
@@ -110,12 +116,14 @@ const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", fo
                 showDesc={showDesc.get(species)}
                 padding={padding}
                 format={format}
+                chronoScale={chronoScale}
                 presentTime={presentTime}
                 toggleShowMenu={toggleShowMenu}
             />}
             {species.descendants.map((desc, index) => (
                 <g style={{ display: (showDesc.get(species) && descendants.includes(desc)) ? 'block' : 'none' }} key={all.length + index}>
                     <DrawTree
+                        commonAncestor={commonAncestor}
                         species={desc}
                         y={desc.display ? endY : -1}
                         scaleX={scaleX}
@@ -123,6 +131,7 @@ const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", fo
                         padding={padding}
                         stroke={stroke}
                         format={format}
+                        chronoScale={chronoScale}
                         presentTime={presentTime}
                         toggleShowMenu={toggleShowMenu}
                         showDesc={showDesc}
@@ -135,6 +144,7 @@ const DrawTree = ({species, y, scaleX, scaleY, padding = 0, stroke = "white", fo
 };
 
 interface HorizontalLineProps {
+    commonAncestor: Species;
     species: Species;
     x1: number;
     x2: number;
@@ -145,13 +155,14 @@ interface HorizontalLineProps {
     changeShowDesc?: () => void;
     padding?: number;
     format?: (n: number) => string;
+    chronoScale?: boolean;
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
 }
 
-const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString(), presentTime, toggleShowMenu}: HorizontalLineProps) => {
+const HorizontalLine = ({commonAncestor, species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString(), chronoScale = true, presentTime, toggleShowMenu}: HorizontalLineProps) => {
     const isPresentTimeDefined = presentTime !== undefined;
-    const all = species.firstAncestor().allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
+    const all = commonAncestor.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const index = (s: Species) => all.indexOf(s);
     const orientation = species.ancestor ? (index(species) > index(species.ancestor) ? -3 : 1) : 1;
     const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
@@ -169,12 +180,12 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
             <foreignObject
                 x={x1 + padding}
                 y={y + (padding) * orientation}
-                width={(x0 ?? x2) - x1 - 2 * padding}
+                width={(chronoScale ? x0 ?? x2 : x2) - x1 - 2 * padding}
                 height={50}
             >
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                     <div>
-                        {format(species.apparition)}
+                        {chronoScale ? format(species.apparition) : ""}
                     </div>
                     <button style={{padding: 2.5}} onClick={() => toggleShowMenu(species)}>
                         {species.name}
@@ -184,12 +195,12 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
                             {((lastOne || !showDesc) && (!x0 || x0 === x2)) ? extinction : ""}
                         </button> :
                         <div>
-                            {extinction}
+                            {chronoScale ? extinction : ""}
                         </div>
                     }
                 </div>
             </foreignObject>
-            {x0 && x0 < x2 && (
+            {chronoScale && x0 && x0 < x2 && (
                 <foreignObject
                     x={x0 + padding}
                     y={y + padding * orientation}
@@ -197,7 +208,7 @@ const HorizontalLine = ({species, x1, x2, x0, y, stroke, showDesc = true, change
                     height={50}
                 >
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end", width: '100%' }}>
-                        {lastOne || !showDesc ? extinction : ""}
+                        {(lastOne || !showDesc) && chronoScale ? extinction : ""}
                     </div>
                 </foreignObject>)}
         </g>
