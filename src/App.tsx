@@ -271,6 +271,15 @@ function App() {
               onChange={(e) => setScale(Number(e.target.value))}
             />}
           </label>
+          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
+          <label>
+            {codeText("nvlbl06", language)}: <input
+              type="checkbox"
+              checked={chronoScale}
+              onChange={(e) => setChronoScale(e.target.checked)}
+            />
+          </label>
+          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
           <label>
           {codeText("nvlbl01", language)}: <input
               type="range"
@@ -291,14 +300,6 @@ function App() {
               checked={presentTimeBoolean}
               onChange={(e) => setPresentTimeBoolean(e.target.checked)}
               disabled={!chronoScale}
-            />
-          </label>
-          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
-          <label>
-            {codeText("nvlbl06", language)}: <input
-              type="checkbox"
-              checked={chronoScale}
-              onChange={(e) => setChronoScale(e.target.checked)}
             />
           </label>
           <div style={!largeScreen ? {width: 10} : {height: 10}}/>
