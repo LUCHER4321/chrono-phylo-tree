@@ -41,8 +41,6 @@ export const PhTree = (
 
     const isPresentTimeDefined = presentTime !== undefined && chronoScale;
 
-    console.log("stepsUntilLastDescendant:", width / (chronoScale ? commonAncestor.absoluteDuration() : (commonAncestor.stepsUntilLastDescendant() + 1)));
-
     return (
         <>
             <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.apparition) / commonAncestor.absoluteDuration() : 1)} height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime).length : commonAncestor.allDescendants().length))}>
