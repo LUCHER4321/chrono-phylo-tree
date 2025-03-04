@@ -12,6 +12,11 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
+**1.0.7**
+
+- The default duration of the ancestors and descendants are the duration of the species
+- MultiplePhTrees component allows to show the phylogenetic tree from multiple common ancestors
+
 **1.0.5**
 
 - PhTree's lines' width can depend or not on the species' duration
@@ -454,6 +459,50 @@ The component renders an SVG element that contains the phylogenetic tree. It use
 ### Customization
 
 The `PhTree` component can be customized using the various props it accepts. Additionally, the `children` render prop allows for further customization of the menu content displayed when a species node is clicked.
+
+## MultiplePhTrees Component
+
+The `MultiplePhTrees` component is a React-based visualization tool designed to display multiple phylogenetic trees from a list of species. It allows users to visualize and interact with multiple trees simultaneously, providing a comprehensive view of evolutionary relationships among different species.
+
+### Features
+
+- **Multiple Tree Visualization**: Displays multiple phylogenetic trees based on a list of species, each with its own evolutionary lineage.
+
+- **Common Ancestor Management**: Automatically creates a common ancestor for the provided species list, ensuring a unified visualization.
+
+- **Customizable Appearance**: Supports customization of tree dimensions, padding, stroke color, and number formatting.
+
+- **Interactive Tree Visualization**: Users can interact with the trees by toggling the visibility of species and accessing detailed information through a menu.
+
+### Properties
+
+The `MultiplePhTrees` component accepts the following props:
+
+- **speciesList**: `Species[]` - An array of species that will be used to generate the phylogenetic trees.
+
+- **width**: `number` (optional, default: `1000`) - The width of the SVG canvas.
+
+- **height**: `number` (optional, default: `50`) - The height per descendant of the SVG canvas.
+
+- **padding**: `number` (optional, default: `0`) - The padding around the tree.
+
+- **stroke**: `string` (optional, default: `"grey"`) - The stroke color for the tree lines.
+
+- **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`) - A function to format the display of time values.
+
+- **chronoScale**: `boolean` (optional, default: `true`) - If `true`, the width of the lines depends on the duration of the species.
+
+- **presentTime**: `number` (optional) - The current time to highlight in the tree.
+
+- **children**: `(species: Species, showMenu: boolean, toggleShowMenu: (species: Species) => void) => React.ReactNode` (optional) - Render prop to customize the menu content.
+
+### Rendering
+
+The component renders an SVG element that contains the phylogenetic trees. It uses the `PhTree` component to recursively draw the tree structure for each species in the list. The `children` render prop is conditionally rendered based on the `showMenu` state, allowing for further customization of the menu content displayed when a species node is clicked.
+
+### Customization
+
+The `MultiplePhTrees` component can be customized using the various props it accepts. Additionally, the `children` render prop allows for further customization of the menu content displayed when a species node is clicked.
 
 ## Menu Component
 
