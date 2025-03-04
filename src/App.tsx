@@ -314,7 +314,7 @@ function App() {
         <div style={largeScreen ? {width: 10} : {height: 10}}/>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
           <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
-          {codeText("nvlbl03", language)}: <a href="https://github.com/LUCHER4321/Phylo_Tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
+          {codeText("nvlbl03", language)}: <a href="https://github.com/LUCHER4321/chrono-phylo-tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
               <img height={25} src="https://logo.clearbit.com/github.com"/>
             </a>
           </label>
