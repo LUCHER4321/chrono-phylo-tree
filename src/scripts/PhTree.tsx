@@ -1,7 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { Species } from "./Species";
 
-interface PhtreeProps {
+interface MultiplePhTreesProps {
+    speciesList: Species[];
+    width?: number;
+    height?: number;
+    padding?: number;
+    stroke?: string;
+    format?: (n: number) => string;
+    chronoScale?: boolean;
+    presentTime?: number;
+    children?: (
+        species: Species,
+        showMenu: boolean,
+        toggleShowMenu: (species: Species) => void
+    ) => React.ReactNode;
+}
+
+export const MultiplePhTrees = (
+    {
+        speciesList,
+        width = 1000,
+        height = 50,
+        padding = 0,
+        stroke = "grey",
+        format = (n) => n.toString(),
+        chronoScale = true,
+        presentTime,
+        children
+    }: MultiplePhTreesProps
+) => {
+    const copies = speciesList.map(sp => sp.copy());
+    const lifeApparition = Math.min(...copies.map(sp => sp.apparition));
+    const life = new Species(
+        "",
+        lifeApparition,
+        Math.max(...copies.map(sp => sp.apparition - lifeApparition)),
+        undefined,
+        copies,
+    );
+    for(const sp of copies) {
+        sp.ancestor = life;
+    }
+    return (
+        <PhTree
+            commonAncestor={life}
+            width={width}
+            height={height}
+            padding={padding}
+            stroke={stroke}
+            format={format}
+            chronoScale={chronoScale}
+            presentTime={presentTime}
+        >
+            {(species, showMenu, toggleShowMenu) => children?.(species, showMenu, toggleShowMenu)}
+        </PhTree>
+    );
+};
+
+interface PhTreeProps {
     commonAncestor: Species;
     width?: number;
     height?: number;
@@ -18,7 +75,17 @@ interface PhtreeProps {
 }
 
 export const PhTree = (
-    { commonAncestor, width = 1000, height = 50, padding = 0, stroke = "grey", format = (n) => n.toString(), chronoScale = true, presentTime, children}: PhtreeProps
+    {
+        commonAncestor,
+        width = 1000,
+        height = 50,
+        padding = 0,
+        stroke = "grey",
+        format = (n) => n.toString(),
+        chronoScale = true,
+        presentTime,
+        children
+    }: PhTreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
