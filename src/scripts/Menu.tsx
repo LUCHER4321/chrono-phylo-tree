@@ -202,7 +202,7 @@ const Data = ({
 const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps) => {
     const [name, setName] = useState('');
     const [afterApparition, setAfterApparition] = useState(species.duration);
-    const [duration, setDuration] = useState(0);
+    const [duration, setDuration] = useState(species.duration);
     const [description, setDescription] = useState('');
 
     return(
@@ -237,8 +237,8 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
 
 const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) => {
     const [name, setName] = useState('');
-    const [previousApparition, setPreviousApparition] = useState(0);
-    const [duration, setDuration] = useState(0);
+    const [previousApparition, setPreviousApparition] = useState(species.duration);
+    const [duration, setDuration] = useState(species.duration);
     const [description, setDescription] = useState('');
 
     return(
