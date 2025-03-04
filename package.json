@@ -1,6 +1,6 @@
 {
   "name": "chrono-phylo-tree",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A React-based phylogenetic tree visualization library",
   "type": "module",
   "main": "dist/index.js",
