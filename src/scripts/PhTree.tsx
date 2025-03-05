@@ -39,6 +39,7 @@ export const MultiplePhTrees = (
         undefined,
         copies,
     );
+    life.display = false;
     for(const sp of copies) {
         sp.ancestor = life;
     }
@@ -115,7 +116,7 @@ export const PhTree = (
                     commonAncestor={commonAncestor}
                     species={commonAncestor}
                     y={-1}
-                    scaleX={width / (chronoScale ? commonAncestor.absoluteDuration() : (commonAncestor.stepsUntilLastDescendant() + 1))}
+                    scaleX={width / (chronoScale ? commonAncestor.absoluteDuration() : (Math.max(0, commonAncestor.stepsUntilLastDescendant()) + 1))}
                     scaleY={height}
                     padding={padding}
                     stroke={stroke}
