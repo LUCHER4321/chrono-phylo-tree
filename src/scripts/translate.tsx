@@ -10,7 +10,7 @@ export const codeText = (code: string, language: string, arg: string[] = [], fil
         const str = row[language];
         return arg.reduce((acc, arg, i) => acc.replace(`{${i}}`, arg), str);
     } catch {
-        return code;
+        return "";
     }
 };
 
@@ -21,7 +21,7 @@ export const codeTextAlt = async (code: string, language: string, arg: string[] 
         const str = row[language];
         return arg.reduce((acc, arg, i) => acc.replace(`{${i}}`, arg), str);
     } catch {
-        return code;
+        return "";
     }
 };
 
