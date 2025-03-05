@@ -12,6 +12,10 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
+**1.0.8**
+
+- Species class' step functions can include or not species whose `display` is `false`.
+
 **1.0.7**
 
 - The default duration of the ancestors and descendants are the duration of the species
@@ -272,30 +276,36 @@ Returns an array of all descendants of the species, sorted by appearance time.
 #### stepsChain
 
 ```typescript
-stepsChain(desc: Species): Species[]
+stepsChain(desc: Species, includeNotDisplay = false): Species[]
 ```
 
 Returns an array of `Species` objects representing the chain of species from the current species (`this`) to the specified descendant (`desc`). The chain includes all intermediate species in the lineage. If the specified descendant is not a descendant of the current species, the method returns an empty array.
 
 - **desc**: The descendant species to which the chain is traced.
 
+- **includeNotDisplay**: If `true`, include the species whose `display` is `false`.
+
 #### stepsUntil
 
 ```typescript
-stepsUntil(desc: Species): number
+stepsUntil(desc: Species, includeNotDisplay = false): number
 ```
 
 Returns the number of steps (generations) from the current species (`this`) to the specified descendant (`desc`). If the specified descendant is not a descendant of the current species, the method returns `undefined`.
 
 - **desc**: The descendant species to which the number of steps is calculated.
 
+- **includeNotDisplay**: If `true`, include the species whose `display` is `false`.
+
 #### stepsUntilLastDescendant
 
 ```typescript
-stepsUntilLastDescendant(): number
+stepsUntilLastDescendant(includeNotDisplay = false): number
 ```
 
 Returns the maximum number of steps (generations) from the current species (`this`) to its most distant descendant. If the current species has no descendants, the method returns `0`.
+
+- **includeNotDisplay**: If `true`, include the species whose `display` is `false`.
 
 #### toJSON
 
