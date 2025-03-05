@@ -136,25 +136,25 @@ export class Species {
     return lim0.flatMap((d) => d.allDescendants()).concat([this]).concat(lim1.flatMap((d) => d.allDescendants())).concat(prevDesc.flatMap((d) => d.allDescendants()));
   }
 
-  stepsChain(desc: Species): Species[] {
+  stepsChain(desc: Species, includeNotDisplay = false): Species[] {
     if(!this.allDescendants().includes(desc)) {
       return [];
     }
-    return [this as Species].concat(this.descendants.find(d => d.allDescendants().includes(desc))?.stepsChain(desc) ?? []);
+    return [this as Species].concat(this.descendants.find(d => d.allDescendants().includes(desc))?.stepsChain(desc) ?? []).filter(d => d.display || includeNotDisplay);
   }
 
-  stepsUntil(desc: Species): number | undefined {
+  stepsUntil(desc: Species, includeNotDisplay = false): number | undefined {
     if(!this.allDescendants().includes(desc)) {
       return;
     }
-    return this.stepsChain(desc).length - 1;
+    return this.stepsChain(desc, includeNotDisplay).length - 1;
   }
 
-  stepsUntilLastDescendant(): number{
+  stepsUntilLastDescendant(icludeNotDisplay = false): number{
     if(this.descendants.length === 0) {
       return 0;
     }
-    return Math.max(...this.allDescendants().filter(d => d.descendants.length === 0).map(d => this.stepsUntil(d) ?? 0));
+    return Math.max(...this.allDescendants().filter(d => d.descendants.length === 0).map(d => this.stepsUntil(d, icludeNotDisplay) ?? 0));
   }
 
   toJSON(): any {
