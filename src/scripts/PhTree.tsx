@@ -10,10 +10,12 @@ interface MultiplePhTreesProps {
     format?: (n: number) => string;
     chronoScale?: boolean;
     presentTime?: number;
+    handleMouseMove?: (x: number, y: number) => void;
     children?: (
-        species: Species,
+        species: Species | undefined,
         showMenu: boolean,
-        toggleShowMenu: (species: Species) => void
+        toggleShowMenu: (species: Species) => void,
+        hoverSpecies: Species | undefined
     ) => React.ReactNode;
 }
 
@@ -27,6 +29,7 @@ export const MultiplePhTrees = (
         format = (n) => n.toString(),
         chronoScale = true,
         presentTime,
+        handleMouseMove,
         children
     }: MultiplePhTreesProps
 ) => {
@@ -53,8 +56,9 @@ export const MultiplePhTrees = (
             format={format}
             chronoScale={chronoScale}
             presentTime={presentTime}
+            handleMouseMove={handleMouseMove}
         >
-            {(species, showMenu, toggleShowMenu) => children?.(species, showMenu, toggleShowMenu)}
+            {(species, showMenu, toggleShowMenu, hoverSpecies) => children?.(species, showMenu, toggleShowMenu, hoverSpecies)}
         </PhTree>
     );
 };
@@ -68,10 +72,12 @@ interface PhTreeProps {
     format?: (n: number) => string;
     chronoScale?: boolean;
     presentTime?: number;
+    handleMouseMove?: (x: number, y: number) => void;
     children?: (
-        species: Species,
+        species: Species | undefined,
         showMenu: boolean,
-        toggleShowMenu: (species: Species) => void
+        toggleShowMenu: (species: Species) => void,
+        hoverSpecies: Species | undefined
     ) => React.ReactNode;
 }
 
@@ -85,33 +91,43 @@ export const PhTree = (
         format = (n) => n.toString(),
         chronoScale = true,
         presentTime,
+        handleMouseMove,
         children
     }: PhTreeProps
 ) => {
     const [showMenu, setShowMenu] = useState(false);
     const [species, setSpecies] = useState<Species | undefined>(undefined);
+    const [hoverSpecies, setHoverSpecies] = useState<Species | undefined>(undefined);
     const [showDesc, setShowDesc] = useState<Map<Species, boolean>>(commonAncestor.allDescendants().reduce((acc, desc) => acc.set(desc, true), new Map()));
 
     useEffect(() => {
         setShowDesc(commonAncestor.allDescendants().reduce((acc, desc) => acc.set(desc, true), new Map()));
     }, [commonAncestor]);
 
-    const toggleShowMenu = (species: Species) => {
-        setSpecies(showMenu ? undefined : species);
+    const toggleShowMenu = (sp: Species) => {
+        setSpecies(showMenu ? undefined : sp);
         setShowMenu(!showMenu);
     };
 
-    const toggleShowDesc = (species: Species) => {
+    const toggleShowDesc = (sp: Species) => {
         const newShowDesc = new Map(showDesc);
-        newShowDesc.set(species, !showDesc.get(species));
+        newShowDesc.set(sp, !showDesc.get(sp));
         setShowDesc(newShowDesc);
-    }
+    };
+
+    const hoverShowMenu = (sp: Species | undefined) => {
+        setHoverSpecies(sp);
+    };
 
     const isPresentTimeDefined = presentTime !== undefined && chronoScale;
 
     return (
         <>
-            <svg width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.apparition) / commonAncestor.absoluteDuration() : 1)} height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime).length : commonAncestor.allDescendants().length))}>
+            <svg
+                width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.apparition) / commonAncestor.absoluteDuration() : 1)}
+                height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime).length : commonAncestor.allDescendants().length))}
+                onMouseMove={(event) => {handleMouseMove?.(event.clientX, event.clientY)}}
+            >
                 <DrawTree
                     commonAncestor={commonAncestor}
                     species={commonAncestor}
@@ -124,11 +140,12 @@ export const PhTree = (
                     chronoScale={chronoScale}
                     presentTime={presentTime}
                     toggleShowMenu={toggleShowMenu}
+                    hoverShowMenu={hoverShowMenu}
                     showDesc={showDesc}
                     changeShowDesc={toggleShowDesc}
                 />
             </svg>
-            {showMenu && species && children?.(species, showMenu, toggleShowMenu)}
+            {children?.(species, showMenu, toggleShowMenu, hoverSpecies)}
         </>
     );
 };
@@ -145,11 +162,27 @@ interface DrawTreeProps {
     chronoScale?: boolean;
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
+    hoverShowMenu: (s: Species | undefined) => void;
     showDesc: Map<Species, boolean>;
     changeShowDesc: (s: Species) => void;
 }
 
-const DrawTree = ({commonAncestor, species, y, scaleX, scaleY, padding = 0, stroke = "grey", format = (n: number) => n.toString(), chronoScale = true, presentTime = undefined, toggleShowMenu, showDesc, changeShowDesc}: DrawTreeProps) => {
+const DrawTree = ({
+    commonAncestor,
+    species,
+    y,
+    scaleX,
+    scaleY,
+    padding = 0,
+    stroke = "grey",
+    format = (n: number) => n.toString(),
+    chronoScale = true,
+    presentTime = undefined,
+    toggleShowMenu,
+    hoverShowMenu,
+    showDesc,
+    changeShowDesc
+}: DrawTreeProps) => {
     const isPresentTimeDefined = presentTime !== undefined && chronoScale;
     const all = commonAncestor.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const spIndex = all.indexOf(species);
@@ -185,6 +218,7 @@ const DrawTree = ({commonAncestor, species, y, scaleX, scaleY, padding = 0, stro
                 chronoScale={chronoScale}
                 presentTime={presentTime}
                 toggleShowMenu={toggleShowMenu}
+                hoverShowMenu={hoverShowMenu}
             />}
             {species.descendants.map((desc, index) => (
                 <g style={{ display: (showDesc.get(species) && descendants.includes(desc)) ? 'block' : 'none' }} key={all.length + index}>
@@ -202,6 +236,7 @@ const DrawTree = ({commonAncestor, species, y, scaleX, scaleY, padding = 0, stro
                         toggleShowMenu={toggleShowMenu}
                         showDesc={showDesc}
                         changeShowDesc={changeShowDesc}
+                        hoverShowMenu={hoverShowMenu}
                     />
                 </g>
             ))}
@@ -224,9 +259,23 @@ interface HorizontalLineProps {
     chronoScale?: boolean;
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
+    hoverShowMenu: (s: Species | undefined) => void;
 }
 
-const HorizontalLine = ({commonAncestor, species, x1, x2, x0, y, stroke, showDesc = true, changeShowDesc = () => {}, padding = 0, format = (n) => n.toString(), chronoScale = true, presentTime, toggleShowMenu}: HorizontalLineProps) => {
+const HorizontalLine = ({
+    commonAncestor,
+    species,
+    x1, x2, x0, y,
+    stroke,
+    showDesc = true,
+    changeShowDesc = () => {},
+    padding = 0,
+    format = (n) => n.toString(),
+    chronoScale = true,
+    presentTime,
+    toggleShowMenu,
+    hoverShowMenu
+}: HorizontalLineProps) => {
     const isPresentTimeDefined = presentTime !== undefined;
     const all = commonAncestor.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const index = (s: Species) => all.indexOf(s);
@@ -253,7 +302,12 @@ const HorizontalLine = ({commonAncestor, species, x1, x2, x0, y, stroke, showDes
                     <div>
                         {chronoScale ? format(species.apparition) : ""}
                     </div>
-                    <button style={{padding: 2.5}} onClick={() => toggleShowMenu(species)}>
+                    <button
+                        style={{padding: 2.5}}
+                        onClick={() => toggleShowMenu(species)}
+                        onMouseEnter={() => hoverShowMenu(species)}
+                        onMouseLeave={() => hoverShowMenu(undefined)}
+                    >
                         {species.name}
                     </button>
                     {descendants.length > 0 ?
