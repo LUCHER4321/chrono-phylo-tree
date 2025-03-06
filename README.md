@@ -12,22 +12,28 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
-**1.0.8**
+#### 1.0.9
+
+- Translation to German thanks to [u/Kneeerg](https://www.reddit.com/user/Kneeerg/)
+
+- PhTree allows to execute functions when the mouse is over the buttons
+
+#### 1.0.8
 
 - Species class' step functions can include or not species whose `display` is `false`.
 
-**1.0.7**
+#### 1.0.7
 
 - The default duration of the ancestors and descendants are the duration of the species
 - MultiplePhTrees component allows to show the phylogenetic tree from multiple common ancestors
 
-**1.0.5**
+#### 1.0.5
 
 - PhTree's lines' width can depend or not on the species' duration
 - It's possible to know the steps until a species
 - It's possible to count the maximum steps until the last descendant of a species
 
-**1.0.2**
+#### 1.0.2
 
 - The duration of the species must be greater than 0
 - Menu doesn't close when a function throws error
@@ -447,8 +453,9 @@ The `PhTree` component accepts the following props:
 - **stroke**: `string` (optional, default: `"grey"`)The stroke color for the tree lines.
 - **format**: `(n: number) => string` (optional, default: `(n) => n.toString()`)A function to format the display of time values.
 - **chronoScale**: `boolean` (optional, default: `true`)If `true`, the width of the lines depend on the durection of the species.
+- **handleMouseMove**: `(x: number, y: number) => void` (optional)a function that depends on the mouse position.
 - **presentTime**: `number` (optional)The current time to highlight in the tree.
-- **children**:`(species: Species, showMenu: boolean,toggleShowMenu: (species: Species) => void) => React.ReactNode` (optional) Render prop to customize the menu content.
+- **children**:`(species: Species | undefined, showMenu: boolean, toggleShowMenu: (species: Species) => void, hoverSpecies: Species | undefined) => React.ReactNode` (optional) Render prop to customize the menu content.
 
 ### State
 
@@ -459,8 +466,8 @@ The `PhTree` component accepts the following props:
 ## Methods
 
 - **toggleShowMenu**: `(species: Species) => void`Toggles the visibility of the menu for a given species.
-- **toggleShowDesc**: `(species: Species) => void`
-  Toggles the visibility of descendants for a given species, if `false`, its `descendants` won't be displayed and the `line` will extend until its `absoluteExtinction()`.
+- **toggleShowDesc**: `(species: Species) => void`Toggles the visibility of descendants for a given species, if `false`, its `descendants` won't be displayed and the `line` will extend until its `absoluteExtinction()`.
+- **hoverShowMenu**: `(sp: Species | undefined) => void`Toggles the visibility of info about the species
 
 ### Rendering
 
@@ -504,7 +511,7 @@ The `MultiplePhTrees` component accepts the following props:
 
 - **presentTime**: `number` (optional) - The current time to highlight in the tree.
 
-- **children**: `(species: Species, showMenu: boolean, toggleShowMenu: (species: Species) => void) => React.ReactNode` (optional) - Render prop to customize the menu content.
+- **children**: `(species: Species | undefined, showMenu: boolean, toggleShowMenu: (species: Species) => void) => React.ReactNode` (optional) - Render prop to customize the menu content.
 
 ### Rendering
 
