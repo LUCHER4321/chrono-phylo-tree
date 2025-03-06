@@ -1,34 +1,34 @@
-code;spanish;english
-lan;Español;English
-ttl;Árbol Cronofilogenético;Chronophylogenetic Tree
-nvlbl00;Escala;Scale
-nvlbl01;Presente;Present
-nvlbl02;Color;Color
-nvlbl03;Repositorio;Repository
-nvlbl04;Importar JSON;Import JSON
-nvbtn00;Crear especie vacía;Create empty species
-nvbtn00_0;Eliminar todas las especies;Delete all species
-nvbtn01;Ejemplo;Example
-nvbtn02;Descargar JSON;Download JSON
-nvlbl05;Idioma;Language
-nvlbl06;Escala Cronológica;Chronological Scale
-splbl00;Nombre;Name
-splbl01;Aparición;Apparition
-splbl02;Duración;Duration
-splbl03;Descripción;Description
-spbtn00;Guardar;Save
-spbtn01;Eliminar;Delete
-spbtn02;Crear descendiente;Create descendant
-spbtn03;Crear ancestro;Create ancestor
-spbtn04;Quitar Ancestro;Remove Ancestor
-spbtn04_0;Quitar Ancestros;Remove Ancestors
-spbtn05;Cancelar;Cancel
-cdbtn00;Crear;Create
-cnfrm00;¿Estás seguro de que deseas quitar al ancestro de {0}?;Are you sure you want to remove the {0}'s ancestor?
-cnfrm00_0;¿Estás seguro de que deseas quitar a los ancestros de {0}?;Are you sure you want to remove the {0}'s ancestors?
-cnfrm01;¿Estás seguro de que deseas eliminar la especie {0}?;Are you sure you want to remove the {0} species?
-cnfrm01_0;¿Estás seguro de que deseas eliminar la especie {0} junto a sus descendientes?;Are you sure you want to remove the {0} species along with its descendants?
-alert01;La duración de {0} debe ser mayor a 0;The duration of {0} must be greater than 0
-alert02;La aparición de {0} debe ser entre la aparición ({1}) y la extinción ({2}) de {3};The apparition of {0} must be between the apparition ({1}) and the extinction ({2}) of {3}
-alert03;La aparición de {0} debe ser anterior o igual a la aparición ({1}) de {2};The apparition of {0} must be before or equal the apparition ({1}) of {2}
-alert03_0;La extinción de {0} debe ser posterior o igual a la aparición ({1}) de {2};The extiction of {0} must be after or equal the apparition ({1}) of {2}
+code;spanish;english;deutsch
+lan;Español;English;Deutsch
+ttl;Árbol Cronofilogenético;Chronophylogenetic Tree;Chronophylogenetischer Baum
+nvlbl00;Escala;Scale;Skala
+nvlbl01;Presente;Present;Gegenwart
+nvlbl02;Color;Color;Farbe
+nvlbl03;Repositorio;Repository;Entwurfsmuster
+nvlbl04;Importar JSON;Import JSON;Importiere JSON
+nvbtn00;Crear especie vacía;Create empty species;Erschaffe leere Spezies
+nvbtn00_0;Eliminar todas las especies;Delete all species;Lösche alle Spezies
+nvbtn01;Ejemplo;Example;Beispiel
+nvbtn02;Descargar JSON;Download JSON;JSON Herunterladen
+nvlbl05;Idioma;Language;Sprache
+nvlbl06;Escala Cronológica;Chronological Scale;Chronologische Skala
+splbl00;Nombre;Name;Name
+splbl01;Aparición;Apparition;Erscheinung
+splbl02;Duración;Duration;Dauer
+splbl03;Descripción;Description;Beschreibung
+spbtn00;Guardar;Save;Speichern
+spbtn01;Eliminar;Delete;Löschen
+spbtn02;Crear descendiente;Create descendant;Erschaffe Nachkomme
+spbtn03;Crear ancestro;Create ancestor;Erschaffe Vorfahre
+spbtn04;Quitar Ancestro;Remove Ancestor;Entferne Vorfahr
+spbtn04_0;Quitar Ancestros;Remove Ancestors;Lösche Nachkomme
+spbtn05;Cancelar;Cancel;Abbrechen
+cdbtn00;Crear;Create;Erschaffe
+cnfrm00;¿Estás seguro de que deseas quitar al ancestro de {0}?;Are you sure you want to remove the {0}'s ancestor?;Willst du wirklich den {0}ten Vorfahre entfernen?
+cnfrm00_0;¿Estás seguro de que deseas quitar a los ancestros de {0}?;Are you sure you want to remove the {0}'s ancestors?;Willst du wirklich die {0}ten Vorfahren entfernen?
+cnfrm01;¿Estás seguro de que deseas eliminar la especie {0}?;Are you sure you want to remove the {0} species?;Willst du wirklich die {0}te Spezies entfernen?
+cnfrm01_0;¿Estás seguro de que deseas eliminar la especie {0} junto a sus descendientes?;Are you sure you want to remove the {0} species along with its descendants?;Willst du wirklich die {0}te Spezies mit allen Nachfahren entfernen?
+alert01;La duración de {0} debe ser mayor a 0;The duration of {0} must be greater than 0;Die Dauer von {0} muss grösser sein wie 0.
+alert02;La aparición de {0} debe ser entre la aparición ({1}) y la extinción ({2}) de {3};The apparition of {0} must be between the apparition ({1}) and the extinction ({2}) of {3};Die Erscheinung von {0} muss zwischen der Erscheinung von ({1}) und dem Aussterben von ({2}) von  {3}.
+alert03;La aparición de {0} debe ser anterior o igual a la aparición ({1}) de {2};The apparition of {0} must be before or equal the apparition ({1}) of {2};Die Erscheinung von {0} muss zugleich oder befor dem Erscheinen von ({1}) von {2} sein.
+alert03_0;La extinción de {0} debe ser posterior o igual a la aparición ({1}) de {2};The extiction of {0} must be after or equal the apparition ({1}) of {2};Das Aussterben von {0} muss nach oder zugleich zu dem Erscheinen von ({1}) von {2} sein.
