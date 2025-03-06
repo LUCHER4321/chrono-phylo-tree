@@ -231,15 +231,18 @@ function App() {
 
   const LanguajeSelector = ({}) => {
     return (
-      <label style={{textAlign: "start"}}>
-      {codeText("nvlbl05", language)}: <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-        {Array.from(languages).map(([key, value], index) => (
-          <option value={key} key={index}>
-            {value}
-          </option>
-        ))}
-      </select>
-    </label>
+      <tr style={{textAlign: "start"}}>
+        <td>{codeText("nvlbl05", language)}:</td>
+        <td>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            {Array.from(languages).map(([key, value], index) => (
+              <option value={key} key={index}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </td>
+      </tr>
     );
   };
 
@@ -265,90 +268,117 @@ function App() {
         boxSizing: "border-box",
         transform: species ? "translateZ(0)" : "none"
         }}>
-        {!largeScreen && <LanguajeSelector/>}
-        <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
-          <label>
-            {codeText("nvlbl00", language)}: <input
-              type="range"
-              min={minScale}
-              max={maxScale(presentTime)}
-              step={minScale}
-              value={maxScale(presentTime) - scale + minScale}
-              onChange={(e) => setScale(maxScale(presentTime) - Number(e.target.value) + minScale)}
-            /> {showScaleNumber && <input
-              type="number"
-              min={1}
-              max={maxScale(presentTime)}
-              value={scale}
-              onChange={(e) => setScale(Number(e.target.value))}
-            />}
-          </label>
-          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
-          <label>
-            {codeText("nvlbl06", language)}: <input
-              type="checkbox"
-              checked={chronoScale}
-              onChange={(e) => setChronoScale(e.target.checked)}
-            />
-          </label>
-          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
-          <label>
-            {codeText("nvlbl07", language)}: <input
-              type="checkbox"
-              checked={showHover}
-              onChange={(e) => setShowHover(e.target.checked)}
-            />
-          </label>
-          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
-          <label>
-          {codeText("nvlbl01", language)}: <input
-              type="range"
-              min={species ? species.apparition : 0}
-              max={species ? species.absoluteExtinction() : 1}
-              value={presentTime}
-              onChange={(e) => changePresentTime(Number(e.target.value))}
-              disabled={!presentTimeBoolean || !chronoScale}
-            /> <input
-              type="number"
-              min={species ? species.apparition : 0}
-              max={species ? species.absoluteExtinction() : 1}
-              value={presentTime}
-              onChange={(e) => changePresentTime(Number(e.target.value))}
-              disabled={!presentTimeBoolean || !chronoScale}
-            /> <input
-              type="checkbox"
-              checked={presentTimeBoolean}
-              onChange={(e) => setPresentTimeBoolean(e.target.checked)}
-              disabled={!chronoScale}
-            />
-          </label>
-        </div>
+        <table style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+          <tbody>
+          {!largeScreen && <LanguajeSelector/>}
+          {!largeScreen && <tr><div style={{height: 10}}/></tr>}
+          <tr>
+            <td>{codeText("nvlbl00", language)}:</td>
+            <td>
+              <input
+                type="range"
+                min={minScale}
+                max={maxScale(presentTime)}
+                step={minScale}
+                value={maxScale(presentTime) - scale + minScale}
+                onChange={(e) => setScale(maxScale(presentTime) - Number(e.target.value) + minScale)}
+              /> {showScaleNumber && <input
+                type="number"
+                min={1}
+                max={maxScale(presentTime)}
+                value={scale}
+                onChange={(e) => setScale(Number(e.target.value))}
+              />}
+            </td>
+          </tr>
+          <tr><div style={{height: 10}}/></tr>
+          <tr>
+            <td>{codeText("nvlbl06", language)}:</td>
+            <td>
+              <input
+                type="checkbox"
+                checked={chronoScale}
+                onChange={(e) => setChronoScale(e.target.checked)}
+              />
+            </td>
+          </tr>
+          <tr><div style={{height: 10}}/></tr>
+          <tr>
+            <td>{codeText("nvlbl07", language)}:</td>
+            <td>
+              <input
+                type="checkbox"
+                checked={showHover}
+                onChange={(e) => setShowHover(e.target.checked)}
+              />
+            </td>
+          </tr>
+          <tr><div style={{height: 10}}/></tr>
+          <tr>
+            <td>{codeText("nvlbl01", language)}:</td>
+            <td>
+              <input
+                type="range"
+                min={species ? species.apparition : 0}
+                max={species ? species.absoluteExtinction() : 1}
+                value={presentTime}
+                onChange={(e) => changePresentTime(Number(e.target.value))}
+                disabled={!presentTimeBoolean || !chronoScale}
+              /> <input
+                type="number"
+                min={species ? species.apparition : 0}
+                max={species ? species.absoluteExtinction() : 1}
+                value={presentTime}
+                onChange={(e) => changePresentTime(Number(e.target.value))}
+                disabled={!presentTimeBoolean || !chronoScale}
+              /> <input
+                type="checkbox"
+                checked={presentTimeBoolean}
+                onChange={(e) => setPresentTimeBoolean(e.target.checked)}
+                disabled={!chronoScale}
+              />
+            </td>
+          </tr>
+          </tbody>
+        </table>
         <div style={largeScreen ? {width: 10} : {height: 10}}/>
-        <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
-          <label style={{ display: 'flex', alignItems: 'center', height: 25 }}>
-          {codeText("nvlbl03", language)}: <a href="https://github.com/LUCHER4321/chrono-phylo-tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
-              <img height={25} src="https://logo.clearbit.com/github.com"/>
-            </a>
-          </label>
-          <div style={{height: 10}}/>
-          <label>
-          {codeText("nvlbl04", language)}: <input
-              type="file"
-              accept=".json"
-              value={undefined}
-              onChange={async (e) => await setFromJson(e.target.files?.[0])}
-            />
-          </label>
-          <div style={{height: 10}}/>
-          {!largeScreen && <label>
-          {codeText("nvlbl02", language)}: <input
-              type="color"
-              value={lineColor}
-              onChange={(e) => setLineColor(e.target.value)}
-            />
-          </label>}
-          {!largeScreen && <div style={{height: 10}}/>}
-          <div style={{display: "flex", flexDirection: largeScreen ? "row" : "column"}}>
+        <table style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+          <tbody>
+          <tr>
+            <td>{codeText("nvlbl03", language)}: </td>
+            <td>
+              <a href="https://github.com/LUCHER4321/chrono-phylo-tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
+                <img height={25} src="https://logo.clearbit.com/github.com"/>
+              </a>
+            </td>
+          </tr>
+          <tr><div style={{height: 10}}/></tr>
+          <tr>
+            <td>{codeText("nvlbl04", language)}:</td>
+            <td>
+              <input
+                type="file"
+                accept=".json"
+                value={undefined}
+                onChange={async (e) => await setFromJson(e.target.files?.[0])}
+              />
+            </td>
+          </tr>
+          <tr><div style={{height: 10}}/></tr>
+          {!largeScreen && <tr>
+            <td>{codeText("nvlbl02", language)}:</td>
+            <td>
+              <input
+                type="color"
+                value={lineColor}
+                onChange={(e) => setLineColor(e.target.value)}
+              />
+            </td>
+          </tr>}
+          </tbody>
+          <tbody>
+          {!largeScreen && <tr><div style={{height: 10}}/></tr>}
+          <tr style={{display: "flex", flexDirection: largeScreen ? "row" : "column"}}>
             <button type="button" onClick={async () => species ? deleteAllSpecies() : await createEmptySpecies()}>
               {codeText("nvbtn00" + (species ? "_0" : ""), language)}
             </button>
@@ -362,22 +392,28 @@ function App() {
             <button onClick={async () => await species?.saveJSON()} disabled={!species}>
               {codeText("nvbtn02", language)}
             </button>
-          </div>
-        </div>
+          </tr>
+          </tbody>
+        </table>
         <div style={largeScreen ? {width: 10} : {height: 10}}/>
-        {largeScreen && <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
-          <LanguajeSelector/>
-          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
-          <label>
-          {codeText("nvlbl02", language)}: <input
-              type="color"
-              value={lineColor}
-              onChange={(e) => setLineColor(e.target.value)}
-            />
-          </label>
-        </div>}
+        {largeScreen && <table style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+          <tbody>
+            <LanguajeSelector/>
+            <tr><div style={{height: 10}}/></tr>
+            <tr>
+              <td>{codeText("nvlbl02", language)}:</td>
+              <td>
+                <input
+                  type="color"
+                  value={lineColor}
+                  onChange={(e) => setLineColor(e.target.value)}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>}
       </nav>
-      {species && <div style={{height: largeScreen ? 170 : 460}}/>}
+      {species && <div style={{height: largeScreen ? 190 : 600}}/>}
       {species && <PhTree
         commonAncestor={species}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
