@@ -1,6 +1,6 @@
 {
   "name": "chrono-phylo-tree",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "A React-based phylogenetic tree visualization library",
   "type": "module",
   "main": "dist/index.js",
@@ -36,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LUCHER4321/Phylo_Tree"
+    "url": "https://github.com/LUCHER4321/chrono-phylo-tree"
   },
   "keywords": ["phylogenetic", "tree", "visualization", "react"],
   "author": "LUCHER4321"
