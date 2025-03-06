@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
 import './App.css'
@@ -17,9 +17,12 @@ function App() {
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);
   const [chronoScale, setChronoScale] = useState(true);
   const [language, setLanguage] = useState("spanish");
+  const [hoverPosition, setHoverPosition] = useState({x: 0, y: 0});
+  const [showHover, setShowHover] = useState(false);
   const largeScreen = isLargeScreen();
   const languages = getLanguageOptions();
   const minScale = 1e-12;
+  const offset = {x: 0, y: -50}
 
   useEffect(() => {
     const title = document.getElementById("title");
@@ -230,8 +233,8 @@ function App() {
     return (
       <label style={{textAlign: "start"}}>
       {codeText("nvlbl05", language)}: <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-        {Array.from(languages).map(([key, value]) => (
-          <option value={key}>
+        {Array.from(languages).map(([key, value], index) => (
+          <option value={key} key={index}>
             {value}
           </option>
         ))}
@@ -239,6 +242,15 @@ function App() {
     </label>
     );
   };
+
+  const handleMouseMove = (x: number, y: number) => {
+    setHoverPosition({
+      x: x,
+      y: y,
+    });
+  };
+
+  //document.addEventListener("mousemove", handleMouseMove);
 
   return (
     <>
@@ -281,6 +293,14 @@ function App() {
           </label>
           <div style={!largeScreen ? {width: 10} : {height: 10}}/>
           <label>
+            {codeText("nvlbl07", language)}: <input
+              type="checkbox"
+              checked={showHover}
+              onChange={(e) => setShowHover(e.target.checked)}
+            />
+          </label>
+          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
+          <label>
           {codeText("nvlbl01", language)}: <input
               type="range"
               min={species ? species.apparition : 0}
@@ -302,14 +322,6 @@ function App() {
               disabled={!chronoScale}
             />
           </label>
-          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
-          <label>
-          {codeText("nvlbl02", language)}: <input
-              type="color"
-              value={lineColor}
-              onChange={(e) => setLineColor(e.target.value)}
-            />
-          </label>
         </div>
         <div style={largeScreen ? {width: 10} : {height: 10}}/>
         <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
@@ -318,6 +330,7 @@ function App() {
               <img height={25} src="https://logo.clearbit.com/github.com"/>
             </a>
           </label>
+          <div style={{height: 10}}/>
           <label>
           {codeText("nvlbl04", language)}: <input
               type="file"
@@ -326,6 +339,15 @@ function App() {
               onChange={async (e) => await setFromJson(e.target.files?.[0])}
             />
           </label>
+          <div style={{height: 10}}/>
+          {!largeScreen && <label>
+          {codeText("nvlbl02", language)}: <input
+              type="color"
+              value={lineColor}
+              onChange={(e) => setLineColor(e.target.value)}
+            />
+          </label>}
+          {!largeScreen && <div style={{height: 10}}/>}
           <div style={{display: "flex", flexDirection: largeScreen ? "row" : "column"}}>
             <button type="button" onClick={async () => species ? deleteAllSpecies() : await createEmptySpecies()}>
               {codeText("nvbtn00" + (species ? "_0" : ""), language)}
@@ -343,9 +365,19 @@ function App() {
           </div>
         </div>
         <div style={largeScreen ? {width: 10} : {height: 10}}/>
-        {largeScreen && <LanguajeSelector/>}
+        {largeScreen && <div style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+          <LanguajeSelector/>
+          <div style={!largeScreen ? {width: 10} : {height: 10}}/>
+          <label>
+          {codeText("nvlbl02", language)}: <input
+              type="color"
+              value={lineColor}
+              onChange={(e) => setLineColor(e.target.value)}
+            />
+          </label>
+        </div>}
       </nav>
-      {species && <div style={{height: largeScreen ? 185 : 420}}/>}
+      {species && <div style={{height: largeScreen ? 170 : 460}}/>}
       {species && <PhTree
         commonAncestor={species}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
@@ -355,18 +387,37 @@ function App() {
         chronoScale={chronoScale}
         presentTime={presentTimeBoolean ? presentTime : undefined}
         padding={1}
+        handleMouseMove={handleMouseMove}
       >
-        {(sp, showMenu, toggleShowMenu) => <Menu
-          species={sp}
-          language={language}
-          open={showMenu}
-          onClose={() => toggleShowMenu(sp)}
-          saveSpecies={saveSpecies}
-          createDescendant={createDescendant}
-          createAncestor={createAncestor}
-          deleteAncestor={() => deleteAncestor?.(sp)}
-          deleteSpecies={() => deleteSpecies?.(sp)}
-        />}
+        {(sp, showMenu, toggleShowMenu, hoverSpecies) => species &&
+          <>
+            {showMenu && sp && <Menu
+              species={sp}
+              language={language}
+              open={showMenu}
+              onClose={() => toggleShowMenu(sp)}
+              saveSpecies={saveSpecies}
+              createDescendant={createDescendant}
+              createAncestor={createAncestor}
+              deleteAncestor={() => deleteAncestor?.(sp)}
+              deleteSpecies={() => deleteSpecies?.(sp)}
+            />}
+            {showHover && hoverSpecies && hoverSpecies.description &&
+              <nav
+                style={{
+                  position: "absolute",
+                  left: hoverPosition.x + offset.x,
+                  top: hoverPosition.y - offset.y,
+                  backgroundColor: "grey",
+                  padding: 10
+                }}
+              >
+                <p>{hoverSpecies.name} ({scientificNotation(hoverSpecies.apparition)} — {scientificNotation(hoverSpecies.extinction())}):</p>
+                <p>{hoverSpecies.description}</p>
+              </nav>
+            }
+          </>
+        }
       </PhTree>}
     </>
   )
