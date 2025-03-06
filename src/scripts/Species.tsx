@@ -40,6 +40,7 @@ export class Species {
       }
     };
 
+    invertPositon(sp);
     return sp.allDescendants()[n];
   }
 
@@ -165,16 +166,18 @@ export class Species {
       {
         apparition: this.apparition
       };
-    const json = {
+    const json0 = {
       name: this.name,
       ...apparitionJSON,
       duration: this.duration,
     }
-    const description = this.description ? {description: this.description} : {};
+    const json = this.description ? {
+      ...json0,
+      description: this.description
+    } : json0;
     return this.descendants.length > 0 ?
       {
         ...json,
-        ...description,
         descendants: this.descendants.map((desc) => desc.toJSON()),
       } : json;
   }
