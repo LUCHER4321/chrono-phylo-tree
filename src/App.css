@@ -1,3 +1,9 @@
+@import "tailwindcss";
+
+@tailwindcss base;
+@tailwindcss component;
+@tailwindcss utilities;
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +45,87 @@
 
 .read-the-docs {
   color: #888;
+}
+
+input:not([type="file"]) {
+  text-rendering: auto;
+  color: fieldtext;
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  appearance: auto;
+  -webkit-rtl-ordering: logical;
+  cursor: text;
+  background-color: field;
+  margin: 0em;
+  padding: 1px 0px;
+  border-width: 2px;
+  border-style: inset;
+  border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  border-image: initial;
+  padding-block: 1px;
+  padding-inline: 2px;
+}
+
+input:not([type="image" i], [type="range" i], [type="checkbox" i], [type="radio" i]) {
+  overflow-clip-margin: 0px !important;
+  overflow: clip !important;
+}
+
+input[type="text" i],
+input[type="number" i] {
+  margin-left: 4px;
+  margin-right: 4px;
+  padding-block: 1px;
+  padding-inline: 2px;
+  background-color: field;
+}
+
+input[type="range" i] {
+  appearance: auto;
+  cursor: default;
+  color: light-dark(rgb(16, 16, 16), rgb(255, 255, 255));
+  padding: initial;
+  border: initial;
+  margin: 2px;
+}
+
+input[type="file"]::file-selector-button{
+  background-color: #6b6b6b;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 0.25rem;
+}
+
+textarea {
+  font-family: monospace;
+  text-rendering: auto;
+  color: fieldtext;
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  appearance: auto;
+  -webkit-rtl-ordering: logical;
+  resize: -internal-textarea-auto;
+  cursor: text;
+  overflow-wrap: break-word;
+  background-color: field;
+  column-count: initial !important;
+  margin: 0em;
+  border-width: 1px;
+  border-style: solid;
+  border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  border-image: initial;
+  padding: 2px;
+  white-space: pre-wrap;
 }
