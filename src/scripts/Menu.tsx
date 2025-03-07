@@ -55,7 +55,7 @@ export const Menu = ({species, language, open, onClose, saveSpecies, createDesce
 
     return(
         <Modal open={open} onClose={onClose}>
-            <form style={{display: "flex", flexDirection: "column", textAlign: "start", width: "auto", position: "fixed", backgroundColor: "grey", padding: 10}}>
+            <form style={{backgroundColor: "grey"}} className="flex flex-col text-start w-auto fixed p-2.5">
                 <Data
                     name={name}
                     setName={setName}
@@ -163,37 +163,54 @@ const Data = ({
 }: DataProps) => {
     return (
         <>
-            <label>
-                {codeText("splbl00", language ?? "")}: <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-            </label>
-            <label>
-                {codeText("splbl01", language ?? "")}: <input
-                    type="number"
-                    min={minApparition}
-                    max={maxApparition}
-                    value={apparition}
-                    onChange={(e) => setApparition(Number(e.target.value))}
-                />
-            </label>
-            <label>
-                {codeText("splbl02", language ?? "")}: <input
-                    type="number"
-                    min={minDuration}
-                    max={maxDuration}
-                    value={duration}
-                    onChange={(e) => setDuration(Number(e.target.value))}
-                />
-            </label>
-            <label>
-                {codeText("splbl03", language ?? "")}: <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-            </label>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>{codeText("splbl00", language ?? "")}:</td>
+                        <td>
+                            <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{codeText("splbl01", language ?? "")}:</td>
+                        <td>
+                            <input
+                                type="number"
+                                min={minApparition}
+                                max={maxApparition}
+                                value={apparition}
+                                onChange={(e) => setApparition(Number(e.target.value))}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{codeText("splbl02", language ?? "")}:</td>
+                        <td>
+                            <input
+                                type="number"
+                                min={minDuration}
+                                max={maxDuration}
+                                value={duration}
+                                onChange={(e) => setDuration(Number(e.target.value))}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{codeText("splbl03", language ?? "")}:</td>
+                        <td>
+                            <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </td>
+                         
+                    </tr>
+                </tbody>
+            </table>
             {children}
         </>
     );
@@ -283,24 +300,13 @@ interface ModalProps {
 const Modal = ({open, onClose, children}: ModalProps) => {
     return (
         <div
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                transition: 'background-color 0.3s ease', // Ajusta la duración y el timing según sea necesario
-                backgroundColor: open ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0)',
-                visibility: open ? 'visible' : 'hidden',
-            }}
+            style={{backgroundColor: open ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0)',}}
+            className={`flex fixed inset-0 justify-center items-center transition-colors duration-300 ease-in-out ${open ? "visible" : "hidden"}`}
             onClick={onClose}
         >
             <div
                 onClick={(e) => e.stopPropagation()}
-                style={{justifyContent: "center", alignItems: "center", display: "flex"}}
+                className="flex justify-center items-center"
             >
                 {children}
             </div>
