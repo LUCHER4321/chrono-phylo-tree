@@ -221,7 +221,7 @@ const DrawTree = ({
                 hoverShowMenu={hoverShowMenu}
             />}
             {species.descendants.map((desc, index) => (
-                <g style={{ display: (showDesc.get(species) && descendants.includes(desc)) ? 'block' : 'none' }} key={all.length + index}>
+                <g className={(showDesc.get(species) && descendants.includes(desc)) ? "block" : "hidden"} key={all.length + index}>
                     <DrawTree
                         commonAncestor={commonAncestor}
                         species={desc}
@@ -298,12 +298,12 @@ const HorizontalLine = ({
                 width={(chronoScale ? x0 ?? x2 : x2) - x1 - 2 * padding}
                 height={50}
             >
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                <div className="flex flex-row justify-between w-full">
                     <div>
                         {chronoScale ? format(species.apparition) : ""}
                     </div>
                     <button
-                        style={{padding: 2.5}}
+                        className="p-0.625"
                         onClick={() => toggleShowMenu(species)}
                         onMouseEnter={() => hoverShowMenu(species)}
                         onMouseLeave={() => hoverShowMenu(undefined)}
@@ -311,7 +311,7 @@ const HorizontalLine = ({
                         {species.name}
                     </button>
                     {descendants.length > 0 ?
-                        <button onClick={changeShowDesc} style={{padding: showDesc ? 10 : 5}}>
+                        <button onClick={changeShowDesc} className="h-1" style={{maxWidth: 4}}>
                             {((lastOne || !showDesc) && (!x0 || x0 === x2)) ? extinction : ""}
                         </button> :
                         <div>
@@ -327,7 +327,7 @@ const HorizontalLine = ({
                     width={x2 - x0 - 2 * padding}
                     height={50}
                 >
-                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end", width: '100%' }}>
+                    <div className="flex flex-row justify-end w-full">
                         {(lastOne || !showDesc) && chronoScale ? extinction : ""}
                     </div>
                 </foreignObject>)}
