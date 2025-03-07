@@ -6,7 +6,6 @@ import { PhTree } from './scripts/PhTree'
 import { Species } from './scripts/Species'
 import { between } from './scripts/between';
 import { codeText, codeTextAlt, getLanguageOptions } from './scripts/translate';
-import { isLargeScreen } from './scripts/isLargeScreen';
 import { Menu } from './scripts/Menu';
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
   const [language, setLanguage] = useState("spanish");
   const [hoverPosition, setHoverPosition] = useState({x: 0, y: 0});
   const [showHover, setShowHover] = useState(false);
-  const largeScreen = isLargeScreen();
   const languages = getLanguageOptions();
   const minScale = 1e-12;
   const offset = {x: 0, y: -50}
@@ -229,12 +227,16 @@ function App() {
     setSpecies(undefined);
   };
 
-  const LanguajeSelector = ({}) => {
+  const LanguajeSelector = ({className = ""}: {className?: string}) => {
     return (
-      <tr style={{textAlign: "start"}}>
+      <tr className={"text-start " + className}>
         <td>{codeText("nvlbl05", language)}:</td>
         <td>
-          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="bg-white dark:bg-[#242424] rounded"
+          >
             {Array.from(languages).map(([key, value], index) => (
               <option value={key} key={index}>
                 {value}
@@ -258,22 +260,17 @@ function App() {
   return (
     <>
       <nav style={{
-        display: "flex",
-        flexDirection: largeScreen ? "row" : "column",
-        width: "auto",
-        position: species ? "fixed" : "static",
         backgroundColor: hexToRGBA(lineColor, 0.5),
-        padding: 10,
         maxWidth: window.screen.width - 64,
-        boxSizing: "border-box",
-        transform: species ? "translateZ(0)" : "none"
-        }}>
-        <table style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+        }}
+        className={`flex flex-col sm:flex-row w-auto ${species ? "fixed" : "static"} p-2.5 box-border ${species ? "transform translate-z-0" : "transform-none"}`}
+        >
+        <table className="flex flex-col justify-start text-start">
           <tbody>
-          {!largeScreen && <LanguajeSelector/>}
-          {!largeScreen && <tr><div style={{height: 10}}/></tr>}
+          <LanguajeSelector className="block sm:hidden"/>
+          <tr className="block sm:hidden"><div className="h-2.5"/></tr>
           <tr>
-            <td>{codeText("nvlbl00", language)}:</td>
+            <td>{codeText("nvlbl00", language)}: </td>
             <td>
               <input
                 type="range"
@@ -291,9 +288,9 @@ function App() {
               />}
             </td>
           </tr>
-          <tr><div style={{height: 10}}/></tr>
+          <tr className="h-2.5"/>
           <tr>
-            <td>{codeText("nvlbl06", language)}:</td>
+            <td>{codeText("nvlbl06", language)}: </td>
             <td>
               <input
                 type="checkbox"
@@ -302,9 +299,9 @@ function App() {
               />
             </td>
           </tr>
-          <tr><div style={{height: 10}}/></tr>
+          <tr className="h-2.5"/>
           <tr>
-            <td>{codeText("nvlbl07", language)}:</td>
+            <td>{codeText("nvlbl07", language)}: </td>
             <td>
               <input
                 type="checkbox"
@@ -313,9 +310,9 @@ function App() {
               />
             </td>
           </tr>
-          <tr><div style={{height: 10}}/></tr>
+          <tr className="h-2.5"/>
           <tr>
-            <td>{codeText("nvlbl01", language)}:</td>
+            <td>{codeText("nvlbl01", language)}: </td>
             <td>
               <input
                 type="range"
@@ -341,18 +338,18 @@ function App() {
           </tr>
           </tbody>
         </table>
-        <div style={largeScreen ? {width: 10} : {height: 10}}/>
-        <table style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+        <div className="h-2.5 sm:w-2.5 sm:h-auto"/>
+        <table className="flex flex-col justify-start text-start">
           <tbody>
           <tr>
             <td>{codeText("nvlbl03", language)}: </td>
             <td>
-              <a href="https://github.com/LUCHER4321/chrono-phylo-tree" target="_blank" style={{ marginLeft: 5, display: 'flex', alignItems: 'center' }}>
-                <img height={25} src="https://logo.clearbit.com/github.com"/>
+              <a href="https://github.com/LUCHER4321/chrono-phylo-tree" target="_blank" className="ml-1.25 flex items-center">
+                <img style={{maxHeight: 25}} src="https://logo.clearbit.com/github.com"/>
               </a>
             </td>
           </tr>
-          <tr><div style={{height: 10}}/></tr>
+          <tr className="h-2.5"/>
           <tr>
             <td>{codeText("nvlbl04", language)}:</td>
             <td>
@@ -364,8 +361,8 @@ function App() {
               />
             </td>
           </tr>
-          <tr><div style={{height: 10}}/></tr>
-          {!largeScreen && <tr>
+          <tr className="h-2.5"/>
+          <tr className="block sm:hidden">
             <td>{codeText("nvlbl02", language)}:</td>
             <td>
               <input
@@ -374,32 +371,30 @@ function App() {
                 onChange={(e) => setLineColor(e.target.value)}
               />
             </td>
-          </tr>}
+          </tr>
           </tbody>
           <tbody>
-          {!largeScreen && <tr><div style={{height: 10}}/></tr>}
-          <tr style={{display: "flex", flexDirection: largeScreen ? "row" : "column"}}>
+          <tr className="h-2.5 sm:h-auto"/>
+          <tr className="flex flex-col sm:flex-row">
             <button type="button" onClick={async () => species ? deleteAllSpecies() : await createEmptySpecies()}>
               {codeText("nvbtn00" + (species ? "_0" : ""), language)}
             </button>
-            <div style={{display: species ? "none" : "block"}}>
-            </div>
-            <div style={largeScreen ? {width: 10} : {height: 10}}/>
+            <div className="h-2.5 sm:w-2.5 sm:h-auto"/>
             <button type="button" onClick={showExample}>
               {codeText("nvbtn01", language)}
             </button>
-            <div style={largeScreen ? {width: 10} : {height: 10}}/>
+            <div className="h-2.5 sm:w-2.5 sm:h-auto"/>
             <button onClick={async () => await species?.saveJSON()} disabled={!species}>
               {codeText("nvbtn02", language)}
             </button>
           </tr>
           </tbody>
         </table>
-        <div style={largeScreen ? {width: 10} : {height: 10}}/>
-        {largeScreen && <table style={{justifyContent: "flex-start", flexDirection: "column", display: "flex", textAlign: "start"}}>
+        <div className="h-2.5 sm:w-2.5 sm:h-auto"/>
+        <table className="flex flex-col justify-start text-start hidden sm:block">
           <tbody>
             <LanguajeSelector/>
-            <tr><div style={{height: 10}}/></tr>
+            <tr className="h-2.5"/>
             <tr>
               <td>{codeText("nvlbl02", language)}:</td>
               <td>
@@ -411,9 +406,9 @@ function App() {
               </td>
             </tr>
           </tbody>
-        </table>}
+        </table>
       </nav>
-      {species && <div style={{height: largeScreen ? 190 : 600}}/>}
+      {species && <div className="h-137.5 sm:h-40"/>}
       {species && <PhTree
         commonAncestor={species}
         width={window.screen.width * (species?.absoluteDuration() ?? 0) / scale - 64}
@@ -441,12 +436,10 @@ function App() {
             {showHover && hoverSpecies && hoverSpecies.description &&
               <nav
                 style={{
-                  position: "absolute",
                   left: hoverPosition.x + offset.x,
                   top: hoverPosition.y - offset.y,
-                  backgroundColor: "grey",
-                  padding: 10
                 }}
+                className="absolute bg-gray-500 p-2.5"
               >
                 <p>{hoverSpecies.name} ({scientificNotation(hoverSpecies.apparition)} — {scientificNotation(hoverSpecies.extinction())}):</p>
                 <p>{hoverSpecies.description}</p>
