@@ -16,9 +16,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.12",
     "papaparse": "^5.5.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
@@ -38,6 +40,11 @@
     "type": "git",
     "url": "https://github.com/LUCHER4321/chrono-phylo-tree"
   },
-  "keywords": ["phylogenetic", "tree", "visualization", "react"],
+  "keywords": [
+    "phylogenetic",
+    "tree",
+    "visualization",
+    "react"
+  ],
   "author": "LUCHER4321"
 }
