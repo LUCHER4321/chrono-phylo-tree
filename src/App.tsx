@@ -268,7 +268,7 @@ function App() {
         <table className="flex flex-col justify-start text-start">
           <tbody>
           <LanguajeSelector className="block sm:hidden"/>
-          <tr className="block sm:hidden"><div className="h-2.5"/></tr>
+          <tr className="block sm:hidden h-2.5"/>
           <tr>
             <td>{codeText("nvlbl00", language)}: </td>
             <td>
@@ -351,7 +351,7 @@ function App() {
           </tr>
           <tr className="h-2.5"/>
           <tr>
-            <td>{codeText("nvlbl04", language)}:</td>
+            <td>{codeText("nvlbl04", language)}: </td>
             <td>
               <input
                 type="file"
@@ -363,7 +363,7 @@ function App() {
           </tr>
           <tr className="h-2.5"/>
           <tr className="block sm:hidden">
-            <td>{codeText("nvlbl02", language)}:</td>
+            <td>{codeText("nvlbl02", language)}: </td>
             <td>
               <input
                 type="color"
