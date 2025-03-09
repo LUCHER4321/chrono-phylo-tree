@@ -227,7 +227,7 @@ function App() {
     setSpecies(undefined);
   };
 
-  const LanguajeSelector = ({className = ""}: {className?: string}) => {
+  const LanguageSelector = ({className = ""}: {className?: string}) => {
     return (
       <tr className={"text-start " + className}>
         <td>{codeText("nvlbl05", language)}:</td>
@@ -267,7 +267,7 @@ function App() {
         >
         <table className="flex flex-col justify-start text-start">
           <tbody>
-          <LanguajeSelector className="block sm:hidden"/>
+          <LanguageSelector className="block sm:hidden"/>
           <tr className="block sm:hidden h-2.5"/>
           <tr>
             <td>{codeText("nvlbl00", language)}: </td>
@@ -393,7 +393,7 @@ function App() {
         <div className="h-2.5 sm:w-2.5 sm:h-auto"/>
         <table className="flex flex-col justify-start text-start hidden sm:block">
           <tbody>
-            <LanguajeSelector/>
+            <LanguageSelector/>
             <tr className="h-2.5"/>
             <tr>
               <td>{codeText("nvlbl02", language)}:</td>
