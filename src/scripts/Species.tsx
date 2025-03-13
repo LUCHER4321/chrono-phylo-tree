@@ -1,3 +1,5 @@
+import { sortArray } from "multiple-sorting-array";
+
 export class Species {
   name = "";
   apparition = 0;
@@ -124,7 +126,7 @@ export class Species {
   }
 
   allDescendants(): Species[] {
-    const desc = this.descendants.sort((a, b) => (a.apparition === b.apparition) ? (b.absoluteExtinction() - a.absoluteExtinction()) : (b.apparition - a.apparition));
+    const desc = sortArray(this.descendants, s => -s.apparition, s => -s.absoluteExtinction());
     if (desc.length === 0) {
       return [this];
     }
