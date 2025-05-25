@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Species } from "./Species";
-import { between } from "./between";
-import { codeText } from "./translate";
+import { Species } from "../classes/Species";
+import { between } from "../utils/between";
+import { codeText } from "../utils/translate";
 
 interface MenuProps {
     species: Species;

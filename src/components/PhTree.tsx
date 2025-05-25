@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Species } from "./Species";
+import { Species } from "../classes/Species";
 
 interface MultiplePhTreesProps {
     speciesList: Species[];
