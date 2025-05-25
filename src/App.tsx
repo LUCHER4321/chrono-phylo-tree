@@ -425,7 +425,7 @@ function App() {
             <td>{codeText("nvlbl03", language)}: </td>
             <td>
               <a href="https://github.com/LUCHER4321/chrono-phylo-tree" target="_blank" className="ml-1.25 flex items-center">
-                <img style={{maxHeight: 25}} src="https://logo.clearbit.com/github.com"/>
+                <img style={{maxHeight: 25}} src="https://img.logo.dev/github.com?token=pk_VXzZR_o_QTelazRSvSRkNw&format=png"/>
               </a>
             </td>
           </tr>
