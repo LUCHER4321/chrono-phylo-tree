@@ -125,12 +125,13 @@ export const PhTree = (
     };
 
     const isPresentTimeDefined = presentTime !== undefined && chronoScale;
+    const heightFactor = (ad: Species[]) => showImages ? ad.map<number>(sp => sp.image ? 2 : 1).reduce((a, b) => a + b) : ad.length;
 
     return (
         <>
             <svg
                 width={width * (isPresentTimeDefined ? (Math.min(presentTime, commonAncestor.absoluteExtinction()) - commonAncestor.apparition) / commonAncestor.absoluteDuration() : 1)}
-                height={height * (1 + (isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime).length : commonAncestor.allDescendants().length))}
+                height={height * heightFactor(isPresentTimeDefined ? commonAncestor.allDescendants().filter(desc => desc.apparition < presentTime) : commonAncestor.allDescendants())}
                 onMouseMove={(event) => {handleMouseMove?.(event.clientX, event.clientY)}}
             >
                 <DrawTree
@@ -196,7 +197,7 @@ const DrawTree = ({
     const spIndex = all.indexOf(species);
     const startX = (chronoScale ? species.apparition - commonAncestor.apparition : (commonAncestor.stepsUntil(species) ?? 0)) * scaleX;
     const endX = startX + (chronoScale ? Math.min(showDesc.get(species) ? species.duration : species.absoluteDuration(), isPresentTimeDefined ? presentTime - species.apparition : species.absoluteDuration()) : 1) * scaleX;
-    const endY = spIndex * scaleY;
+    const endY = (showImages && spIndex > 0) ? [...Array(spIndex).keys()].map(i => all[i]).map(sp => (sp.image ? 2 : 1) * scaleY).reduce((a, b) => a + b) : (spIndex * scaleY);
     const descendants = species.descendants.filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
     const branchX = descendants.length > 0 ? startX + (Math.min(...descendants.map(desc => desc.apparition)) - species.apparition) * scaleX : endX;
     
@@ -214,6 +215,7 @@ const DrawTree = ({
             {species.display && <HorizontalLine
                 commonAncestor={commonAncestor}
                 species={species}
+                height={scaleY}
                 x1={startX}
                 x2={endX}
                 x0={branchX}
@@ -257,6 +259,7 @@ const DrawTree = ({
 interface HorizontalLineProps {
     commonAncestor: Species;
     species: Species;
+    height: number;
     x1: number;
     x2: number;
     x0?: number;
@@ -276,6 +279,7 @@ interface HorizontalLineProps {
 const HorizontalLine = ({
     commonAncestor,
     species,
+    height,
     x1, x2, x0, y,
     stroke,
     showDesc = true,
@@ -308,7 +312,7 @@ const HorizontalLine = ({
                 x={x1 + padding}
                 y={y + (padding) * orientation}
                 width={(chronoScale ? x0 ?? x2 : x2) - x1 - 2 * padding}
-                height={50 + (showImages && species.image ? 50 : 0)}
+                height={height + (showImages && species.image ? height : 0)}
             >
                 <div className="flex flex-row justify-between w-full">
                     <div>
@@ -324,7 +328,7 @@ const HorizontalLine = ({
                         {species.image && showImages && (
                             <img
                                 src={species.image}
-                                style={{ height: 50 }}
+                                style={{ height: height }}
                             />
                         )}
                     </button>
@@ -343,7 +347,7 @@ const HorizontalLine = ({
                     x={x0 + padding}
                     y={y + padding * orientation}
                     width={x2 - x0 - 2 * padding}
-                    height={50}
+                    height={height}
                 >
                     <div className="flex flex-row justify-end w-full">
                         {(lastOne || !showDesc) && chronoScale ? extinction : ""}
