@@ -28,18 +28,83 @@ function App() {
       codeTextAlt("ttl", language).then((ttl) => title.textContent = ttl);
     }
   }, [language]);
-  //*
+  const root = Species.fromJSON({
+    name: "Hominoidea",
+    apparition: -25e6,
+    duration: 6e6,
+    descendants: [
+      {
+        name: "Hominidae",
+        apparition: 6e6,
+        duration: 6e6,
+        descendants: [
+          {
+            name: "Pongo",
+            apparition: 6e6,
+            duration: 13e6,
+            image: "https://upload.wikimedia.org/wikipedia/commons/6/65/Pongo_tapanuliensis.jpg"
+          },
+          {
+            name: "Homininae",
+            apparition: 6e6,
+            duration: 5e6,
+            descendants: [
+              {
+                name: "Gorilla",
+                apparition: 5e6,
+                duration: 8e6,
+                image: "https://gorillas-world.com/wp-content/uploads/anatomia.jpg"
+              },
+              {
+                name: "Hominini",
+                apparition: 5e6,
+                duration: 2e6,
+                descendants: [
+                  {
+                    name: "Pan",
+                    apparition: 2e6,
+                    duration: 3e6,
+                    descendants: [
+                      {
+                        name: "Pan Troglodytes",
+                        apparition: 3e6,
+                        duration: 3e6,
+                        image:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR-v4-d4R9AUgsHdG42VPYuYj_d4OMRHKasUQ&s"
+                      },
+                      {
+                        name:"Pan Paniscus",
+                        apparition : 3e6,
+                        duration : 3e6,
+                        image : "https://upload.wikimedia.org/wikipedia/commons/e/e2/Apeldoorn_Apenheul_zoo_Bonobo.jpg"
+                      }
+                    ],
+                  },
+                  {
+                    name: "Homo",
+                    apparition: 2e6,
+                    duration: 6e6,
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7XK_e3HG0jhOticytH1Dn3tzBEZyRyWc5Mg&s"
+                  }
+                ],
+              }
+            ],
+          }
+        ]
+      }
+    ]
+  });
+  /*
   const root = new Species("Hominoidea", -25e6, 6e6);
-  root.addDescendant("Hilobates", 6e6, 19e6);
+  root.addDescendant("Hilobates", 6e6, 19e6, undefined, "https://upload.wikimedia.org/wikipedia/commons/4/40/Hylobaes_lar_Canarias.jpg");
   const child0 = root.addDescendant("Hominidae", 6e6, 6e6);
-  child0.addDescendant("Pongo", 6e6, 13e6);
+  child0.addDescendant("Pongo", 6e6, 13e6, undefined, "https://upload.wikimedia.org/wikipedia/commons/6/65/Pongo_tapanuliensis.jpg");
   const child1 = child0.addDescendant("Homininae", 6e6, 5e6);
-  child1.addDescendant("Gorilla", 5e6, 8e6);
+  child1.addDescendant("Gorilla", 5e6, 8e6, undefined, "https://gorillas-world.com/wp-content/uploads/anatomia.jpg");
   const child2 = child1.addDescendant("Hominini", 5e6, 2e6);
   const child3 = child2.addDescendant("Pan", 2e6, 3e6);
-  child3.addDescendant("Pan Troglodytes", 3e6, 3e6);
-  child3.addDescendant("Pan Paniscus", 3e6, 3e6);
-  child2.addDescendant("Homo", 2e6, 6e6);
+  child3.addDescendant("Pan Troglodytes", 3e6, 3e6, undefined, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-v4-d4R9AUgsHdG42VPYuYj_d4OMRHKasUQ&s");
+  child3.addDescendant("Pan Paniscus", 3e6, 3e6, undefined, "https://upload.wikimedia.org/wikipedia/commons/e/e2/Apeldoorn_Apenheul_zoo_Bonobo.jpg");
+  child2.addDescendant("Homo", 2e6, 6e6, undefined, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7XK_e3HG0jhOticytH1Dn3tzBEZyRyWc5Mg&s");
   //*/
   const showScaleNumber = false;
 
@@ -115,7 +180,7 @@ function App() {
     return mantText + ((abs >= 1 && abs < 10) ? "" : ("e" + exp));
   };
 
-  const saveSpecies = async (s: Species, name: string, apparition: number, duration: number, description?: string) => {
+  const saveSpecies = async (s: Species, name: string, apparition: number, duration: number, description: string, image: string) => {
     if(duration <= 0){
       const alertText = await codeTextAlt("alert01", language, [name])
       alert(alert);
@@ -127,10 +192,18 @@ function App() {
     newSpecies.apparition = apparition;
     newSpecies.duration = duration;
     newSpecies.description = description === "" ? undefined : description;
+    newSpecies.image = image === "" ? undefined : image;
     setSpecies(newSpecies.firstAncestor());
   };
 
-  const createDescendant = async (s: Species, name: string, afterApparition: number, duration: number, description: string) => {
+  const createDescendant = async (
+    s: Species,
+    name: string,
+    afterApparition: number,
+    duration: number,
+    description: string,
+    image: string
+  ) => {
     if(duration <= 0){
       const alertText = await codeTextAlt("alert01", language, [name]);
       alert(alertText);
@@ -141,7 +214,7 @@ function App() {
       alert(alertText);
       throw new Error(alertText);
     }
-    const newSpecies = s.addDescendant(name, afterApparition, duration, description, true).firstAncestor();
+    const newSpecies = s.addDescendant(name, afterApparition, duration, description, image, true).firstAncestor();
     //*
     setSpecies(undefined);
     if(presentTimeBoolean){
@@ -152,7 +225,14 @@ function App() {
     //*/
   };
 
-  const createAncestor = async (s: Species, name: string, previousApparition: number, duration: number, description: string) => {
+  const createAncestor = async (
+    s: Species,
+    name: string,
+    previousApparition: number,
+    duration: number,
+    description: string,
+    image: string
+  ) => {
     if(duration <= 0){
       const alertText = await codeTextAlt("alert01", language, [name])
       alert(alert);
@@ -163,7 +243,7 @@ function App() {
       alert(alertText);
       throw new Error(alertText);
     }
-    const newSpecies = s.addAncestor(name, previousApparition, duration, description, true, true).firstAncestor();
+    const newSpecies = s.addAncestor(name, previousApparition, duration, description, image, true, true).firstAncestor();
     //*
     setSpecies(undefined);
     if(presentTimeBoolean){
@@ -430,8 +510,8 @@ function App() {
               saveSpecies={saveSpecies}
               createDescendant={createDescendant}
               createAncestor={createAncestor}
-              deleteAncestor={() => deleteAncestor?.(sp)}
-              deleteSpecies={() => deleteSpecies?.(sp)}
+              deleteAncestor={() => deleteAncestor(sp)}
+              deleteSpecies={() => deleteSpecies(sp)}
             />}
             {showHover && hoverSpecies && hoverSpecies.description &&
               <nav

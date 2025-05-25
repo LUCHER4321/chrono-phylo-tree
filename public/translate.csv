@@ -17,6 +17,7 @@ splbl00;Nombre;Name;Name
 splbl01;Aparición;Apparition;Erscheinung
 splbl02;Duración;Duration;Dauer
 splbl03;Descripción;Description;Beschreibung
+splbl04;Imagen;Image;Bild
 spbtn00;Guardar;Save;Speichern
 spbtn01;Eliminar;Delete;Löschen
 spbtn02;Crear descendiente;Create descendant;Erschaffe Nachkomme

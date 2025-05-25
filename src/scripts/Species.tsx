@@ -8,15 +8,17 @@ export class Species {
   descendants: Species[] = [];
   description?: string = undefined;
   display = true;
+  image?: string = undefined;
   private onPosition = true;
 
   constructor(
     name = '',
     apparition = 0,
     duration = 0,
-    ancestor?: Species,
+    ancestor: Species | undefined = undefined,
     descendants: Species[] = [],
-    description: string | undefined = undefined
+    description: string | undefined = undefined,
+    image: string | undefined = undefined,
   ) {
     if(duration <= 0){
       throw new Error("The duration of the species must be greater than 0");
@@ -27,6 +29,7 @@ export class Species {
     this.ancestor = ancestor;
     this.descendants = descendants;
     this.description = description === "" ? undefined : description;
+    this.image = image === "" ? undefined : image;
   }
 
   copy() : Species {
@@ -51,6 +54,7 @@ export class Species {
     afterApparition = 0,
     duration = 0,
     description: string | undefined = undefined,
+    image: string | undefined = undefined,
     copy = false
   ) {
     if(afterApparition < 0 || afterApparition > this.duration) {
@@ -63,7 +67,8 @@ export class Species {
       Math.max(duration, 0),
       sp,
       [],
-      description
+      description,
+      image
     );
     desc.onPosition = !this.onPosition;
     sp.descendants.push(desc);
@@ -79,6 +84,7 @@ export class Species {
     previousApparition = 0,
     duration = 0,
     description: string | undefined = undefined,
+    image: string | undefined = undefined,
     display = true,
     copy = false
   ) {
@@ -113,7 +119,7 @@ export class Species {
       : this.extinction();
   }
 
-  absoluteDuration(): number {
+  absoluteDuration() {
     return this.absoluteExtinction() - this.apparition;
   }
 
@@ -160,28 +166,16 @@ export class Species {
     return Math.max(...this.allDescendants().filter(d => d.descendants.length === 0).map(d => this.stepsUntil(d, icludeNotDisplay) ?? 0));
   }
 
-  toJSON(): any {
-    const apparitionJSON = this.ancestor ?
-      {
-        afterApparition: this.apparition - this.ancestor.apparition
-      } :
-      {
-        apparition: this.apparition
-      };
-    const json0 = {
+  toJSON(): SpeciesJSON {
+    return {
       name: this.name,
-      ...apparitionJSON,
+      apparition: !this.ancestor ? this.apparition : undefined,
+      afterApparition: this.ancestor ? this.apparition - this.ancestor.apparition : undefined,
+      description: this.description,
       duration: this.duration,
-    }
-    const json = this.description ? {
-      ...json0,
-      description: this.description
-    } : json0;
-    return this.descendants.length > 0 ?
-      {
-        ...json,
-        descendants: this.descendants.map((desc) => desc.toJSON()),
-      } : json;
+      descendants: this.descendants.length > 0 ? this.descendants.map((desc) => desc.toJSON()) : undefined,
+      image: this.image,
+    };
   }
 
   async saveJSON(filename: string | undefined = undefined) {
@@ -199,10 +193,10 @@ export class Species {
     }
   }
 
-  static fromJSON(json: any, ancestor?: Species): Species {
+  static fromJSON(json: SpeciesJSON, ancestor?: Species): Species {
     const afterApparition = json.afterApparition ?? 0;
     const apparition = ancestor ? ancestor.apparition : json.apparition ?? 0;
-    const sp = new Species(json.name ?? "", apparition + afterApparition, json.duration ?? 0, ancestor, [], json.description ?? undefined);
+    const sp = new Species(json.name ?? "", apparition + afterApparition, json.duration ?? 0, ancestor, [], json.description, json.image);
     if(json.descendants) {
       for (const desc of json.descendants) {
         sp.descendants.push(Species.fromJSON(desc, sp));
@@ -210,4 +204,14 @@ export class Species {
     }
     return sp
   }
+}
+
+export interface SpeciesJSON {
+  name: string;
+  apparition?: number;
+  duration?: number;
+  description?: string;
+  descendants?: SpeciesJSON[];
+  afterApparition?: number;
+  image?: string;
 }

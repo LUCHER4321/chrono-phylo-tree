@@ -12,31 +12,35 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
-#### 1.0.9
+**1.0.11**
 
-- Translation to German thanks to [u/Kneeerg](https://www.reddit.com/user/Kneeerg/)
+- Species class has a new property (`image?: string`).
+- Interface SpeciesJSON gives a restriction to the JSON importing.
 
-- PhTree allows to execute functions when the mouse is over the buttons
+**1.0.9**
 
-#### 1.0.8
+- Translation to German thanks to [u/Kneeerg](https://www.reddit.com/user/Kneeerg/).
+- PhTree allows to execute functions when the mouse is over the buttons.
+
+**1.0.8**
 
 - Species class' step functions can include or not species whose `display` is `false`.
 
-#### 1.0.7
+**1.0.7**
 
-- The default duration of the ancestors and descendants are the duration of the species
-- MultiplePhTrees component allows to show the phylogenetic tree from multiple common ancestors
+- The default duration of the ancestors and descendants are the duration of the species.
+- MultiplePhTrees component allows to show the phylogenetic tree from multiple common ancestors.
 
-#### 1.0.5
+**1.0.5**
 
-- PhTree's lines' width can depend or not on the species' duration
-- It's possible to know the steps until a species
-- It's possible to count the maximum steps until the last descendant of a species
+- PhTree's lines' width can depend or not on the species' duration.
+- It's possible to know the steps until a species.
+- It's possible to count the maximum steps until the last descendant of a species.
 
-#### 1.0.2
+**1.0.2**
 
-- The duration of the species must be greater than 0
-- Menu doesn't close when a function throws error
+- The duration of the species must be greater than 0.
+- Menu doesn't close when a function throws error.
 
 ### Key Features
 
@@ -105,16 +109,52 @@ import React from "react";
 import { Species, PhTree } from "chrono-phylo-tree";
 
 const root = new Species("Hominoidea", -25e6, 6e6);
-root.addDescendant("Hilobates", 6e6, 19e6);
+root.addDescendant(
+  "Hilobates",
+  6e6,
+  19e6,
+  undefined,
+  "https://upload.wikimedia.org/wikipedia/commons/4/40/Hylobaes_lar_Canarias.jpg"
+);
 const child0 = root.addDescendant("Hominidae", 6e6, 6e6);
-child0.addDescendant("Pongo", 6e6, 13e6);
+child0.addDescendant(
+  "Pongo",
+  6e6,
+  13e6,
+  undefined,
+  "https://upload.wikimedia.org/wikipedia/commons/6/65/Pongo_tapanuliensis.jpg"
+);
 const child1 = child0.addDescendant("Homininae", 6e6, 5e6);
-child1.addDescendant("Gorilla", 5e6, 8e6);
+child1.addDescendant(
+  "Gorilla",
+  5e6,
+  8e6,
+  undefined,
+  "https://gorillas-world.com/wp-content/uploads/anatomia.jpg"
+);
 const child2 = child1.addDescendant("Hominini", 5e6, 2e6);
 const child3 = child2.addDescendant("Pan", 2e6, 3e6);
-child3.addDescendant("Pan Troglodytes", 3e6, 3e6);
-child3.addDescendant("Pan Paniscus", 3e6, 3e6);
-child2.addDescendant("Homo", 2e6, 6e6);
+child3.addDescendant(
+  "Pan Troglodytes",
+  3e6,
+  3e6,
+  undefined,
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-v4-d4R9AUgsHdG42VPYuYj_d4OMRHKasUQ&s"
+);
+child3.addDescendant(
+  "Pan Paniscus",
+  3e6,
+  3e6,
+  undefined,
+  "https://upload.wikimedia.org/wikipedia/commons/e/e2/Apeldoorn_Apenheul_zoo_Bonobo.jpg"
+);
+child2.addDescendant(
+  "Homo",
+  2e6,
+  6e6,
+  undefined,
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7XK_e3HG0jhOticytH1Dn3tzBEZyRyWc5Mg&s"
+);
 
 const App = () => {
   return (
@@ -128,6 +168,20 @@ const App = () => {
 };
 
 export default App;
+```
+
+## SpeciesJSON Interface
+
+```typescript
+interface SpeciesJSON {
+  name: string;
+  apparition?: number;
+  duration?: number;
+  description?: string;
+  descendants?: SpeciesJSON[];
+  afterApparition?: number;
+  image?: string;
+}
 ```
 
 ## Species Class
@@ -156,7 +210,8 @@ constructor(
   duration = 0,
   ancestor?: Species,
   descendants: Species[] = [],
-  description: string | undefined = undefined
+  description: string | undefined = undefined,
+  image: string | undefined = undefined
 )
 ```
 
@@ -168,6 +223,7 @@ Initializes a new instance of the `Species` class.
 - **ancestor**: The ancestor of the species.
 - **descendants**: An array of descendant species.
 - **description**: An optional description of the species.
+- **image**: An optional url of the species' image.
 
 #### copy
 
@@ -185,6 +241,7 @@ addDescendant(
   afterApparition = 0,
   duration = 0,
   description: string | undefined = undefined,
+  image: string | undefined = undefined,
   copy = false
 ): Species
 ```
@@ -215,6 +272,7 @@ addAncestor(
   previousApparition = 0,
   duration = 0,
   description: string | undefined = undefined,
+  image: string | undefined = undefined,
   display = true,
   copy = false
 ): Species
@@ -316,7 +374,7 @@ Returns the maximum number of steps (generations) from the current species (`thi
 #### toJSON
 
 ```typescript
-toJSON(): any
+toJSON(): SpeciesJSON
 ```
 
 Converts the species and its descendants to a JSON object.
@@ -334,7 +392,7 @@ Saves the species and its descendants as a JSON file.
 #### fromJSON
 
 ```typescript
-static fromJSON(json: any, ancestor?: Species): Species
+static fromJSON(json: SpeciesJSON, ancestor?: Species): Species
 ```
 
 Creates a species instance from a JSON object.
@@ -361,7 +419,8 @@ Here is an example of a JSON object representing a species and its descendants:
     {
       "name": "Hilobates",
       "afterApparition": 6000000,
-      "duration": 19000000
+      "duration": 19000000,
+      "image": "https://upload.wikimedia.org/wikipedia/commons/4/40/Hylobaes_lar_Canarias.jpg"
     },
     {
       "name": "Hominidae",
@@ -371,7 +430,8 @@ Here is an example of a JSON object representing a species and its descendants:
         {
           "name": "Pongo",
           "afterApparition": 6000000,
-          "duration": 13000000
+          "duration": 13000000,
+          "image": "https://upload.wikimedia.org/wikipedia/commons/6/65/Pongo_tapanuliensis.jpg"
         },
         {
           "name": "Homininae",
@@ -381,7 +441,8 @@ Here is an example of a JSON object representing a species and its descendants:
             {
               "name": "Gorilla",
               "afterApparition": 5000000,
-              "duration": 8000000
+              "duration": 8000000,
+              "image": "https://gorillas-world.com/wp-content/uploads/anatomia.jpg"
             },
             {
               "name": "Hominini",
@@ -396,19 +457,22 @@ Here is an example of a JSON object representing a species and its descendants:
                     {
                       "name": "Pan Troglodytes",
                       "afterApparition": 3000000,
-                      "duration": 3000000
+                      "duration": 3000000,
+                      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-v4-d4R9AUgsHdG42VPYuYj_d4OMRHKasUQ&s"
                     },
                     {
                       "name": "Pan Paniscus",
                       "afterApparition": 3000000,
-                      "duration": 3000000
+                      "duration": 3000000,
+                      "image": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Apeldoorn_Apenheul_zoo_Bonobo.jpg"
                     }
                   ]
                 },
                 {
                   "name": "Homo",
                   "afterApparition": 2000000,
-                  "duration": 6000000
+                  "duration": 6000000,
+                  "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7XK_e3HG0jhOticytH1Dn3tzBEZyRyWc5Mg&s"
                 }
               ]
             }

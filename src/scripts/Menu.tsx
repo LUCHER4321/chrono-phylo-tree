@@ -13,33 +13,37 @@ interface MenuProps {
         name: string,
         apparition: number,
         duration: number,
-        description?: string
-    ) => void;
+        description: string,
+        image: string
+    ) => Promise<void>;
     createDescendant?: (
         s: Species,
         name: string,
         afterApparition: number,
         duration: number,
-        description: string
-    ) => void;
+        description: string,
+        image: string
+    ) => Promise<void>;
     createAncestor?: (
         s: Species,
         name: string,
         previousApparition: number,
         duration: number,
-        description: string
-    ) => void;
-    deleteAncestor?: () => void;
-    deleteSpecies?: () => void;
+        description: string,
+        image: string
+    ) => Promise<void>;
+    deleteAncestor?: () => Promise<void>;
+    deleteSpecies?: () => Promise<void>;
 }
 
 export const Menu = ({species, language, open, onClose, saveSpecies, createDescendant, createAncestor, deleteAncestor, deleteSpecies}: MenuProps) => {
     const [name, setName] = useState(species.name);
     const [apparition, setApparition] = useState(species.apparition);
     const [duration, setDuration] = useState(species.duration);
-    const [description, setDescription] = useState(species.description);
+    const [description, setDescription] = useState(species.description ?? "");
     const [addDescendant, setAddDescendant] = useState(false);
     const [addAncestor, setAddAncestor] = useState(false);
+    const [image, setImage] = useState(species.image ?? "");
 
     const toggleAddDescendant = () => {
         setAddDescendant(!addDescendant);
@@ -72,11 +76,13 @@ export const Menu = ({species, language, open, onClose, saveSpecies, createDesce
                     maxDuration={species.descendants.length > 0 ? Math.max(...species.descendants.map(desc => desc.apparition)) - apparition : undefined}
                     description={description}
                     setDescription={setDescription}
+                    image={image}
+                    setImage={setImage}
                     language={language}
                 >
                     <button onClick={async () => {
                         try{
-                            await saveSpecies?.(species, name, apparition, duration, description);
+                            await saveSpecies?.(species, name, apparition, duration, description, image);
                             onClose?.();
                         } catch(e) {
                             console.error(e);
@@ -141,8 +147,10 @@ interface DataProps {
     maxDuration?: number;
     description?: string;
     setDescription: (description: string) => void;
+    image: string;
+    setImage: (image: string) => void;
     language?: string;
-    children?: React.ReactNode;
+    children?: any;
 }
 
 const Data = ({
@@ -159,6 +167,8 @@ const Data = ({
     description,
     setDescription,
     language,
+    image,
+    setImage,
     children
 }: DataProps) => {
     return (
@@ -207,7 +217,24 @@ const Data = ({
                                 onChange={(e) => setDescription(e.target.value)}
                             />
                         </td>
-                         
+                    </tr>
+                    <tr>
+                        <td>{codeText("splbl04", language ?? "")}:</td>
+                        <td>
+                            <input
+                                type="text"
+                                value={image}
+                                onChange={(e) => setImage(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan={2}>
+                            <img
+                                src={image}
+                                style={{height: "100px"}}
+                            />
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -221,6 +248,7 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
     const [afterApparition, setAfterApparition] = useState(species.duration);
     const [duration, setDuration] = useState(species.duration);
     const [description, setDescription] = useState('');
+    const [image, setImage] = useState('');
 
     return(
         <>
@@ -235,11 +263,13 @@ const AddDescendant = ({species, language, onClose, createDescendant}: MenuProps
                 setDuration={setDuration}
                 description={description}
                 setDescription={setDescription}
+                image={image}
+                setImage={setImage}
                 language={language}
             >
                 <button type="button" onClick={async () => {
                     try{
-                        await createDescendant?.(species, name, afterApparition, duration, description);
+                        await createDescendant?.(species, name, afterApparition, duration, description, image);
                         onClose?.();
                     } catch(e) {
                         console.error(e);
@@ -257,6 +287,7 @@ const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) =>
     const [previousApparition, setPreviousApparition] = useState(species.duration);
     const [duration, setDuration] = useState(species.duration);
     const [description, setDescription] = useState('');
+    const [image, setImage] = useState('');
 
     return(
         <>
@@ -274,11 +305,13 @@ const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) =>
                 minDuration={previousApparition}
                 description={description}
                 setDescription={setDescription}
+                image={image}
+                setImage={setImage}
                 language={language}
             >
                 <button type="button" onClick={async () => {
                     try {
-                        await createAncestor?.(species, name, previousApparition, duration, description);
+                        await createAncestor?.(species, name, previousApparition, duration, description, image);
                         onClose?.();
                     } catch (e) {
                         console.error(e);
@@ -294,7 +327,7 @@ const AddAncestor = ({species, language, onClose, createAncestor}: MenuProps) =>
 interface ModalProps {
     open?: boolean;
     onClose?: () => void;
-    children: React.ReactNode;
+    children: any;
 }
 
 const Modal = ({open, onClose, children}: ModalProps) => {

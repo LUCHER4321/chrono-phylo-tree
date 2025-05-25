@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Species } from "./Species";
 
 interface MultiplePhTreesProps {
@@ -9,6 +9,7 @@ interface MultiplePhTreesProps {
     stroke?: string;
     format?: (n: number) => string;
     chronoScale?: boolean;
+    showImages?: boolean;
     presentTime?: number;
     handleMouseMove?: (x: number, y: number) => void;
     children?: (
@@ -16,7 +17,7 @@ interface MultiplePhTreesProps {
         showMenu: boolean,
         toggleShowMenu: (species: Species) => void,
         hoverSpecies: Species | undefined
-    ) => React.ReactNode;
+    ) => any;
 }
 
 export const MultiplePhTrees = (
@@ -28,6 +29,7 @@ export const MultiplePhTrees = (
         stroke = "grey",
         format = (n) => n.toString(),
         chronoScale = true,
+        showImages = true,
         presentTime,
         handleMouseMove,
         children
@@ -55,6 +57,7 @@ export const MultiplePhTrees = (
             stroke={stroke}
             format={format}
             chronoScale={chronoScale}
+            showImages={showImages}
             presentTime={presentTime}
             handleMouseMove={handleMouseMove}
         >
@@ -71,6 +74,7 @@ interface PhTreeProps {
     stroke?: string;
     format?: (n: number) => string;
     chronoScale?: boolean;
+    showImages?: boolean;
     presentTime?: number;
     handleMouseMove?: (x: number, y: number) => void;
     children?: (
@@ -78,7 +82,7 @@ interface PhTreeProps {
         showMenu: boolean,
         toggleShowMenu: (species: Species) => void,
         hoverSpecies: Species | undefined
-    ) => React.ReactNode;
+    ) => any;
 }
 
 export const PhTree = (
@@ -90,6 +94,7 @@ export const PhTree = (
         stroke = "grey",
         format = (n) => n.toString(),
         chronoScale = true,
+        showImages = true,
         presentTime,
         handleMouseMove,
         children
@@ -138,6 +143,7 @@ export const PhTree = (
                     stroke={stroke}
                     format={format}
                     chronoScale={chronoScale}
+                    showImages={showImages}
                     presentTime={presentTime}
                     toggleShowMenu={toggleShowMenu}
                     hoverShowMenu={hoverShowMenu}
@@ -160,6 +166,7 @@ interface DrawTreeProps {
     stroke?: string;
     format?: (n: number) => string;
     chronoScale?: boolean;
+    showImages?: boolean;
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
     hoverShowMenu: (s: Species | undefined) => void;
@@ -177,6 +184,7 @@ const DrawTree = ({
     stroke = "grey",
     format = (n: number) => n.toString(),
     chronoScale = true,
+    showImages = true,
     presentTime = undefined,
     toggleShowMenu,
     hoverShowMenu,
@@ -216,6 +224,7 @@ const DrawTree = ({
                 padding={padding}
                 format={format}
                 chronoScale={chronoScale}
+                showImages={showImages}
                 presentTime={presentTime}
                 toggleShowMenu={toggleShowMenu}
                 hoverShowMenu={hoverShowMenu}
@@ -232,6 +241,7 @@ const DrawTree = ({
                         stroke={stroke}
                         format={format}
                         chronoScale={chronoScale}
+                        showImages={showImages}
                         presentTime={presentTime}
                         toggleShowMenu={toggleShowMenu}
                         showDesc={showDesc}
@@ -257,6 +267,7 @@ interface HorizontalLineProps {
     padding?: number;
     format?: (n: number) => string;
     chronoScale?: boolean;
+    showImages?: boolean;
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
     hoverShowMenu: (s: Species | undefined) => void;
@@ -272,6 +283,7 @@ const HorizontalLine = ({
     padding = 0,
     format = (n) => n.toString(),
     chronoScale = true,
+    showImages = true,
     presentTime,
     toggleShowMenu,
     hoverShowMenu
@@ -296,19 +308,25 @@ const HorizontalLine = ({
                 x={x1 + padding}
                 y={y + (padding) * orientation}
                 width={(chronoScale ? x0 ?? x2 : x2) - x1 - 2 * padding}
-                height={50}
+                height={50 + (showImages && species.image ? 50 : 0)}
             >
                 <div className="flex flex-row justify-between w-full">
                     <div>
                         {chronoScale ? format(species.apparition) : ""}
                     </div>
                     <button
-                        className="p-0.625"
+                        className="p-0.625 justify-center flex flex-col items-center"
                         onClick={() => toggleShowMenu(species)}
                         onMouseEnter={() => hoverShowMenu(species)}
                         onMouseLeave={() => hoverShowMenu(undefined)}
                     >
                         {species.name}
+                        {species.image && showImages && (
+                            <img
+                                src={species.image}
+                                style={{ height: 50 }}
+                            />
+                        )}
                     </button>
                     {descendants.length > 0 ?
                         <button onClick={changeShowDesc} className="h-1" style={{maxWidth: 4}}>
