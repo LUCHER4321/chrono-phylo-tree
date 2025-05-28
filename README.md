@@ -12,6 +12,10 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
+**1.0.12**
+
+- New functions for Species class.
+
 **1.0.11**
 
 - Species class has a new property (`image?: string`).
@@ -232,6 +236,54 @@ copy(): Species
 ```
 
 Creates a deep copy of the current species and its descendants.
+
+#### unlinkAncestor
+
+```typescript
+unlinkAncestor(): [Species, Species] | undefined
+```
+
+Removes the ancestor link from the current species. If the species has no ancestor, the method returns `undefined`. Otherwise, it returns an array containing the first ancestor of the previous ancestor and the current species.
+
+#### unlinkDescendant
+
+```typescript
+unlinkDescendant(descendant: Species): [Species, Species] | undefined
+```
+
+Removes the descendant link from the current species. If the descendant is not linked to the current species, the method returns `undefined`. Otherwise, it returns an array containing the first ancestor of the current species and the unlinked descendant.
+
+- **descendant**: The descendant species to unlink.
+
+#### linkAncestor
+
+```typescript
+linkAncestor(ancestor: Species): void
+```
+
+Links the current species to a specified ancestor. The method ensures the ancestor's appearance time is valid relative to the current species and updates the descendant list of the ancestor.
+
+- **ancestor**: The ancestor species to link.
+
+#### linkDescendant
+
+```typescript
+linkDescendant(descendant: Species): void
+```
+
+Links the current species to a specified descendant. The method ensures the descendant's appearance time is valid relative to the current species and updates the ancestor of the descendant.
+
+- **descendant**: The descendant species to link.
+
+#### linkDescendants
+
+```typescript
+linkDescendants(descendants: Species[]): void
+```
+
+Links the current species to multiple descendants. The method attempts to link each descendant and logs any errors encountered without interrupting the process.
+
+- **descendants**: An array of descendant species to link.
 
 #### addDescendant
 

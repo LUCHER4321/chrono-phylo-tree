@@ -37,17 +37,16 @@ export const MultiplePhTrees = (
 ) => {
     const copies = speciesList.map(sp => sp.copy());
     const lifeApparition = Math.min(...copies.map(sp => sp.apparition));
+    const lifeApparitionDuration = Math.max(...copies.map(sp => sp.apparition - lifeApparition));
     const life = new Species(
         "",
         lifeApparition,
-        Math.max(...copies.map(sp => sp.apparition - lifeApparition)),
+        lifeApparitionDuration,
         undefined,
-        copies,
+        []
     );
     life.display = false;
-    for(const sp of copies) {
-        sp.ancestor = life;
-    }
+    life.linkDescendants(copies);
     return (
         <PhTree
             commonAncestor={life}
@@ -274,6 +273,8 @@ interface HorizontalLineProps {
     presentTime?: number;
     toggleShowMenu: (s: Species) => void;
     hoverShowMenu: (s: Species | undefined) => void;
+    className?: string;
+    buttonClassName?: string;
 }
 
 const HorizontalLine = ({
@@ -290,7 +291,9 @@ const HorizontalLine = ({
     showImages = true,
     presentTime,
     toggleShowMenu,
-    hoverShowMenu
+    hoverShowMenu,
+    className,
+    buttonClassName
 }: HorizontalLineProps) => {
     const isPresentTimeDefined = presentTime !== undefined;
     const all = commonAncestor.allDescendants().filter(desc => isPresentTimeDefined ? desc.apparition < presentTime : true);
@@ -314,12 +317,12 @@ const HorizontalLine = ({
                 width={(chronoScale ? x0 ?? x2 : x2) - x1 - 2 * padding}
                 height={height + (showImages && species.image ? height : 0)}
             >
-                <div className="flex flex-row justify-between w-full">
+                <div className={`flex flex-row justify-between w-full ${className ?? ""}`}>
                     <div>
                         {chronoScale ? format(species.apparition) : ""}
                     </div>
                     <button
-                        className="p-0.625 justify-center flex flex-col items-center"
+                        className={`p-0.625 justify-center flex flex-col items-center ${buttonClassName ?? ""}`}
                         onClick={() => toggleShowMenu(species)}
                         onMouseEnter={() => hoverShowMenu(species)}
                         onMouseLeave={() => hoverShowMenu(undefined)}
@@ -328,6 +331,7 @@ const HorizontalLine = ({
                         {species.image && showImages && (
                             <img
                                 src={species.image}
+                                alt={species.name}
                                 style={{ height: height }}
                             />
                         )}

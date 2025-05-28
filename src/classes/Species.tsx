@@ -9,7 +9,11 @@ export class Species {
   description?: string = undefined;
   display = true;
   image?: string = undefined;
-  private onPosition = true;
+
+  private onPosition(ret = true) {
+    if(!ret) return ret;
+    return this.firstAncestor().stepsUntil(this)! % 2 === 0;
+  }
 
   constructor(
     name = '',
@@ -34,19 +38,75 @@ export class Species {
 
   copy() : Species {
     const fa = this.firstAncestor();
-    const n = fa.allDescendants().indexOf(this)
+    const n = fa.allDescendants(false).indexOf(this)
     const sp = Species.fromJSON(fa.toJSON());
-    sp.onPosition = fa.onPosition;
-    
-    const invertPositon = (s: Species) => {
-      for(const d of s.descendants){
-        d.onPosition = !s.onPosition
-        invertPositon(d);
-      }
-    };
+    return sp.allDescendants(false)[n];
+  }
 
-    invertPositon(sp);
-    return sp.allDescendants()[n];
+  unlinkAncestor(): [Species, Species] | undefined {
+    if(!this.ancestor) {
+      return;
+    }
+    this.ancestor.descendants = this.ancestor.descendants.filter((d) => d !== this);
+    const exAncestor = this.ancestor;
+    this.ancestor = undefined;
+    return [exAncestor.firstAncestor(), this];
+  }
+
+  unlinkDescendant(descendant: Species): [Species, Species] | undefined {
+    if(!this.descendants.includes(descendant)) {
+      return;
+    }
+    this.descendants = this.descendants.filter((d) => d !== descendant);
+    descendant.ancestor = undefined;
+    return [this.firstAncestor(), descendant];
+  }
+
+  linkAncestor(ancestor: Species) {
+    if(this.ancestor === ancestor && ancestor.descendants.includes(this)) {
+      return;
+    }
+    if(ancestor.apparition > this.apparition) {
+      throw new Error(`The ancestor's apparition (${ancestor.apparition}) must be before or equal the descendant's apparition (${this.apparition})`);
+    }
+    if(ancestor.extinction() < this.apparition) {
+      throw new Error(`The ancestor's extinction (${ancestor.extinction()}) must be after or equal the descendant's apparition (${this.apparition})`);
+    }
+    if(this.ancestor !== ancestor) {
+      this.unlinkAncestor();
+    }
+    this.ancestor = ancestor;
+    ancestor.descendants.push(this);
+  }
+
+  linkDescendant(descendant: Species) {
+    if(descendant.ancestor === this && this.descendants.includes(descendant)) {
+      return;
+    }
+    if(descendant.apparition < this.apparition) {
+      throw new Error(`The descendant's apparition (${descendant.apparition}) must be after or equal the ancestor's apparition (${this.apparition})`);
+    }
+    if(descendant.extinction() > this.extinction()) {
+      throw new Error(`The descendant's extinction (${descendant.extinction()}) must be before or equal the ancestor's extinction (${this.extinction()})`);
+    }
+    if(this.descendants.includes(descendant)) {
+      return;
+    }
+    if(descendant.ancestor) {
+      descendant.unlinkAncestor();
+    }
+    this.descendants.push(descendant);
+    descendant.ancestor = this;
+  }
+
+  linkDescendants(descendants: Species[]) {
+    for(const desc of descendants) {
+      try {
+        this.linkDescendant(desc);
+      } catch (error) {
+        console.error(`Error linking descendant ${desc.name} to ancestor ${this.name}:`, error);
+      }
+    }
   }
 
   addDescendant(
@@ -65,13 +125,12 @@ export class Species {
       name,
       sp.apparition + Math.max(afterApparition, 0),
       Math.max(duration, 0),
-      sp,
+      undefined,
       [],
       description,
       image
     );
-    desc.onPosition = !this.onPosition;
-    sp.descendants.push(desc);
+    desc.linkAncestor(sp);
     return copy ? sp : desc;
   }
 
@@ -100,12 +159,12 @@ export class Species {
       sp.apparition - Math.max(previousApparition, 0),
       duration,
       undefined,
-      [sp],
-      description
+      [],
+      description,
+      image
     );
     anc.display = display;
-    anc.onPosition = !this.onPosition;
-    sp.ancestor = anc;
+    sp.linkAncestor(anc);
     return copy ? sp : anc;
   }
 
@@ -115,8 +174,8 @@ export class Species {
 
   absoluteExtinction(): number {
     return this.descendants.length > 0
-      ? Math.max(...this.descendants.map((desc) => desc.absoluteExtinction()))
-      : this.extinction();
+        ? Math.max(...this.allDescendants(false).map((desc) => desc.extinction()))
+        : this.extinction();
   }
 
   absoluteDuration() {
@@ -131,29 +190,29 @@ export class Species {
     return this.firstAncestor().absoluteExtinction();
   }
 
-  allDescendants(): Species[] {
-    const desc = sortArray(this.descendants, s => -s.apparition, s => -s.absoluteExtinction());
+  allDescendants(sort = true): Species[] {
+    const desc = sort ? sortArray(this.descendants, s => -s.apparition, s => -s.absoluteExtinction()) : this.descendants;
     if (desc.length === 0) {
       return [this];
     }
     const limitDesc = desc.filter(desc => desc.apparition >= this.extinction());
     const prevDesc = desc.filter(desc => limitDesc.indexOf(desc) === -1);
-    const halfFunc = this.onPosition ? Math.ceil : Math.floor;
+    const halfFunc = this.onPosition(sort) ? Math.ceil : Math.floor;
     const half = halfFunc(limitDesc.length / 2);
     const lim0 = limitDesc.slice(0, half);
     const lim1 = limitDesc.slice(half);
-    return lim0.flatMap((d) => d.allDescendants()).concat([this]).concat(lim1.flatMap((d) => d.allDescendants())).concat(prevDesc.flatMap((d) => d.allDescendants()));
+    return lim0.flatMap((d) => d.allDescendants(sort)).concat([this]).concat(lim1.flatMap((d) => d.allDescendants(sort))).concat(prevDesc.flatMap((d) => d.allDescendants(sort)));
   }
 
   stepsChain(desc: Species, includeNotDisplay = false): Species[] {
-    if(!this.allDescendants().includes(desc)) {
+    if(!this.allDescendants(false).includes(desc)) {
       return [];
     }
-    return [this as Species].concat(this.descendants.find(d => d.allDescendants().includes(desc))?.stepsChain(desc) ?? []).filter(d => d.display || includeNotDisplay);
+    return [this as Species].concat(this.descendants.find(d => d.allDescendants(false).includes(desc))?.stepsChain(desc) ?? []).filter(d => d.display || includeNotDisplay);
   }
 
   stepsUntil(desc: Species, includeNotDisplay = false): number | undefined {
-    if(!this.allDescendants().includes(desc)) {
+    if(!this.allDescendants(false).includes(desc)) {
       return;
     }
     return this.stepsChain(desc, includeNotDisplay).length - 1;
@@ -163,7 +222,7 @@ export class Species {
     if(this.descendants.length === 0) {
       return 0;
     }
-    return Math.max(...this.allDescendants().filter(d => d.descendants.length === 0).map(d => this.stepsUntil(d, icludeNotDisplay) ?? 0));
+    return Math.max(...this.allDescendants(false).filter(d => d.descendants.length === 0).map(d => this.stepsUntil(d, icludeNotDisplay) ?? 0));
   }
 
   toJSON(): SpeciesJSON {
