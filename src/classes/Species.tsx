@@ -1,4 +1,5 @@
 import { sortArray } from "multiple-sorting-array";
+import { SpeciesJSON } from "../types";
 
 export class Species {
   name = "";
@@ -263,14 +264,4 @@ export class Species {
     }
     return sp
   }
-}
-
-export interface SpeciesJSON {
-  name: string;
-  apparition?: number;
-  duration?: number;
-  description?: string;
-  descendants?: SpeciesJSON[];
-  afterApparition?: number;
-  image?: string;
 }

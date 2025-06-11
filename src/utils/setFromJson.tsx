@@ -1,4 +1,5 @@
-import { Species, SpeciesJSON } from "../classes/Species";
+import { Species } from "../classes/Species";
+import { SpeciesJSON } from "../types";
 
 const handleFileChange = (file: File | undefined): Promise<SpeciesJSON> => {
     return new Promise((resolve, reject) => {
