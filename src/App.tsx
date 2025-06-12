@@ -16,7 +16,7 @@ import { HoverDescription } from './components/HoverDescription';
 function App() {
   const [scale, setScale] = useState(1);
   const [species, setSpecies] = useState<Species | undefined>(undefined);
-  const [speciesList, setSpeciesList] = useState<Species[]>([]);
+  //const [speciesList, setSpeciesList] = useState<Species[]>([]);
   const [lineColor, setLineColor] = useState("#7F7F7F");
   const [presentTime, setPresentTime] = useState<number>(1);
   const [presentTimeBoolean, setPresentTimeBoolean] = useState(true);

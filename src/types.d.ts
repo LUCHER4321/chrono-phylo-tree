@@ -1,4 +1,4 @@
-export interface SpeciesJSON {
+export type SpeciesJSON = {
     name: string;
     apparition?: number;
     duration?: number;
