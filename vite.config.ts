@@ -12,7 +12,7 @@ export default defineConfig({
     dts(),
     viteStaticCopy({
       targets: [{
-        src: "tsconfig.json",
+        src: "src/types.d.ts",
         dest: "./"
       }]
     })
