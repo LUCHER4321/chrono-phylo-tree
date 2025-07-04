@@ -11,10 +11,16 @@ export default defineConfig({
     tailwindcss(),
     dts(),
     viteStaticCopy({
-      targets: [{
-        src: "src/types.d.ts",
-        dest: "./"
-      }]
+      targets: [
+        {
+          src: "src/types.d.ts",
+          dest: "./"
+        },
+        {
+          src: "tsconfig.json",
+          dest: "./"
+        },
+      ]
     })
   ],
   build: {
