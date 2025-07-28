@@ -38,13 +38,11 @@ export const MultiplePhTrees = (
     const copies = speciesList.map(sp => sp.copy());
     const lifeApparition = Math.min(...copies.map(sp => sp.apparition));
     const lifeApparitionDuration = Math.max(...copies.map(sp => sp.apparition - lifeApparition));
-    const life = new Species(
-        "",
-        lifeApparition,
-        lifeApparitionDuration,
-        undefined,
-        []
-    );
+    const life = new Species({
+        name: "",
+        apparition: lifeApparition,
+        duration: lifeApparitionDuration,
+    });
     life.display = false;
     life.linkDescendants(copies);
     return (
