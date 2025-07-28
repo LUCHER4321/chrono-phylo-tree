@@ -1,5 +1,6 @@
 export type SpeciesJSON = {
-    name: string;
+    id?: string;
+    name?: string;
     apparition?: number;
     duration?: number;
     description?: string;
