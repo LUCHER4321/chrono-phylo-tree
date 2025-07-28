@@ -1,7 +1,29 @@
 import { sortArray } from "multiple-sorting-array";
 import { SpeciesJSON } from "../types";
 
+interface ConstructorProps {
+  id?: string | number;
+  name?: string;
+  apparition?: number;
+  duration?: number;
+  ancestor?: Species;
+  descendants?: Species[];
+  description?: string;
+  image?: string;
+}
+
+interface DescendantProps extends Omit<Omit<Omit<ConstructorProps, "apparition">, "ancestor">, "descendants"> {
+  afterApparition?: number;
+  copy?: boolean;
+}
+
+interface AncestorProps extends Omit<DescendantProps, "afterApparition"> {
+  previousApparition?: number;
+  display?: boolean;
+}
+
 export class Species {
+  id?: string | number;
   name = "";
   apparition = 0;
   duration = 0;
@@ -16,18 +38,20 @@ export class Species {
     return this.firstAncestor().stepsUntil(this)! % 2 === 0;
   }
 
-  constructor(
-    name = '',
+  constructor({
+    id,
+    name = "",
     apparition = 0,
     duration = 0,
-    ancestor: Species | undefined = undefined,
-    descendants: Species[] = [],
-    description: string | undefined = undefined,
-    image: string | undefined = undefined,
-  ) {
+    ancestor,
+    descendants = [],
+    description,
+    image
+  }: ConstructorProps) {
     if(duration <= 0){
       throw new Error("The duration of the species must be greater than 0");
     }
+    this.id = id;
     this.name = name;
     this.apparition = apparition;
     this.duration = duration;
@@ -110,27 +134,27 @@ export class Species {
     }
   }
 
-  addDescendant(
+  addDescendant({
+    id,
     name = '',
     afterApparition = 0,
     duration = 0,
-    description: string | undefined = undefined,
-    image: string | undefined = undefined,
+    description,
+    image,
     copy = false
-  ) {
+  }: DescendantProps) {
     if(afterApparition < 0 || afterApparition > this.duration) {
       throw new Error(`The apparition of the descendant must be between the apparition (${this.apparition}) and the extinction (${this.extinction()}) of the ancestor`);
     }
     const sp = copy ? this.copy() : this;
-    const desc = new Species(
+    const desc = new Species({
+      id,
       name,
-      sp.apparition + Math.max(afterApparition, 0),
-      Math.max(duration, 0),
-      undefined,
-      [],
+      apparition: sp.apparition + Math.max(afterApparition, 0),
+      duration: Math.max(duration, 0),
       description,
       image
-    );
+    });
     desc.linkAncestor(sp);
     return copy ? sp : desc;
   }
@@ -139,15 +163,16 @@ export class Species {
     this.descendants = this.descendants.filter((d) => d !== desc);
   }
 
-  addAncestor(
+  addAncestor({
+    id,
     name = '',
     previousApparition = 0,
     duration = 0,
-    description: string | undefined = undefined,
-    image: string | undefined = undefined,
+    description,
+    image,
     display = true,
     copy = false
-  ) {
+  }: AncestorProps) {
     if(previousApparition < 0) {
       throw new Error(`The apparition of the ancestor must be before or equal the apparition (${this.apparition}) of the descendant`);
     }
@@ -155,15 +180,14 @@ export class Species {
       throw new Error(`The extiction of the ancestor must be after or equal the apparition (${this.apparition}) of the descendant`);
     }
     const sp = copy ? this.copy() : this;
-    const anc = new Species(
+    const anc = new Species({
+      id,
       name,
-      sp.apparition - Math.max(previousApparition, 0),
+      apparition: sp.apparition - Math.max(previousApparition, 0),
       duration,
-      undefined,
-      [],
       description,
       image
-    );
+    });
     anc.display = display;
     sp.linkAncestor(anc);
     return copy ? sp : anc;
@@ -238,7 +262,7 @@ export class Species {
     };
   }
 
-  async saveJSON(filename: string | undefined = undefined) {
+  async saveJSON(filename?: string) {
     try{
       const jsonString = JSON.stringify(this.toJSON(), null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
@@ -253,12 +277,28 @@ export class Species {
     }
   }
 
-  static fromJSON(json: SpeciesJSON, ancestor?: Species): Species {
+  static fromJSON({
+    id,
+    name,
+    duration,
+    description,
+    image,
+    descendants,
+    ...json
+  }: SpeciesJSON, ancestor?: Species): Species {
     const afterApparition = json.afterApparition ?? 0;
     const apparition = ancestor ? ancestor.apparition : json.apparition ?? 0;
-    const sp = new Species(json.name ?? "", apparition + afterApparition, json.duration ?? 0, ancestor, [], json.description, json.image);
-    if(json.descendants) {
-      for (const desc of json.descendants) {
+    const sp = new Species({
+      id,
+      name,
+      apparition: apparition + afterApparition,
+      duration,
+      ancestor,
+      description,
+      image
+    });
+    if(descendants) {
+      for (const desc of descendants) {
         sp.descendants.push(Species.fromJSON(desc, sp));
       }
     }
