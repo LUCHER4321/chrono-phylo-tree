@@ -12,6 +12,10 @@ You can test and explore the functionality of the chrono-phylo-tree library by v
 
 ### Updates
 
+**1.3.0**
+
+- Inputs changed to interface type
+
 **1.0.12**
 
 - New functions for Species class.
@@ -91,17 +95,61 @@ import { Species, PhTree } from "chrono-phylo-tree";
 You can create species and construct a phylogenetic tree as follows:
 
 ```typescript
-const root = new Species("Hominoidea", -25e6, 6e6);
-root.addDescendant("Hilobates", 6e6, 19e6);
-const child0 = root.addDescendant("Hominidae", 6e6, 6e6);
-child0.addDescendant("Pongo", 6e6, 13e6);
-const child1 = child0.addDescendant("Homininae", 6e6, 5e6);
-child1.addDescendant("Gorilla", 5e6, 8e6);
-const child2 = child1.addDescendant("Hominini", 5e6, 2e6);
-const child3 = child2.addDescendant("Pan", 2e6, 3e6);
-child3.addDescendant("Pan Troglodytes", 3e6, 3e6);
-child3.addDescendant("Pan Paniscus", 3e6, 3e6);
-child2.addDescendant("Homo", 2e6, 6e6);
+const root = new Species({
+  name: "Hominoidea",
+  apparition: -25e6,
+  duration: 6e6,
+});
+root.addDescendant({
+  name: "Hilobates",
+  afterApparition: 6e6,
+  duration: 19e6,
+});
+const child0 = root.addDescendant({
+  name: "Hominidae",
+  afterApparition: 6e6,
+  duration: 6e6,
+});
+child0.addDescendant({
+  name: "Pongo",
+  afterApparition: 6e6,
+  duration: 13e6,
+});
+const child1 = child0.addDescendant({
+  name: "Homininae",
+  afterApparition: 6e6,
+  duration: 5e6,
+});
+child1.addDescendant({
+  name: "Gorilla",
+  afterApparition: 5e6,
+  duration: 8e6,
+});
+const child2 = child1.addDescendant({
+  name: "Hominini",
+  afterApparition: 5e6,
+  duration: 2e6,
+});
+const child3 = child2.addDescendant({
+  name: "Pan",
+  afterApparition: 2e6,
+  duration: 3e6,
+});
+child3.addDescendant({
+  name: "Pan Troglodytes",
+  afterApparition: 3e6,
+  duration: 3e6,
+});
+child3.addDescendant({
+  name: "Pan Paniscus",
+  afterApparition: 3e6,
+  duration: 3e6,
+});
+child2.addDescendant({
+  name: "Homo",
+  afterApparition: 2e6,
+  duration: 6e6,
+});
 ```
 
 ## Rendering the Tree in a React Component
@@ -112,62 +160,76 @@ If using chrono-phylo-tree in a React project, you can render the tree as follow
 import React from "react";
 import { Species, PhTree } from "chrono-phylo-tree";
 
-const root = new Species("Hominoidea", -25e6, 6e6);
-root.addDescendant(
-  "Hilobates",
-  6e6,
-  19e6,
-  undefined,
-  "https://upload.wikimedia.org/wikipedia/commons/4/40/Hylobaes_lar_Canarias.jpg"
-);
-const child0 = root.addDescendant("Hominidae", 6e6, 6e6);
-child0.addDescendant(
-  "Pongo",
-  6e6,
-  13e6,
-  undefined,
-  "https://upload.wikimedia.org/wikipedia/commons/6/65/Pongo_tapanuliensis.jpg"
-);
-const child1 = child0.addDescendant("Homininae", 6e6, 5e6);
-child1.addDescendant(
-  "Gorilla",
-  5e6,
-  8e6,
-  undefined,
-  "https://gorillas-world.com/wp-content/uploads/anatomia.jpg"
-);
-const child2 = child1.addDescendant("Hominini", 5e6, 2e6);
-const child3 = child2.addDescendant("Pan", 2e6, 3e6);
-child3.addDescendant(
-  "Pan Troglodytes",
-  3e6,
-  3e6,
-  undefined,
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-v4-d4R9AUgsHdG42VPYuYj_d4OMRHKasUQ&s"
-);
-child3.addDescendant(
-  "Pan Paniscus",
-  3e6,
-  3e6,
-  undefined,
-  "https://upload.wikimedia.org/wikipedia/commons/e/e2/Apeldoorn_Apenheul_zoo_Bonobo.jpg"
-);
-child2.addDescendant(
-  "Homo",
-  2e6,
-  6e6,
-  undefined,
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7XK_e3HG0jhOticytH1Dn3tzBEZyRyWc5Mg&s"
-);
+const root = new Species({
+  name: "Hominoidea",
+  apparition: -25e6,
+  duration: 6e6,
+});
+root.addDescendant({
+  name: "Hilobates",
+  afterApparition: 6e6,
+  duration: 19e6,
+  image:
+    "https://upload.wikimedia.org/wikipedia/commons/4/40/Hylobaes_lar_Canarias.jpg",
+});
+const child0 = root.addDescendant({
+  name: "Hominidae",
+  afterApparition: 6e6,
+  duration: 6e6,
+});
+child0.addDescendant({
+  name: "Pongo",
+  afterApparition: 6e6,
+  duration: 13e6,
+  image:
+    "https://upload.wikimedia.org/wikipedia/commons/6/65/Pongo_tapanuliensis.jpg",
+});
+const child1 = child0.addDescendant({
+  name: "Homininae",
+  afterApparition: 6e6,
+  duration: 5e6,
+});
+child1.addDescendant({
+  name: "Gorilla",
+  afterApparition: 5e6,
+  duration: 8e6,
+  image: "https://gorillas-world.com/wp-content/uploads/anatomia.jpg",
+});
+const child2 = child1.addDescendant({
+  name: "Hominini",
+  afterApparition: 5e6,
+  duration: 2e6,
+});
+const child3 = child2.addDescendant({
+  name: "Pan",
+  afterApparition: 2e6,
+  duration: 3e6,
+});
+child3.addDescendant({
+  name: "Pan Troglodytes",
+  afterApparition: 3e6,
+  duration: 3e6,
+  image:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-v4-d4R9AUgsHdG42VPYuYj_d4OMRHKasUQ&s",
+});
+child3.addDescendant({
+  name: "Pan Paniscus",
+  afterApparition: 3e6,
+  duration: 3e6,
+  image:
+    "https://upload.wikimedia.org/wikipedia/commons/e/e2/Apeldoorn_Apenheul_zoo_Bonobo.jpg",
+});
+child2.addDescendant({
+  name: "Homo",
+  afterApparition: 2e6,
+  duration: 6e6,
+  image:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7XK_e3HG0jhOticytH1Dn3tzBEZyRyWc5Mg&s",
+});
 
 const App = () => {
   return (
-    <PhTree
-      commonAncestor={ancestor}
-      width={1000}
-      height={500}
-      stroke="black"
-    />
+    <PhTree commonAncestor={root} width={1000} height={500} stroke="black" />
   );
 };
 
@@ -178,7 +240,8 @@ export default App;
 
 ```typescript
 interface SpeciesJSON {
-  name: string;
+  id?: string | number;
+  name?: string;
   apparition?: number;
   duration?: number;
   description?: string;
@@ -208,19 +271,32 @@ The `Species` class represents a species in a phylogenetic tree, with properties
 #### Constructor
 
 ```typescript
-constructor(
-  name = '',
+interface ConstructorProps {
+  id?: string | number;
+  name?: string;
+  apparition?: number;
+  duration?: number;
+  ancestor?: Species;
+  descendants?: Species[];
+  description?: string;
+  image?: string;
+}
+...
+constructor({
+  id,
+  name = "",
   apparition = 0,
   duration = 0,
-  ancestor?: Species,
-  descendants: Species[] = [],
-  description: string | undefined = undefined,
-  image: string | undefined = undefined
-)
+  ancestor,
+  descendants = [],
+  description,
+  image
+}: ConstructorProps)
 ```
 
 Initializes a new instance of the `Species` class.
 
+- **id**: Id of the species.
 - **name**: The name of the species.
 - **apparition**: The time at which the species appears.
 - **duration**: The duration for which the species exists.
@@ -288,18 +364,25 @@ Links the current species to multiple descendants. The method attempts to link e
 #### addDescendant
 
 ```typescript
-addDescendant(
+interface DescendantProps extends Omit<Omit<Omit<ConstructorProps, "apparition">, "ancestor">, "descendants"> {
+  afterApparition?: number;
+  copy?: boolean;
+}
+...
+addDescendant({
+  id,
   name = '',
   afterApparition = 0,
   duration = 0,
-  description: string | undefined = undefined,
-  image: string | undefined = undefined,
+  description,
+  image,
   copy = false
-): Species
+}: DescendantProps): Species
 ```
 
 Adds a descendant to the current species.
 
+- **id**: Id of the descendant.
 - **name**: The name of the descendant.
 - **afterApparition**: The time after the ancestor's appearance when the descendant appears.
 - **duration**: The duration for which the descendant exists.
@@ -319,19 +402,26 @@ Removes a descendant from the current species.
 #### addAncestor
 
 ```typescript
-addAncestor(
+interface AncestorProps extends Omit<DescendantProps, "afterApparition"> {
+  previousApparition?: number;
+  display?: boolean;
+}
+...
+addAncestor({
+  id,
   name = '',
   previousApparition = 0,
   duration = 0,
-  description: string | undefined = undefined,
-  image: string | undefined = undefined,
+  description,
+  image,
   display = true,
   copy = false
-): Species
+}: AncestorProps): Species
 ```
 
 Adds an ancestor to the current species.
 
+- **id**: Id of the ancestor.
 - **name**: The name of the ancestor.
 - **previousApparition**: The time before the current species' appearance when the ancestor appears.
 - **duration**: The duration for which the ancestor exists.
@@ -450,7 +540,8 @@ static fromJSON(json: SpeciesJSON, ancestor?: Species): Species
 Creates a species instance from a JSON object.
 
 - **json**: The JSON object representing the species. The structure of the JSON object should follow the format below:
-  - **name**: (string) The name of the species.
+  - **id**: (string, number, optional) The id of the species.
+  - **name**: (string, optional) The name of the species.
   - **apparition**: (number, optional) The time when the species first appeared. This is only required if the species has no ancestor.
   - **afterApparition**: (number, optional) The time after the ancestor's apparition when this species appeared. This is required if the species has an ancestor.
   - **duration**: (number) The duration for which the species existed.
