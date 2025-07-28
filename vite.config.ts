@@ -16,10 +16,6 @@ export default defineConfig({
           src: "src/types.d.ts",
           dest: "./"
         },
-        {
-          src: "tsconfig.json",
-          dest: "./"
-        },
       ]
     })
   ],
