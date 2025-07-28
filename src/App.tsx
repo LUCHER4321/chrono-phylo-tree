@@ -55,7 +55,11 @@ function App() {
   const maxScale = (n: number) => species ? Math.min(species.absoluteDuration(), presentTimeBoolean ? n - species.apparition : species.absoluteDuration()) : 1
 
   const createEmptySpecies = async () => {
-    setSpecies(new Species(await codeTextAlt("nvbtn01", language), 0, 1));
+    setSpecies(new Species({
+      name: await codeTextAlt("nvbtn01", language),
+      apparition: 0,
+      duration: 1
+    }));
     setScale(1);
     setPresentTime(1);
   };
