@@ -51,7 +51,14 @@ export const createDescendant = (
         alert(alertText);
         throw new Error(alertText);
     }
-    const newSpecies = s.addDescendant(name, afterApparition, duration, description, image, true).firstAncestor();
+    const newSpecies = s.addDescendant({
+        name,
+        afterApparition,
+        duration,
+        description,
+        image,
+        copy: true
+    }).firstAncestor();
     //*
     setSpecies(undefined);
     if(presentTimeBoolean){
@@ -86,7 +93,15 @@ export const createAncestor = (
         alert(alertText);
         throw new Error(alertText);
     }
-    const newSpecies = s.addAncestor(name, previousApparition, duration, description, image, true, true).firstAncestor();
+    const newSpecies = s.addAncestor({
+        name,
+        previousApparition,
+        duration,
+        description,
+        image,
+        copy: true,
+        display: true
+    }).firstAncestor();
     //*
     setSpecies(undefined);
     if(presentTimeBoolean){
