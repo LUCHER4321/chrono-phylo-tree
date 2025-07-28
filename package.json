@@ -12,8 +12,7 @@
   "exports": {
     ".": {
       "import": "./dist/chrono-phylo-tree.es.js",
-      "require": "./dist/chrono-phylo-tree.umd.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/chrono-phylo-tree.umd.js"
     }
   },
   "scripts": {
